@@ -4,7 +4,8 @@
   "main": "bot.js",
   "type": "module",
   "scripts": {
-    "start": "node --env-file=.env bot.js",
+    "dev": "node --env-file=.env.development bot.js",
+    "prod": "node --env-file=.env.production bot.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
