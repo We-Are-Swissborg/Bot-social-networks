@@ -303,8 +303,13 @@ const tranformValueForMarkdown = (borgInfo, oldBorgInfo, valueDifferenceBorgInfo
     if(borgInfo[prop].includes(',')) borgInfo[prop] = borgInfo[prop].replace(',', ',');
     if(oldBorgInfo[prop].includes(',')) oldBorgInfo[prop] = oldBorgInfo[prop].replace(',', ',');
 
-    if(valueDifferenceBorgInfo[prop].includes('-')) valueDifferenceBorgInfo[prop] = valueDifferenceBorgInfo[prop].replace('-', '\\-'); // Convert '-' for work with markdownV2.
-    else valueDifferenceBorgInfo[prop] = '\\%2B' + valueDifferenceBorgInfo[prop]; // Convert '+' for work with markdownV2.
+    if(prop === 'rank') {
+      if(valueDifferenceBorgInfo[prop].includes('-')) valueDifferenceBorgInfo[prop] = valueDifferenceBorgInfo[prop].replace('-', '\\%2B'); // Convert '-' to '+' for work with markdownV2.
+      else valueDifferenceBorgInfo[prop] = '\\-' + valueDifferenceBorgInfo[prop]; // Convert '+' to '-' for work with markdownV2.
+    } else {
+      if(valueDifferenceBorgInfo[prop].includes('-')) valueDifferenceBorgInfo[prop] = valueDifferenceBorgInfo[prop].replace('-', '\\-');
+      else valueDifferenceBorgInfo[prop] = '\\%2B' + valueDifferenceBorgInfo[prop];
+    }
   })
 }
 
