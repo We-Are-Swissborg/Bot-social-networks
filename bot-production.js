@@ -3,6 +3,9 @@ import chrome from 'selenium-webdriver/chrome.js';
 import got from 'got';
 import process from 'process';
 import fs from 'node:fs';
+import dotenv from 'dotenv';
+
+dotenv.config({ path: '.env.production' });
 
 async function Bot() {
   const options = new chrome.Options();

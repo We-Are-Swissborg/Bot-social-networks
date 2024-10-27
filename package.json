@@ -1,11 +1,11 @@
 {
-  "name": "scrap",
+  "name": "bot-social-networks",
   "version": "1.0.0",
-  "main": "bot.js",
+  "main": "bot-production.js",
   "type": "module",
   "scripts": {
-    "dev": "node --env-file=.env.development bot.js",
-    "prod": "node --env-file=.env.production bot.js",
+    "dev": "node bot-development.js",
+    "prod": "node bot-production.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
@@ -13,6 +13,7 @@
   "license": "ISC",
   "description": "",
   "dependencies": {
+    "dotenv": "^16.4.5",
     "got": "^14.4.3",
     "selenium-webdriver": "^4.25.0"
   },
