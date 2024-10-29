@@ -34,6 +34,7 @@ async function Bot() {
     aum: '',
     rank: '',
     communityIndex: '',
+    weeklyVolumeApp: ''
   };
   let oldBorgInfo = JSON.parse(dataFile);
   let valueDifferenceBorgInfo = {
@@ -45,14 +46,17 @@ async function Bot() {
     aum: '',
     rank: '',
     communityIndex: '',
+    weeklyVolumeApp: ''
   };
   let maxLoop = 5; // Use for return a error if data not found after loop equal 5.
+  const unitNumber = ['K', 'M', 'B', 'T'];
 
   //Page https://swissborg.com/borg-overview
   await driver.get('https://swissborg.com/borg-overview');
   await new Promise(resolve => setTimeout(resolve, 2000));
   await acceptCookieSwissborg(actions, driver);
   await getValueBorg(borgInfo, driver, maxLoop);
+  await getWeeklyVolumeAppBorg(borgInfo, driver, maxLoop);
   await getPremiumUserBorg(borgInfo, driver, maxLoop);
   await getBorgLock(borgInfo, driver, maxLoop);
   await getCommunityIndexBorg(borgInfo, driver, maxLoop);
@@ -81,7 +85,7 @@ async function Bot() {
       console.log('File written successfully.');
     }
   });
-  calculateDifference(borgInfo, oldBorgInfo, valueDifferenceBorgInfo);
+  calculateDifference(borgInfo, oldBorgInfo, valueDifferenceBorgInfo, unitNumber);
   await sendMessageToTelegram(borgInfo, oldBorgInfo, valueDifferenceBorgInfo);
 }
 
@@ -265,20 +269,50 @@ const getCommunityIndexBorg = async (borgInfo, driver, maxLoop) => {
   }
 }
 
+// Get weekly volume app BORG.
+const getWeeklyVolumeAppBorg = async (borgInfo, driver, maxLoop) => {
+  try {
+    while(!borgInfo.weeklyVolumeApp) {
+      const card = await driver.findElements(By.css('[class*="ecosystemCardFront"] h3'));
+
+      borgInfo.weeklyVolumeApp = await card[0].getText();
+      if(maxLoop === 0) throw new Error('Nb loop max in getWeeklyVolumeAppBorg.');
+      maxLoop--;
+    }
+
+    maxLoop = 5;
+    console.log('Weekly volume app BORG is acquired.');
+  } catch(e) {
+    console.error('Error for weekly volume app BORG :' + e);
+    await driver.quit();
+    process.exit(-1);
+  }
+}
+
+const checkUnitNumber = (value, unitNumber) => {
+  const unit = unitNumber.find((u) => value.includes(u));
+  return Number(value.split(unit)[0]);
+
+}
+
 // Tranform value in percentage.
-const calculateDifference = (borgInfo, oldBorgInfo, valueDifferenceBorgInfo) => {
+const calculateDifference = (borgInfo, oldBorgInfo, valueDifferenceBorgInfo, unitNumber) => {
   const marketCap = Number(borgInfo.marketCap.split(' ')[1].replace(',', '.'));
   const oldMarketCap = Number(oldBorgInfo.marketCap.split(' ')[1].replace(',', '.'));
-  const lengthPremiumUser = String(borgInfo.premiumUser).length - 2;
-  const lengthOldPremiumUser = String(oldBorgInfo.premiumUser).length - 2;
-  const premiumUser = Number(borgInfo.premiumUser.slice(0, lengthPremiumUser));
-  const oldPremiumUser = Number(oldBorgInfo.premiumUser.slice(0, lengthOldPremiumUser));
-  const borgLock = Number(borgInfo.borgLock.split('M')[0]);
-  const oldBorgLock = Number(oldBorgInfo.borgLock.split('M')[0]);
+  // const lengthPremiumUser = String(borgInfo.premiumUser).length - 2;
+  // const lengthOldPremiumUser = String(oldBorgInfo.premiumUser).length - 2;
+  const weeklyVolumeApp = checkUnitNumber(borgInfo.weeklyVolumeApp, unitNumber);
+  const oldWeeklyVolumeApp = checkUnitNumber(oldBorgInfo.weeklyVolumeApp, unitNumber);
+  const premiumUser = checkUnitNumber(borgInfo.premiumUser, unitNumber);
+  const oldPremiumUser = checkUnitNumber(oldBorgInfo.premiumUser, unitNumber);
+  // const premiumUser = Number(borgInfo.premiumUser.slice(0, lengthPremiumUser));
+  // const oldPremiumUser = Number(oldBorgInfo.premiumUser.slice(0, lengthOldPremiumUser));
+  const borgLock = checkUnitNumber(borgInfo.borgLock, unitNumber);
+  const oldBorgLock = checkUnitNumber(oldBorgInfo.borgLock, unitNumber);
   const supplyCirculation = Number(borgInfo.supplyCirculation.split(' ')[0].replace(',', '.'));
   const oldSupplyCirculation = Number(oldBorgInfo.supplyCirculation.split(' ')[0].replace(',', '.'));
-  const aum = Number(borgInfo.aum.split('B')[0].replace(',', '.'));
-  const oldAum = Number(oldBorgInfo.aum.split('B')[0].replace(',', '.'));
+  const aum = checkUnitNumber(borgInfo.aum, unitNumber);
+  const oldAum = checkUnitNumber(oldBorgInfo.aum, unitNumber);
 
   valueDifferenceBorgInfo.value = ((Number(borgInfo.value) - Number(oldBorgInfo.value)) / Number(oldBorgInfo.value) * 100).toFixed(2);
   valueDifferenceBorgInfo.marketCap = ((marketCap - oldMarketCap) / oldMarketCap * 100).toFixed(2);
@@ -288,6 +322,7 @@ const calculateDifference = (borgInfo, oldBorgInfo, valueDifferenceBorgInfo) => 
   valueDifferenceBorgInfo.aum = ((aum - oldAum) / oldAum * 100).toFixed(2);
   valueDifferenceBorgInfo.rank = Number(borgInfo.rank) - Number(oldBorgInfo.rank);
   valueDifferenceBorgInfo.communityIndex = Number(borgInfo.communityIndex) - Number(oldBorgInfo.communityIndex);
+  valueDifferenceBorgInfo.weeklyVolumeApp = ((weeklyVolumeApp - oldWeeklyVolumeApp) / oldWeeklyVolumeApp * 100).toFixed(2);
 }
 
 const tranformValueForMarkdown = (borgInfo, oldBorgInfo, valueDifferenceBorgInfo) => {
@@ -302,8 +337,8 @@ const tranformValueForMarkdown = (borgInfo, oldBorgInfo, valueDifferenceBorgInfo
 
     if(borgInfo[prop].includes(',')) borgInfo[prop] = borgInfo[prop].replace(',', ',');
     if(oldBorgInfo[prop].includes(',')) oldBorgInfo[prop] = oldBorgInfo[prop].replace(',', ',');
-    
-    if(prop === 'rank') {
+
+    if(prop === 'rank' && valueDifferenceBorgInfo.rank != 0) {
       if(valueDifferenceBorgInfo[prop].includes('-')) valueDifferenceBorgInfo[prop] = valueDifferenceBorgInfo[prop].replace('-', '\\%2B'); // Convert '-' to '+' for work with markdownV2.
       else valueDifferenceBorgInfo[prop] = '\\-' + valueDifferenceBorgInfo[prop]; // Convert '+' to '-' for work with markdownV2.
     } else {
@@ -319,14 +354,15 @@ const sendMessageToTelegram = async (borgInfo, oldBorgInfo, valueDifferenceBorgI
     tranformValueForMarkdown(borgInfo, oldBorgInfo, valueDifferenceBorgInfo);
 
     const msgTelegram = "\\*\\**BORG UPDATE QUOTIDIEN*\\*\\*%0A%0A" +
-                        `Prix actuel: ${oldBorgInfo.value}$ \\-\\-\\> ${borgInfo.value}$ \\(${valueDifferenceBorgInfo.value}%\\)%0A%0A` +
-                        `Market Cap: ${oldBorgInfo.marketCap} \\-\\-\\> ${borgInfo.marketCap} \\(${valueDifferenceBorgInfo.marketCap}%\\)%0A%0A` +
-                        `Utilisateurs premium: ${oldBorgInfo.premiumUser} \\-\\-\\> ${borgInfo.premiumUser} \\(${valueDifferenceBorgInfo.premiumUser}%\\)%0A%0A` +
-                        `BORG bloqués: ${oldBorgInfo.borgLock} \\-\\-\\> ${borgInfo.borgLock} \\(${valueDifferenceBorgInfo.borgLock}%\\)%0A%0A` +
-                        `Offre en circulation: ${oldBorgInfo.supplyCirculation} \\-\\-\\> ${borgInfo.supplyCirculation} \\(${valueDifferenceBorgInfo.supplyCirculation}%\\)%0A%0A` +
-                        `Actifs sous gestion: ${oldBorgInfo.aum} \\-\\-\\> ${borgInfo.aum} \\(${valueDifferenceBorgInfo.aum}%\\)%0A%0A` +
-                        `Rang CoinGecko: ${oldBorgInfo.rank} \\-\\-\\> ${borgInfo.rank} \\(${valueDifferenceBorgInfo.rank}\\)%0A%0A` +
-                        `Community index: ${oldBorgInfo.communityIndex} \\-\\-\\> ${borgInfo.communityIndex} \\(${valueDifferenceBorgInfo.communityIndex}\\)`;
+                        `Prix actuel :%0A ${oldBorgInfo.value}$ \\-\\-\\> ${borgInfo.value}$ \\(${valueDifferenceBorgInfo.value}%\\)%0A%0A` +
+                        `Market Cap :%0A ${oldBorgInfo.marketCap} \\-\\-\\> ${borgInfo.marketCap} \\(${valueDifferenceBorgInfo.marketCap}%\\)%0A%0A` +
+                        `Utilisateurs premium :%0A ${oldBorgInfo.premiumUser} \\-\\-\\> ${borgInfo.premiumUser} \\(${valueDifferenceBorgInfo.premiumUser}%\\)%0A%0A` +
+                        `BORG bloqués :%0A ${oldBorgInfo.borgLock} \\-\\-\\> ${borgInfo.borgLock} \\(${valueDifferenceBorgInfo.borgLock}%\\)%0A%0A` +
+                        `Offre en circulation :%0A ${oldBorgInfo.supplyCirculation} \\-\\-\\> ${borgInfo.supplyCirculation} \\(${valueDifferenceBorgInfo.supplyCirculation}%\\)%0A%0A` +
+                        `Volume sur l'app \\(semaine\\) :%0A ${oldBorgInfo.weeklyVolumeApp} \\-\\-\\> ${borgInfo.weeklyVolumeApp} \\(${valueDifferenceBorgInfo.weeklyVolumeApp}%\\)%0A%0A` +
+                        `Actifs sous gestion :%0A ${oldBorgInfo.aum} \\-\\-\\> ${borgInfo.aum} \\(${valueDifferenceBorgInfo.aum}%\\)%0A%0A` +
+                        `Rang CoinGecko :%0A ${oldBorgInfo.rank} \\-\\-\\> ${borgInfo.rank} \\(${valueDifferenceBorgInfo.rank}\\)%0A%0A` +
+                        `Community index :%0A ${oldBorgInfo.communityIndex} \\-\\-\\> ${borgInfo.communityIndex} \\(${valueDifferenceBorgInfo.communityIndex}\\)`;
 
     const responseTelegram = await got.post(`https://api.telegram.org/bot${process.env.TG_TOKEN}/sendMessage?chat_id=${process.env.ID_CHAT_TG}&text=${msgTelegram}&parse_mode=MarkdownV2`, {
       headers: {
