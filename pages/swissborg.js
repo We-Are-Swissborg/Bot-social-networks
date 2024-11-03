@@ -203,11 +203,12 @@ export const calculateDifference = (borgInfo, oldBorgInfo, valueDifferenceBorgIn
   const oldSupplyCirculation = Number(oldBorgInfo.supplyCirculation.split(' ')[0].replace(',', '.'));
   const aum = takeOffUnitNumber(borgInfo.aum, unitNumber);
   const oldAum = takeOffUnitNumber(oldBorgInfo.aum, unitNumber);
+
   valueDifferenceBorgInfo.value = ((Number(borgInfo.value) - Number(oldBorgInfo.value)) / Number(oldBorgInfo.value) * 100).toFixed(2);
   valueDifferenceBorgInfo.marketCap = ((marketCap - oldMarketCap) / oldMarketCap * 100).toFixed(2);
-  valueDifferenceBorgInfo.premiumUser = ((premiumUser - oldPremiumUser) / oldPremiumUser * 100).toFixed(2);
-  valueDifferenceBorgInfo.borgLock = ((borgLock - oldBorgLock) / oldBorgLock * 100).toFixed(2);
-  valueDifferenceBorgInfo.supplyCirculation = ((supplyCirculation - oldSupplyCirculation) / oldSupplyCirculation * 100).toFixed(2);
+  valueDifferenceBorgInfo.premiumUser = (premiumUser - oldPremiumUser).toFixed(3);
+  valueDifferenceBorgInfo.borgLock = (borgLock - oldBorgLock).toFixed(2);
+  valueDifferenceBorgInfo.supplyCirculation = (supplyCirculation - oldSupplyCirculation).toFixed(2);
   valueDifferenceBorgInfo.aum = ((aum - oldAum) / oldAum * 100).toFixed(2);
   valueDifferenceBorgInfo.rank = Number(borgInfo.rank) - Number(oldBorgInfo.rank);
   valueDifferenceBorgInfo.communityIndex = Number(borgInfo.communityIndex) - Number(oldBorgInfo.communityIndex);

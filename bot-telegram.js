@@ -57,17 +57,19 @@ const tranformValueForMarkdown = (borgInfo, oldBorgInfo, valueDifferenceBorgInfo
     }
   })
 }
+
 // Function to send a message to Telegram.
 const sendMessageToTelegram = async (borgInfo, oldBorgInfo, valueDifferenceBorgInfo) => {
+  const date = new Date();
   try {
     tranformValueForMarkdown(borgInfo, oldBorgInfo, valueDifferenceBorgInfo);
 
     const msgTelegram = "\\*\\**BORG UPDATE QUOTIDIEN*\\*\\*%0A%0A" +
                         `Prix actuel :%0A ${oldBorgInfo.value}$ \\-\\-\\> ${borgInfo.value}$ \\(${valueDifferenceBorgInfo.value}%\\)%0A%0A` +
                         `Market Cap :%0A ${oldBorgInfo.marketCap} \\-\\-\\> ${borgInfo.marketCap} \\(${valueDifferenceBorgInfo.marketCap}%\\)%0A%0A` +
-                        `Utilisateurs premium :%0A ${oldBorgInfo.premiumUser} \\-\\-\\> ${borgInfo.premiumUser} \\(${valueDifferenceBorgInfo.premiumUser}%\\)%0A%0A` +
-                        `BORG bloqués :%0A ${oldBorgInfo.borgLock} \\-\\-\\> ${borgInfo.borgLock} \\(${valueDifferenceBorgInfo.borgLock}%\\)%0A%0A` +
-                        `Offre en circulation :%0A ${oldBorgInfo.supplyCirculation} \\-\\-\\> ${borgInfo.supplyCirculation} \\(${valueDifferenceBorgInfo.supplyCirculation}%\\)%0A%0A` +
+                        `Utilisateurs premium :%0A ${oldBorgInfo.premiumUser} \\-\\-\\> ${borgInfo.premiumUser} \\(${valueDifferenceBorgInfo.premiumUser}K\\)%0A%0A` +
+                        `BORG bloqués :%0A ${oldBorgInfo.borgLock} \\-\\-\\> ${borgInfo.borgLock} \\(${valueDifferenceBorgInfo.borgLock}M\\)%0A%0A` +
+                        `Offre en circulation :%0A ${oldBorgInfo.supplyCirculation} \\-\\-\\> ${borgInfo.supplyCirculation} \\(${valueDifferenceBorgInfo.supplyCirculation}M\\)%0A%0A` +
                         `Volume sur l'app \\(semaine\\) :%0A ${oldBorgInfo.weeklyVolumeApp} \\-\\-\\> ${borgInfo.weeklyVolumeApp} \\(${valueDifferenceBorgInfo.weeklyVolumeApp}%\\)%0A%0A` +
                         `Actifs sous gestion :%0A ${oldBorgInfo.aum} \\-\\-\\> ${borgInfo.aum} \\(${valueDifferenceBorgInfo.aum}%\\)%0A%0A` +
                         `Rang CoinGecko :%0A ${oldBorgInfo.rank} \\-\\-\\> ${borgInfo.rank} \\(${valueDifferenceBorgInfo.rank}\\)%0A%0A` +
@@ -80,9 +82,9 @@ const sendMessageToTelegram = async (borgInfo, oldBorgInfo, valueDifferenceBorgI
     });
 
     // Print the response
-    console.log('Message to Telegram successfully:', responseTelegram.body);
+    console.log(date + ' Message to Telegram successfully:', responseTelegram.body);
   } catch (error) {
-    console.error('Error message to telegram:', error.response ? error.response.body : error);
+    console.error(date + ' Error message to telegram:', error.response ? error.response.body : error);
   } finally {
     process.exit();
   }
