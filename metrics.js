@@ -3,7 +3,7 @@ import chrome from 'selenium-webdriver/chrome.js';
 import * as Swissborg from './pages/swissborg.js';
 import * as Coingecko from './pages/coingecko.js';
 
-async function Metrics() {
+async function Metrics(platformName = 'init') {
   const options = new chrome.Options();
 
   options.addArguments('--headless');
@@ -61,6 +61,10 @@ async function Metrics() {
   await driver.get('https://www.coingecko.com/en/coins/swissborg');
   await new Promise(resolve => setTimeout(resolve, 2000));
   await Coingecko.getRank(infos.borg, driver, maxLoop);
+
+  // if(platformName === 'wasb') {
+
+  // }
 
   await driver.quit();
 
