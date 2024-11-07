@@ -1,5 +1,6 @@
 import { By } from 'selenium-webdriver';
-import process from 'process'
+import process from 'process';
+import * as NumFormat from '../utils/numberFormatter.js';
 
 // Click for accept cookie in Swissborg.
 export const acceptCookieSwissborg = async (actions, driver) => {
@@ -14,14 +15,14 @@ export const acceptCookieSwissborg = async (actions, driver) => {
 }
 
 // Get value of the BORG.
-export const getValueBorg = async (borgInfo, driver, maxLoop) => {
+export const getValueBorg = async (borgMetrics, driver, maxLoop) => {
   try {
-    while(!borgInfo.value) {
+    while(!borgMetrics.value) {
       await new Promise(resolve => setTimeout(resolve, 2500));
       const iframe = await driver.findElement(By.css('.tradingview-widget-container > iframe'));
       await driver.switchTo().frame(iframe);
       const value = await driver.findElement(By.className('tv-widget-chart__price-value symbol-last'));
-      borgInfo.value = await value.getText();
+      borgMetrics.value = await value.getText();
       if(maxLoop === 0) throw new Error('Nb loop max in getValueBorg.'); 
       maxLoop--;
     }
@@ -37,11 +38,11 @@ export const getValueBorg = async (borgInfo, driver, maxLoop) => {
 }
 
 // Get marketCap BORG.
-export const getMarketCapBorg = async (borgInfo, driver, maxLoop) => {
+export const getMarketCapBorg = async (borgMetrics, driver, maxLoop) => {
   try {
-    while(!borgInfo.marketCap) {
+    while(!borgMetrics.marketCap) {
       const marketCap = await driver.findElement(By.css('.cell-3 > p'));
-      borgInfo.marketCap = await marketCap.getText();
+      borgMetrics.marketCap = await marketCap.getText();
       if(maxLoop === 0) throw new Error('Nb loop max in getMarketCapBorg.');
       maxLoop--;
     }
@@ -56,12 +57,12 @@ export const getMarketCapBorg = async (borgInfo, driver, maxLoop) => {
 }
 
 // Get prenium user BORG.
-export const getPremiumUserBorg = async (borgInfo, driver, maxLoop) => {
+export const getPremiumUserBorg = async (borgMetrics, driver, maxLoop) => {
   try {
-    while(!borgInfo.premiumUser) {
+    while(!borgMetrics.premiumUser) {
       const card = await driver.findElements(By.css('[class*="ecosystemCardFront"] h3'));
 
-      borgInfo.premiumUser = await card[1].getText();
+      borgMetrics.premiumUser = await card[1].getText();
       if(maxLoop === 0) throw new Error('Nb loop max in getPremiumUserBorg.');
       maxLoop--;
     }
@@ -76,12 +77,12 @@ export const getPremiumUserBorg = async (borgInfo, driver, maxLoop) => {
 }
 
 // Get BORG blocked by user.
-export const getBorgLock = async (borgInfo, driver, maxLoop) => {
+export const getBorgLock = async (borgMetrics, driver, maxLoop) => {
   try {
-    while(!borgInfo.borgLock) {
+    while(!borgMetrics.borgLock) {
       const card = await driver.findElements(By.css('[class*="ecosystemCardFront"] h3'));
 
-      borgInfo.borgLock = await card[2].getText();
+      borgMetrics.borgLock = await card[2].getText();
       if(maxLoop === 0) throw new Error('Nb loop max in getBorgLock.');
       maxLoop--;
     }
@@ -96,12 +97,12 @@ export const getBorgLock = async (borgInfo, driver, maxLoop) => {
 }
 
 // Get supply in circulation.
-export const getSupplyCirculationBorg = async (borgInfo, driver, maxLoop) => {
+export const getSupplyCirculationBorg = async (borgMetrics, driver, maxLoop) => {
   try {
-    while(!borgInfo.supplyCirculation) {
+    while(!borgMetrics.supplyCirculation) {
       const supplyCirculation = await driver.findElement(By.css('.cell-4 > p'));
-      borgInfo.supplyCirculation = await supplyCirculation.getText();
-      borgInfo.supplyCirculation = borgInfo.supplyCirculation.split('S')[0];
+      borgMetrics.supplyCirculation = await supplyCirculation.getText();
+      borgMetrics.supplyCirculation = borgMetrics.supplyCirculation.split('S')[0];
 
       if(maxLoop === 0) throw new Error('Nb loop max in getSupplyCirculationBorg.');
       maxLoop--;
@@ -117,15 +118,15 @@ export const getSupplyCirculationBorg = async (borgInfo, driver, maxLoop) => {
 }
 
 // Get AUM BORG.
-export const getAumBorg = async (borgInfo, driver, maxLoop) => {
+export const getAumBorg = async (borgMetrics, driver, maxLoop) => {
   try {
-    while(!borgInfo.aum) {
+    while(!borgMetrics.aum) {
       await driver.actions()
       .scroll(0, 0, 0, 1000)
       .perform()
       await new Promise(resolve => setTimeout(resolve, 2000));
       const aum = await driver.findElement(By.className('stat-2'));
-      borgInfo.aum = await aum.getText();
+      borgMetrics.aum = await aum.getText();
 
       if(maxLoop === 0) throw new Error('Nb loop max in getAumBorg.');
       maxLoop--;
@@ -141,12 +142,12 @@ export const getAumBorg = async (borgInfo, driver, maxLoop) => {
 }
 
 // Get community index BORG.
-export const getCommunityIndexBorg = async (borgInfo, driver, maxLoop) => {
+export const getCommunityIndexBorg = async (borgMetrics, driver, maxLoop) => {
   try {
-    while(!borgInfo.communityIndex) {
+    while(!borgMetrics.communityIndex) {
       const card = await driver.findElements(By.css('[class*="ecosystemCardFront"] h3'));
 
-      borgInfo.communityIndex = await card[3].getText();
+      borgMetrics.communityIndex = await card[3].getText();
       if(maxLoop === 0) throw new Error('Nb loop max in getCommunityIndexBorg.');
       maxLoop--;
     }
@@ -161,12 +162,12 @@ export const getCommunityIndexBorg = async (borgInfo, driver, maxLoop) => {
 }
 
 // Get weekly volume app BORG.
-export const getWeeklyVolumeAppBorg = async (borgInfo, driver, maxLoop) => {
+export const getWeeklyVolumeAppBorg = async (borgMetrics, driver, maxLoop) => {
   try {
-    while(!borgInfo.weeklyVolumeApp) {
+    while(!borgMetrics.weeklyVolumeApp) {
       const card = await driver.findElements(By.css('[class*="ecosystemCardFront"] h3'));
 
-      borgInfo.weeklyVolumeApp = await card[0].getText();
+      borgMetrics.weeklyVolumeApp = await card[0].getText();
       if(maxLoop === 0) throw new Error('Nb loop max in getWeeklyVolumeAppBorg.');
       maxLoop--;
     }
@@ -180,38 +181,37 @@ export const getWeeklyVolumeAppBorg = async (borgInfo, driver, maxLoop) => {
   }
 }
 
-const takeOffUnitNumber = (value, unitNumber) => {
-  const unit = unitNumber.find((u) => value.includes(u));
-  return Number(value.split(unit)[0]);
-}
-
 // Calcul difference between old value and new value.
-export const calculateDifference = (borgInfo, oldBorgInfo, valueDifferenceBorgInfo, unitNumber) => {
-  const marketCap = Number(borgInfo.marketCap.split(' ')[1].replace(',', '.'));
-  const oldMarketCap = Number(oldBorgInfo.marketCap.split(' ')[1].replace(',', '.'));
-  // const lengthPremiumUser = String(borgInfo.premiumUser).length - 2;
-  // const lengthOldPremiumUser = String(oldBorgInfo.premiumUser).length - 2;
-  const weeklyVolumeApp = takeOffUnitNumber(borgInfo.weeklyVolumeApp, unitNumber);
-  const oldWeeklyVolumeApp = takeOffUnitNumber(oldBorgInfo.weeklyVolumeApp, unitNumber);
-  const premiumUser = takeOffUnitNumber(borgInfo.premiumUser, unitNumber);
-  const oldPremiumUser = takeOffUnitNumber(oldBorgInfo.premiumUser, unitNumber);
-  // const premiumUser = Number(borgInfo.premiumUser.slice(0, lengthPremiumUser));
-  // const oldPremiumUser = Number(oldBorgInfo.premiumUser.slice(0, lengthOldPremiumUser));
-  const borgLock = takeOffUnitNumber(borgInfo.borgLock, unitNumber);
-  const oldBorgLock = takeOffUnitNumber(oldBorgInfo.borgLock, unitNumber);
-  const supplyCirculation = Number(borgInfo.supplyCirculation.split(' ')[0].replace(',', '.'));
-  const oldSupplyCirculation = Number(oldBorgInfo.supplyCirculation.split(' ')[0].replace(',', '.'));
-  const aum = takeOffUnitNumber(borgInfo.aum, unitNumber);
-  const oldAum = takeOffUnitNumber(oldBorgInfo.aum, unitNumber);
+export const calculVariation = (borgMetrics, oldBorgMetrics, variationBorgMetrics) => {
+  const unit = ['K', 'M', 'B', 'T'];
+  const marketCap = Number(borgMetrics.marketCap.split(' ')[1].replace(',', '.'));
+  const oldMarketCap = Number(oldBorgMetrics.marketCap.split(' ')[1].replace(',', '.'));
+  const unitSupplyCirculation = unit.find((u) => borgMetrics.supplyCirculation.includes(u));
+  const unitOldSupplyCirculation = unit.find((u) => oldBorgMetrics.supplyCirculation.includes(u));
+  const takeOffSpaceSupplyCirculation = borgMetrics.supplyCirculation.replace(',', '.').replace(unitSupplyCirculation, ' ').replace(' ', unitSupplyCirculation).trim();
+  const takeOffSpaceOldSupplyCirculation = oldBorgMetrics.supplyCirculation.replace(',', '.').replace(unitOldSupplyCirculation, ' ').replace(' ', unitOldSupplyCirculation).trim();
 
-  valueDifferenceBorgInfo.value = ((Number(borgInfo.value) - Number(oldBorgInfo.value)) / Number(oldBorgInfo.value) * 100).toFixed(2);
-  valueDifferenceBorgInfo.marketCap = ((marketCap - oldMarketCap) / oldMarketCap * 100).toFixed(2);
-  valueDifferenceBorgInfo.premiumUser = (premiumUser - oldPremiumUser).toFixed(3);
-  valueDifferenceBorgInfo.borgLock = (borgLock - oldBorgLock).toFixed(2);
-  valueDifferenceBorgInfo.supplyCirculation = (supplyCirculation - oldSupplyCirculation).toFixed(2);
-  valueDifferenceBorgInfo.aum = ((aum - oldAum) / oldAum * 100).toFixed(2);
-  valueDifferenceBorgInfo.rank = Number(borgInfo.rank) - Number(oldBorgInfo.rank);
-  valueDifferenceBorgInfo.communityIndex = Number(borgInfo.communityIndex) - Number(oldBorgInfo.communityIndex);
-  valueDifferenceBorgInfo.communityIndex = Number.isInteger(valueDifferenceBorgInfo.communityIndex) ? valueDifferenceBorgInfo.communityIndex : valueDifferenceBorgInfo.communityIndex.toFixed(1);
-  valueDifferenceBorgInfo.weeklyVolumeApp = ((weeklyVolumeApp - oldWeeklyVolumeApp) / oldWeeklyVolumeApp * 100).toFixed(2);
+  const supplyCirculation = NumFormat.convertNumberForCalcul(takeOffSpaceSupplyCirculation);
+  const oldSupplyCirculation = NumFormat.convertNumberForCalcul(takeOffSpaceOldSupplyCirculation);
+  const weeklyVolumeApp = NumFormat.convertNumberForCalcul(borgMetrics.weeklyVolumeApp);
+  const oldWeeklyVolumeApp = NumFormat.convertNumberForCalcul(oldBorgMetrics.weeklyVolumeApp);
+  const premiumUser = NumFormat.convertNumberForCalcul(borgMetrics.premiumUser);
+  const oldPremiumUser = NumFormat.convertNumberForCalcul(oldBorgMetrics.premiumUser);
+  const borgLock = NumFormat.convertNumberForCalcul(borgMetrics.borgLock);
+  const oldBorgLock = NumFormat.convertNumberForCalcul(oldBorgMetrics.borgLock);
+  const aum = NumFormat.convertNumberForCalcul(borgMetrics.aum);
+  const oldAum = NumFormat.convertNumberForCalcul(oldBorgMetrics.aum);
+
+  // Percent
+  variationBorgMetrics.value = ((Number(borgMetrics.value) - Number(oldBorgMetrics.value)) / Number(oldBorgMetrics.value) * 100).toFixed(2);
+  variationBorgMetrics.aum = ((aum - oldAum) / oldAum * 100).toFixed(2);
+  variationBorgMetrics.marketCap = ((marketCap - oldMarketCap) / oldMarketCap * 100).toFixed(2);
+  variationBorgMetrics.weeklyVolumeApp = ((weeklyVolumeApp - oldWeeklyVolumeApp) / oldWeeklyVolumeApp * 100).toFixed(2);
+
+  variationBorgMetrics.premiumUser = premiumUser - oldPremiumUser;
+  variationBorgMetrics.borgLock = borgLock - oldBorgLock;
+  variationBorgMetrics.supplyCirculation = supplyCirculation - oldSupplyCirculation;
+  variationBorgMetrics.communityIndex = Number(borgMetrics.communityIndex) - Number(oldBorgMetrics.communityIndex);
+  variationBorgMetrics.communityIndex = Number.isInteger(variationBorgMetrics.communityIndex) ? variationBorgMetrics.communityIndex : variationBorgMetrics.communityIndex.toFixed(1);
+  variationBorgMetrics.rank = Number(borgMetrics.rank) - Number(oldBorgMetrics.rank);
 }

@@ -26,4 +26,4 @@ node_modules/
 *.sw?
 
 # File info about cryptocurrency
-old-value-borg.txt
+old-value*
