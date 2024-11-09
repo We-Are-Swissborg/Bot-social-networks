@@ -4,17 +4,12 @@ const billion = 'B';
 const trillion = 'T';
 
 const tenPower = (unit, value, lengthDecimal) => {
-  let expoKilo = (lengthDecimal === 1) ? 2 : (lengthDecimal === 2) ? 1 : 0;
-  let expoMillion = (lengthDecimal === 1) ? 5 : (lengthDecimal === 2) ? 4 : 3;
-  let expoBillion = (lengthDecimal === 1) ? 8 : (lengthDecimal === 2) ? 7 : 6;
-  let expoTrillion = (lengthDecimal === 1) ? 11 : (lengthDecimal === 2) ? 10 : 9;
-
   const numWithoutDot = value.replace('.', '');
 
-  if(unit === kilo) return Number(numWithoutDot.split(unit)[0]) * Math.pow(10, expoKilo);
-  if(unit === million) return Number(numWithoutDot.split(unit)[0]) * Math.pow(10, expoMillion);
-  if(unit === billion) return Number(numWithoutDot.split(unit)[0]) * Math.pow(10, expoBillion);
-  if(unit === trillion) return Number(numWithoutDot.split(unit)[0]) * Math.pow(10, expoTrillion);
+  if(unit === kilo) return Number(numWithoutDot.split(unit)[0]) * Math.pow(10, 3 - lengthDecimal);
+  if(unit === million) return Number(numWithoutDot.split(unit)[0]) * Math.pow(10, 6 - lengthDecimal);
+  if(unit === billion) return Number(numWithoutDot.split(unit)[0]) * Math.pow(10, 9 - lengthDecimal);
+  if(unit === trillion) return Number(numWithoutDot.split(unit)[0]) * Math.pow(10, 12 - lengthDecimal);
 }
 
 const addZeroInValue = (unit, value) => {
