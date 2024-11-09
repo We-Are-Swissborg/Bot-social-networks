@@ -26,14 +26,6 @@ async function BotTelegram() {
 
   Swissborg.calculVariation(borgMetrics, oldBorgMetrics, variationBorgMetrics);
   await sendMessageToTelegram(borgMetrics, oldBorgMetrics, variationBorgMetrics);
-
-  fs.writeFile('./old-value-telegram.txt', JSON.stringify(borgMetrics), err => {
-    if (err) {
-      console.error('Error writting to file :' + err);
-    } else {
-      console.log('File written successfully.');
-    }
-  });
 }
 
 const tranformValueForMarkdown = (borgMetrics, oldBorgMetrics, variationBorgMetrics) => {
@@ -84,6 +76,14 @@ const sendMessageToTelegram = async (borgMetrics, oldBorgMetrics, variationBorgM
 
     // Print the response
     console.log(date + ' Message to Telegram successfully:', responseTelegram.body);
+
+    fs.writeFile('./old-value-telegram.txt', JSON.stringify(borgMetrics), err => {
+      if (err) {
+        console.error('Error writting to file :' + err);
+      } else {
+        console.log('File written successfully.');
+      }
+    });
   } catch (error) {
     console.error(date + ' Error message to telegram:', error.response ? error.response.body : error);
   } finally {
