@@ -40,7 +40,7 @@ export const getValueBorg = async (borgMetrics, driver, maxLoop) => {
 // Get marketCap BORG.
 export const getMarketCapBorg = async (borgMetrics, driver, maxLoop) => {
   try {
-    while(!borgMetrics.marketCap) {
+    while(!borgMetrics.marketCap || borgMetrics.marketCap === 'N/A' || borgMetrics.marketCap === '') {
       const marketCap = await driver.findElement(By.css('.cell-3 > p'));
       borgMetrics.marketCap = await marketCap.getText();
       if(maxLoop === 0) throw new Error('Nb loop max in getMarketCapBorg.');
