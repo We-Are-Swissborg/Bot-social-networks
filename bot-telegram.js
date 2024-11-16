@@ -53,14 +53,23 @@ const tranformValueForMarkdown = (borgMetrics, oldBorgMetrics, variationBorgMetr
   })
 }
 
+const aroundValue = (value) => {
+  let valueAround = Number(value.replace(',', '.')).toFixed(4);
+  valueAround = String(valueAround).replace('.', ',');
+  return valueAround;
+}
+
 // Function to send a message to Telegram.
 const sendMessageToTelegram = async (borgMetrics, oldBorgMetrics, variationBorgMetrics) => {
   const date = new Date();
+  const value = aroundValue(borgMetrics.value);
+  const oldValue = aroundValue(oldBorgMetrics.value);
+
   try {
     tranformValueForMarkdown(borgMetrics, oldBorgMetrics, variationBorgMetrics);
 
     const msgTelegram = "🟢 $BORG %26 SWISSBORG MÉTRICS 🟢%0A%0A" +
-                        `• Prix actuel 💲%0A ${oldBorgMetrics.value}$ \\-\\-\\> ${borgMetrics.value}$ \\(${variationBorgMetrics.value}%\\)%0A%0A` +
+                        `• Prix actuel 💲%0A ${oldValue}$ \\-\\-\\> ${value}$ \\(${variationBorgMetrics.value}%\\)%0A%0A` +
                         `• Market Cap Ⓜ️%0A ${oldBorgMetrics.marketCap} \\-\\-\\> ${borgMetrics.marketCap} \\(${variationBorgMetrics.marketCap}%\\)%0A%0A` +
                         `• Utilisateurs premium ✍️%0A ${oldBorgMetrics.premiumUser} \\-\\-\\> ${borgMetrics.premiumUser} \\(${NumFormat.abbreviateNumber(variationBorgMetrics.premiumUser)}\\)%0A%0A` +
                         `• BORG bloqués 🔒%0A ${oldBorgMetrics.borgLock} \\-\\-\\> ${borgMetrics.borgLock} \\(${NumFormat.abbreviateNumber(variationBorgMetrics.borgLock)}\\)%0A%0A` +
