@@ -5,29 +5,47 @@ import dotenv from 'dotenv';
 import Metrics from "./metrics.js";
 import * as Swissborg from './pages/swissborg.js';
 import * as NumFormat from './utils/numberFormatter.js';
+import { sendErrorToTelegram } from "./utils/errorToTelegram.js";
 
 dotenv.config({ path: '.env.production' });
 
 async function BotTelegram() {
-  const dataFile = await fs.readFile('./old-value-telegram.txt','utf8');
-  let oldBorgMetrics = JSON.parse(dataFile);
-  let variationBorgMetrics = {
-    value: '',
-    marketCap: '',
-    premiumUser: '',
-    borgLock: '',
-    supplyCirculation: '',
-    aum: '',
-    rank: '',
-    communityIndex: '',
-    weeklyVolumeApp: ''
-  };
-  const borgMetrics = (await Metrics()).borg;
+  try {
+    const dataFile = await fs.readFile('./old-value-telegram.txt','utf8');
+    let oldBorgMetrics = JSON.parse(dataFile);
+    let variationBorgMetrics = {
+      value: '',
+      marketCap: '',
+      premiumUser: '',
+      borgLock: '',
+      supplyCirculation: '',
+      aum: '',
+      rank: '',
+      communityIndex: '',
+      weeklyVolumeApp: ''
+    };
+    let borgMetrics = {
+      value: '',
+      marketCap: '',
+      premiumUser: '',
+      borgLock: '',
+      supplyCirculation: '',
+      aum: '',
+      rank: '',
+      communityIndex: '',
+      weeklyVolumeApp: '',
+    }
+    borgMetrics = await Metrics(borgMetrics);
 
-  await fs.writeFile('./old-value-telegram.txt', JSON.stringify(borgMetrics));
+    await fs.writeFile('./old-value-telegram.txt', JSON.stringify(borgMetrics));
 
-  Swissborg.calculVariation(borgMetrics, oldBorgMetrics, variationBorgMetrics);
-  await sendMessageToTelegram(borgMetrics, oldBorgMetrics, variationBorgMetrics);
+    Swissborg.calculVariation(borgMetrics, oldBorgMetrics, variationBorgMetrics);
+    await sendMessageToTelegram(borgMetrics, oldBorgMetrics, variationBorgMetrics);
+  } catch(e) {
+    console.error(e);
+    await sendErrorToTelegram(e);
+    process.exit(-1);
+  }
 }
 
 const tranformValueForMarkdown = (borgMetrics, oldBorgMetrics, variationBorgMetrics) => {
@@ -36,26 +54,31 @@ const tranformValueForMarkdown = (borgMetrics, oldBorgMetrics, variationBorgMetr
   propsBorgInfo.forEach((prop) => {
     variationBorgMetrics[prop] = String(variationBorgMetrics[prop]);
 
-    if(borgMetrics[prop].includes('.')) borgMetrics[prop] = borgMetrics[prop].replace('.', ',');
-    if(oldBorgMetrics[prop].includes('.')) oldBorgMetrics[prop] = oldBorgMetrics[prop].replace('.', ',');
-    if(variationBorgMetrics[prop].includes('.')) variationBorgMetrics[prop] = variationBorgMetrics[prop].replace('.', ',');
+    if(borgMetrics[prop] && oldBorgMetrics[prop] && variationBorgMetrics[prop]) {
+      if(borgMetrics[prop].includes('.')) borgMetrics[prop] = borgMetrics[prop].replace('.', ',');
+      if(oldBorgMetrics[prop].includes('.')) oldBorgMetrics[prop] = oldBorgMetrics[prop].replace('.', ',');
+      if(variationBorgMetrics[prop].includes('.')) variationBorgMetrics[prop] = variationBorgMetrics[prop].replace('.', ',');
 
-    if(borgMetrics[prop].includes(',')) borgMetrics[prop] = borgMetrics[prop].replace(',', ',');
-    if(oldBorgMetrics[prop].includes(',')) oldBorgMetrics[prop] = oldBorgMetrics[prop].replace(',', ',');
+      if(borgMetrics[prop].includes(',')) borgMetrics[prop] = borgMetrics[prop].replace(',', ',');
+      if(oldBorgMetrics[prop].includes(',')) oldBorgMetrics[prop] = oldBorgMetrics[prop].replace(',', ',');
 
-    if(prop === 'rank' && variationBorgMetrics.rank != 0) {
-      if(variationBorgMetrics[prop].includes('-')) variationBorgMetrics[prop] = variationBorgMetrics[prop].replace('-', '\\%2B'); // Convert '-' to '+' for work with markdownV2.
-      else variationBorgMetrics[prop] = '\\-' + variationBorgMetrics[prop]; // Convert '+' to '-' for work with markdownV2.
-    } else {
-      if(variationBorgMetrics[prop].includes('-')) variationBorgMetrics[prop] = variationBorgMetrics[prop].replace('-', '\\-');
-      else variationBorgMetrics[prop] = '\\%2B' + variationBorgMetrics[prop];
+      if(prop === 'rank' && variationBorgMetrics.rank != 0) {
+        if(variationBorgMetrics[prop].includes('-')) variationBorgMetrics[prop] = variationBorgMetrics[prop].replace('-', '\\%2B'); // Convert '-' to '+' for work with markdownV2.
+        else variationBorgMetrics[prop] = '\\-' + variationBorgMetrics[prop]; // Convert '+' to '-' for work with markdownV2.
+      } else {
+        if(variationBorgMetrics[prop].includes('-')) variationBorgMetrics[prop] = variationBorgMetrics[prop].replace('-', '\\-');
+        else variationBorgMetrics[prop] = '\\%2B' + variationBorgMetrics[prop];
+      }
     }
   })
 }
 
 const aroundValue = (value) => {
-  let valueAround = Number(value.replace(',', '.')).toFixed(4);
-  valueAround = String(valueAround).replace('.', ',');
+  let valueAround = value;
+  if(value) {
+    valueAround = Number(value.replace(',', '.')).toFixed(4);
+    valueAround = String(valueAround).replace('.', ',');
+  }
   return valueAround;
 }
 
@@ -87,10 +110,10 @@ const sendMessageToTelegram = async (borgMetrics, oldBorgMetrics, variationBorgM
 
     // Print the response
     console.log(date + ' Message to Telegram successfully:', responseTelegram.body);
-  } catch (error) {
-    console.error(date + ' Error message to telegram:', error.response ? error.response.body : error);
-  } finally {
     process.exit();
+  } catch (error) {
+    console.error(date + ' Error message to telegram: ' + error.response ? error.response.body : error);
+    throw new Error(date + ' Error message to telegram: ' + error.response ? error.response.body : error);
   }
 }
 

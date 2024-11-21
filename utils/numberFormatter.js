@@ -21,18 +21,20 @@ const addZeroInValue = (unit, value) => {
 export const convertNumberForCalcul = (value) => {
   let v = undefined;
 
-  if(value.includes(kilo)) {
-    if(value.includes('.')) v = addZeroInValue(kilo, value)
-    else v = Number(value.split(kilo)[0]) * Math.pow(10, 3);
-  } else if(value.includes(million)) {
-    if(value.includes('.')) v = addZeroInValue(million, value)
-    else v = Number(value.split(million)[0]) * Math.pow(10, 6);
-  } else if(value.includes(billion)) {
-    if(value.includes('.')) v = addZeroInValue(billion, value)
-    else v = Number(value.split(billion)[0]) * Math.pow(10, 9);
-  } else if(value.includes(trillion)) {
-    if(value.includes('.')) v = addZeroInValue(trillion, value)
-    else v = Number(value.split(trillion)[0]) * Math.pow(10, 12);
+  if(value) {
+    if(value.includes(kilo)) {
+      if(value.includes('.')) v = addZeroInValue(kilo, value)
+      else v = Number(value.split(kilo)[0]) * Math.pow(10, 3);
+    } else if(value.includes(million)) {
+      if(value.includes('.')) v = addZeroInValue(million, value)
+      else v = Number(value.split(million)[0]) * Math.pow(10, 6);
+    } else if(value.includes(billion)) {
+      if(value.includes('.')) v = addZeroInValue(billion, value)
+      else v = Number(value.split(billion)[0]) * Math.pow(10, 9);
+    } else if(value.includes(trillion)) {
+      if(value.includes('.')) v = addZeroInValue(trillion, value)
+      else v = Number(value.split(trillion)[0]) * Math.pow(10, 12);
+    }
   }
 
   return v;
@@ -70,16 +72,18 @@ export const abbreviateNumber = (value) => {
   let v = value;
 
   // Take off - (\\-) or + (\\%2B) for get number.
-  if(value.includes('-')) {
-    num = Number(value.split('-')[1]);
-  } else {
-    num = Number(value.split('B')[1]);
-  }
+  if(value) {
+    if(value.includes('-')) {
+      num = Number(value.split('-')[1]);
+    } else {
+      num = Number(value.split('B')[1]);
+    }
 
-  if(1000 <= num && num <= 999999) v = addUnitNumber('K', value, 3, num);
-  if(1000000 <= num && num <= 999999999) v = addUnitNumber('M', value, 6, num);
-  if(1000000000 <= num && num <= 999999999999) v = addUnitNumber('B', value, 9, num);
-  if(1000000000000 <= num && num <= 999999999999999) v = addUnitNumber('T', value, 12, num);
+    if(1000 <= num && num <= 999999) v = addUnitNumber('K', value, 3, num);
+    if(1000000 <= num && num <= 999999999) v = addUnitNumber('M', value, 6, num);
+    if(1000000000 <= num && num <= 999999999999) v = addUnitNumber('B', value, 9, num);
+    if(1000000000000 <= num && num <= 999999999999999) v = addUnitNumber('T', value, 12, num);
+  }
 
   return v;
 }

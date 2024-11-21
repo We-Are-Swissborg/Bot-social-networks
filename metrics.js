@@ -3,7 +3,7 @@ import chrome from 'selenium-webdriver/chrome.js';
 import * as Swissborg from './pages/swissborg.js';
 import * as Coingecko from './pages/coingecko.js';
 
-async function Metrics(platformName = 'all') {
+async function Metrics(infos, platformName = 'all') {
   const options = new chrome.Options();
 
   options.addArguments('--headless');
@@ -19,56 +19,50 @@ async function Metrics(platformName = 'all') {
   .forBrowser('chrome')
   .setChromeOptions(options)
   .build();
-  const actions = driver.actions({async: true});
-  const infos = {
-    borg: {
-      value: '',
-      marketCap: '',
-      premiumUser: '',
-      borgLock: '',
-      supplyCirculation: '',
-      aum: '',
-      rank: '',
-      communityIndex: '',
-      weeklyVolumeApp: ''
-    },
+
+  try {
+    const actions = driver.actions({async: true});
+
+    let maxLoop = 5; // Use for return a error if data not found after loop equal 5.
+    let quitFrame = platformName === 'all' ? true : false; // For quit the frame on swissborg page.
+
+    const borgMetricsOrSeveralMetrics = infos.borg ? infos.borg : infos;
+
+    //Page https://swissborg.com/borg-overview
+    await driver.get('https://swissborg.com/borg-overview');
+    await new Promise(resolve => setTimeout(resolve, 2000));
+    await Swissborg.acceptCookieSwissborg(actions, driver);
+    await Swissborg.getValueBorg(borgMetricsOrSeveralMetrics, driver, maxLoop, quitFrame);
+    if(platformName === 'wasb') await Swissborg.getBorgVsBtc(borgMetricsOrSeveralMetrics, driver, maxLoop);
+    await Swissborg.getWeeklyVolumeAppBorg(borgMetricsOrSeveralMetrics, driver, maxLoop);
+    await Swissborg.getPremiumUserBorg(borgMetricsOrSeveralMetrics, driver, maxLoop);
+    if(platformName === 'wasb') await Swissborg.getNewPremiumUserBorg(borgMetricsOrSeveralMetrics, driver, maxLoop);
+    await Swissborg.getBorgLock(borgMetricsOrSeveralMetrics, driver, maxLoop);
+    await Swissborg.getCommunityIndexBorg(borgMetricsOrSeveralMetrics, driver, maxLoop);
+
+    //Page https://swissborg.com/fr/marche-crypto/coins/swissborg-token
+    await driver.get('https://swissborg.com/fr/marche-crypto/coins/swissborg-token');
+    await new Promise(resolve => setTimeout(resolve, 2000));
+    await Swissborg.getMarketCapBorg(borgMetricsOrSeveralMetrics, driver, maxLoop);
+    await Swissborg.getSupplyCirculationBorg(borgMetricsOrSeveralMetrics, driver, maxLoop);
+
+    //Page https://swissborg.com/about
+    await driver.get('https://swissborg.com/about');
+    await new Promise(resolve => setTimeout(resolve, 2000));
+    await Swissborg.getAumBorg(borgMetricsOrSeveralMetrics, driver, maxLoop);
+
+    //Page https://www.coingecko.com/en/coins/{nameCrypto}
+    await driver.get('https://www.coingecko.com/en/coins/swissborg');
+    await new Promise(resolve => setTimeout(resolve, 2000));
+    await Coingecko.getRank(borgMetricsOrSeveralMetrics, driver, maxLoop);
+
+    await driver.quit();
+
+    return infos;
+  } catch (e) {
+    await driver.quit();
+    if(e) throw e
   }
-
-  let maxLoop = 5; // Use for return a error if data not found after loop equal 5.
-
-  //Page https://swissborg.com/borg-overview
-  await driver.get('https://swissborg.com/borg-overview');
-  await new Promise(resolve => setTimeout(resolve, 2000));
-  await Swissborg.acceptCookieSwissborg(actions, driver);
-  await Swissborg.getValueBorg(infos.borg, driver, maxLoop);
-  await Swissborg.getWeeklyVolumeAppBorg(infos.borg, driver, maxLoop);
-  await Swissborg.getPremiumUserBorg(infos.borg, driver, maxLoop);
-  await Swissborg.getBorgLock(infos.borg, driver, maxLoop);
-  await Swissborg.getCommunityIndexBorg(infos.borg, driver, maxLoop);
-
-  //Page https://swissborg.com/fr/marche-crypto/coins/swissborg-token
-  await driver.get('https://swissborg.com/fr/marche-crypto/coins/swissborg-token');
-  await new Promise(resolve => setTimeout(resolve, 2000));
-  await Swissborg.getMarketCapBorg(infos.borg, driver, maxLoop);
-  await Swissborg.getSupplyCirculationBorg(infos.borg, driver, maxLoop);
-  
-  //Page https://swissborg.com/about
-  await driver.get('https://swissborg.com/about');
-  await new Promise(resolve => setTimeout(resolve, 2000));
-  await Swissborg.getAumBorg(infos.borg, driver, maxLoop);
-
-  //Page https://www.coingecko.com/en/coins/{nameCrypto}
-  await driver.get('https://www.coingecko.com/en/coins/swissborg');
-  await new Promise(resolve => setTimeout(resolve, 2000));
-  await Coingecko.getRank(infos.borg, driver, maxLoop);
-
-  // if(platformName === 'wasb') {
-
-  // }
-
-  await driver.quit();
-
-  return infos;
 }
 
 export default Metrics;

@@ -1,6 +1,12 @@
 import { By } from 'selenium-webdriver';
-import process from 'process';
 import * as NumFormat from '../utils/numberFormatter.js';
+import { sendErrorToTelegram } from '../utils/errorToTelegram.js';
+
+const handlerError = async (e, driver, addErrorMsg) => {
+  console.error(addErrorMsg + e);
+  await driver.get(driver.getCurrentUrl());
+  await sendErrorToTelegram(e, addErrorMsg);
+}
 
 // Click for accept cookie in Swissborg.
 export const acceptCookieSwissborg = async (actions, driver) => {
@@ -8,14 +14,13 @@ export const acceptCookieSwissborg = async (actions, driver) => {
     const cookieButtons = await driver.findElements(By.className('cookieBox__SButton-sc-v30xwb-5'));
     await actions.move({origin: cookieButtons[1]}).click().perform();
   } catch(e) {
-    await driver.quit();
     console.error('Error with cookie button :' + e);
-    process.exit(-1);
+    throw new Error('Error with cookie button :' + e);
   }
 }
 
 // Get value of the BORG.
-export const getValueBorg = async (borgMetrics, driver, maxLoop) => {
+export const getValueBorg = async (borgMetrics, driver, maxLoop, quitFrame = true) => {
   try {
     while(!borgMetrics.value) {
       await new Promise(resolve => setTimeout(resolve, 2500));
@@ -23,17 +28,37 @@ export const getValueBorg = async (borgMetrics, driver, maxLoop) => {
       await driver.switchTo().frame(iframe);
       const value = await driver.findElement(By.className('tv-widget-chart__price-value symbol-last'));
       borgMetrics.value = await value.getText();
+
       if(maxLoop === 0) throw new Error('Nb loop max in getValueBorg.'); 
       maxLoop--;
     }
 
     maxLoop = 5;
-    await driver.switchTo().defaultContent();
+    quitFrame && await driver.switchTo().defaultContent();
     console.log('Value BORG is acquired.');
   } catch(e) {
-    console.error('Error for get value BORG :' + e);
-    await driver.quit();
-    process.exit(-1);
+    await handlerError(e, driver, 'Error to get value BORG :');
+  }
+}
+
+// Get value BORG vs BTC.
+export const getBorgVsBtc = async (borgMetrics, driver, maxLoop) => {
+  try {
+    while(!borgMetrics.borgVsBtc) {
+      const cookieButtons = await driver.findElements(By.id('BITFINEX:BORGBTC'));
+      await cookieButtons[0].click();
+      const valueFrameBorgVs = await driver.findElements(By.className('tv-widget-chart__price-value symbol-last'));
+
+      borgMetrics.borgVsBtc = await valueFrameBorgVs[1].getText();
+      if(maxLoop === 0) throw new Error('Nb loop max in getBorgVsBtc.'); 
+      maxLoop--;
+    }
+
+    maxLoop = 5;
+    await driver.switchTo().defaultContent();
+    console.log('Value BORG vs BTC is acquired.');
+  } catch(e) {
+    await handlerError(e, driver, 'Error to get value BORG vs BTC :');
   }
 }
 
@@ -46,13 +71,11 @@ export const getMarketCapBorg = async (borgMetrics, driver, maxLoop) => {
       if(maxLoop === 0) throw new Error('Nb loop max in getMarketCapBorg.');
       maxLoop--;
     }
-    
+
     maxLoop = 5;
     console.log('MarketCap BORG is acquired.');
   } catch(e) {
-    console.error('Error for get marketCap BORG :' + e);
-    await driver.quit();
-    process.exit(-1);
+    await handlerError(e, driver, 'Error to get marketCap BORG :');
   }
 }
 
@@ -66,13 +89,29 @@ export const getPremiumUserBorg = async (borgMetrics, driver, maxLoop) => {
       if(maxLoop === 0) throw new Error('Nb loop max in getPremiumUserBorg.');
       maxLoop--;
     }
-    
+
     maxLoop = 5;
     console.log('Nb prenium user BORG is acquired.');
   } catch(e) {
-    console.error('Error for get nb prenium user BORG :' + e);
-    await driver.quit();
-    process.exit(-1);
+    await handlerError(e, driver, 'Error to get nb prenium user BORG :');
+  }
+}
+
+// Get new prenium user BORG by week.
+export const getNewPremiumUserBorg = async (borgMetrics, driver, maxLoop) => {
+  try {
+    while(!borgMetrics.newPremiumUserByWeek) {
+      const card = await driver.findElements(By.css('[class*="ecosystemCardFront"] p'));
+
+      borgMetrics.newPremiumUserByWeek = await card[1].getText();
+      if(maxLoop === 0) throw new Error('Nb loop max in getNewPremiumUserBorg.');
+      maxLoop--;
+    }
+
+    maxLoop = 5;
+    console.log('Nb new prenium user BORG is acquired.');
+  } catch(e) {
+    await handlerError(e, driver, 'Error to get nb new prenium user BORG :');
   }
 }
 
@@ -86,13 +125,11 @@ export const getBorgLock = async (borgMetrics, driver, maxLoop) => {
       if(maxLoop === 0) throw new Error('Nb loop max in getBorgLock.');
       maxLoop--;
     }
-    
+
     maxLoop = 5;
     console.log('Nb BORG lock is acquired.');
   } catch(e) {
-    console.error('Error for get nb BORG lock :' + e);
-    await driver.quit();
-    process.exit(-1);
+    await handlerError(e, driver, 'Error to get nb BORG lock :');
   }
 }
 
@@ -111,9 +148,7 @@ export const getSupplyCirculationBorg = async (borgMetrics, driver, maxLoop) => 
     maxLoop = 5;
     console.log('Nb supply in circulation is acquired.');
   } catch(e) {
-    console.error('Error for get nb supply in circulation BORG :' + e);
-    await driver.quit();
-    process.exit(-1);
+    await handlerError(e, driver, 'Error to get nb supply in circulation BORG :');
   }
 }
 
@@ -135,9 +170,7 @@ export const getAumBorg = async (borgMetrics, driver, maxLoop) => {
     maxLoop = 5;
     console.log('AUM is acquired.');
   } catch(e) {
-    console.error('Error for get AUM BORG :' + e);
-    await driver.quit();
-    process.exit(-1);
+    await handlerError(e, driver, 'Error to get AUM BORG :');
   }
 }
 
@@ -148,6 +181,7 @@ export const getCommunityIndexBorg = async (borgMetrics, driver, maxLoop) => {
       const card = await driver.findElements(By.css('[class*="ecosystemCardFront"] h3'));
 
       borgMetrics.communityIndex = await card[3].getText();
+
       if(maxLoop === 0) throw new Error('Nb loop max in getCommunityIndexBorg.');
       maxLoop--;
     }
@@ -155,9 +189,7 @@ export const getCommunityIndexBorg = async (borgMetrics, driver, maxLoop) => {
     maxLoop = 5;
     console.log('Community index BORG is acquired.');
   } catch(e) {
-    console.error('Error for get community index BORG :' + e);
-    await driver.quit();
-    process.exit(-1);
+    await handlerError(e, driver, 'Error to get community index BORG :');
   }
 }
 
@@ -175,21 +207,19 @@ export const getWeeklyVolumeAppBorg = async (borgMetrics, driver, maxLoop) => {
     maxLoop = 5;
     console.log('Weekly volume app BORG is acquired.');
   } catch(e) {
-    console.error('Error for weekly volume app BORG :' + e);
-    await driver.quit();
-    process.exit(-1);
+    await handlerError(e, driver, 'Error for weekly volume app BORG :');
   }
 }
 
 // Calcul difference between old value and new value.
 export const calculVariation = (borgMetrics, oldBorgMetrics, variationBorgMetrics) => {
   const unit = ['K', 'M', 'B', 'T'];
-  const marketCap = Number(borgMetrics.marketCap.split(' ')[1].replace(',', '.'));
-  const oldMarketCap = Number(oldBorgMetrics.marketCap.split(' ')[1].replace(',', '.'));
-  const unitSupplyCirculation = unit.find((u) => borgMetrics.supplyCirculation.includes(u));
-  const unitOldSupplyCirculation = unit.find((u) => oldBorgMetrics.supplyCirculation.includes(u));
-  const takeOffSpaceSupplyCirculation = borgMetrics.supplyCirculation.replace(',', '.').replace(unitSupplyCirculation, ' ').replace(' ', unitSupplyCirculation).trim();
-  const takeOffSpaceOldSupplyCirculation = oldBorgMetrics.supplyCirculation.replace(',', '.').replace(unitOldSupplyCirculation, ' ').replace(' ', unitOldSupplyCirculation).trim();
+  const marketCap = borgMetrics.marketCap ? Number(borgMetrics.marketCap.split(' ')[1].replace(',', '.')) : borgMetrics.marketCap;
+  const oldMarketCap = oldBorgMetrics.marketCap ? Number(oldBorgMetrics.marketCap.split(' ')[1].replace(',', '.')) : oldBorgMetrics.marketCap;
+  const unitSupplyCirculation = borgMetrics.supplyCirculation ? unit.find((u) => borgMetrics.supplyCirculation.includes(u)) : borgMetrics.supplyCirculation;
+  const unitOldSupplyCirculation = oldBorgMetrics.supplyCirculation ? unit.find((u) => oldBorgMetrics.supplyCirculation.includes(u)) : oldBorgMetrics.supplyCirculation;
+  const takeOffSpaceSupplyCirculation = borgMetrics.supplyCirculation ? borgMetrics.supplyCirculation.replace(',', '.').replace(unitSupplyCirculation, ' ').replace(' ', unitSupplyCirculation).trim() : borgMetrics.supplyCirculation;
+  const takeOffSpaceOldSupplyCirculation = oldBorgMetrics.supplyCirculation ? oldBorgMetrics.supplyCirculation.replace(',', '.').replace(unitOldSupplyCirculation, ' ').replace(' ', unitOldSupplyCirculation).trim() : oldBorgMetrics.supplyCirculation;
 
   const supplyCirculation = NumFormat.convertNumberForCalcul(takeOffSpaceSupplyCirculation);
   const oldSupplyCirculation = NumFormat.convertNumberForCalcul(takeOffSpaceOldSupplyCirculation);
@@ -203,7 +233,7 @@ export const calculVariation = (borgMetrics, oldBorgMetrics, variationBorgMetric
   const oldAum = NumFormat.convertNumberForCalcul(oldBorgMetrics.aum);
 
   // Percent
-  variationBorgMetrics.value = ((Number(borgMetrics.value) - Number(oldBorgMetrics.value)) / Number(oldBorgMetrics.value) * 100).toFixed(2);
+  variationBorgMetrics.value = borgMetrics.value && oldBorgMetrics.value ? ((Number(borgMetrics.value) - Number(oldBorgMetrics.value)) / Number(oldBorgMetrics.value) * 100).toFixed(2) : 'N/A';
   variationBorgMetrics.aum = ((aum - oldAum) / oldAum * 100).toFixed(2);
   variationBorgMetrics.marketCap = ((marketCap - oldMarketCap) / oldMarketCap * 100).toFixed(2);
   variationBorgMetrics.weeklyVolumeApp = ((weeklyVolumeApp - oldWeeklyVolumeApp) / oldWeeklyVolumeApp * 100).toFixed(2);
@@ -211,7 +241,7 @@ export const calculVariation = (borgMetrics, oldBorgMetrics, variationBorgMetric
   variationBorgMetrics.premiumUser = premiumUser - oldPremiumUser;
   variationBorgMetrics.borgLock = borgLock - oldBorgLock;
   variationBorgMetrics.supplyCirculation = supplyCirculation - oldSupplyCirculation;
-  variationBorgMetrics.communityIndex = Number(borgMetrics.communityIndex) - Number(oldBorgMetrics.communityIndex);
-  variationBorgMetrics.communityIndex = Number.isInteger(variationBorgMetrics.communityIndex) ? variationBorgMetrics.communityIndex : variationBorgMetrics.communityIndex.toFixed(1);
-  variationBorgMetrics.rank = Number(borgMetrics.rank) - Number(oldBorgMetrics.rank);
+  variationBorgMetrics.communityIndex = borgMetrics.communityIndex && oldBorgMetrics.communityIndex ? Number(borgMetrics.communityIndex) - Number(oldBorgMetrics.communityIndex) : undefined;
+  variationBorgMetrics.communityIndex = variationBorgMetrics.communityIndex ? Number.isInteger(variationBorgMetrics.communityIndex) ? variationBorgMetrics.communityIndex : variationBorgMetrics.communityIndex.toFixed(1) : 'N/A';
+  variationBorgMetrics.rank = borgMetrics.rank && oldBorgMetrics.rank ? Number(borgMetrics.rank) - Number(oldBorgMetrics.rank) : 'N/A';
 }

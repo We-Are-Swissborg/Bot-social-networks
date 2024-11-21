@@ -1,0 +1,28 @@
+import got from 'got';
+import process from 'process';
+
+const formatMessage = (errorMsg) => {
+  const characterToEdit = ['_', '*', '[', ']', '(', ')', '~', '`', '>', '#', '+', '-', '=', '|', '{', '}', '.', '!'];
+
+  // Edit error message for telegram.
+  characterToEdit.forEach((character) => {
+    if(errorMsg.includes('+')) errorMsg = errorMsg.replaceAll('+', '\\%2B')
+    else if(errorMsg.includes(character)) errorMsg = errorMsg.replaceAll(character, '\\'+character);
+  })
+
+  return errorMsg;
+}
+
+export const sendErrorToTelegram = async (e, addErrorMsg = undefined) => {
+  let errorMsg = e.message;
+
+  if(addErrorMsg) errorMsg = addErrorMsg + errorMsg;
+  errorMsg = formatMessage(errorMsg);
+
+  // errorMsg = 'Error to send the real error';
+  await got.post(`https://api.telegram.org/bot${process.env.TG_TOKEN}/sendMessage?chat_id=${process.env.MONITORING_ID_CHAT_TG}&text=${errorMsg}&parse_mode=MarkdownV2`, {
+    headers: {
+      accept: 'application/x-www-form-urlencoded'
+    }
+  });
+}
