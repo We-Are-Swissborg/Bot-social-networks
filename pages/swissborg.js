@@ -9,10 +9,10 @@ const handlerError = async (e, driver, addErrorMsg) => {
 }
 
 // Click for accept cookie in Swissborg.
-export const acceptCookieSwissborg = async (actions, driver) => {
+export const acceptCookieSwissborg = async (driver) => {
   try {
     const cookieButtons = await driver.findElements(By.className('cookieBox__SButton-sc-v30xwb-5'));
-    await actions.move({origin: cookieButtons[1]}).click().perform();
+    await cookieButtons[1].click();
   } catch(e) {
     console.error('Error with cookie button :' + e);
     throw new Error('Error with cookie button :' + e);
@@ -44,12 +44,12 @@ export const getValueBorg = async (borgMetrics, driver, maxLoop, quitFrame = tru
 // Get value BORG vs BTC.
 export const getBorgVsBtc = async (borgMetrics, driver, maxLoop) => {
   try {
-    while(!borgMetrics.borgVsBtc) {
+    while(!borgMetrics.vsBtc) {
       const cookieButtons = await driver.findElements(By.id('BITFINEX:BORGBTC'));
       await cookieButtons[0].click();
       const valueFrameBorgVs = await driver.findElements(By.className('tv-widget-chart__price-value symbol-last'));
 
-      borgMetrics.borgVsBtc = await valueFrameBorgVs[1].getText();
+      borgMetrics.vsBtc = await valueFrameBorgVs[1].getText();
       if(maxLoop === 0) throw new Error('Nb loop max in getBorgVsBtc.'); 
       maxLoop--;
     }
@@ -211,6 +211,24 @@ export const getWeeklyVolumeAppBorg = async (borgMetrics, driver, maxLoop) => {
   }
 }
 
+// Get verify user.
+export const getUserVerify = async (borgMetrics, driver, maxLoop) => {
+  try {
+    while(!borgMetrics.userVerify) {
+      const userVerify = await driver.findElement(By.className('stat-1'));
+      borgMetrics.userVerify = await userVerify.getText();
+
+      if(maxLoop === 0) throw new Error('Nb loop max in getUserVerify.');
+      maxLoop--;
+    }
+
+    maxLoop = 5;
+    console.log('Verify user is acquired.');
+  } catch(e) {
+    await handlerError(e, driver, 'Error to get verify user BORG :');
+  }
+}
+
 // Calcul difference between old value and new value.
 export const calculVariation = (borgMetrics, oldBorgMetrics, variationBorgMetrics) => {
   const unit = ['K', 'M', 'B', 'T'];
@@ -225,6 +243,8 @@ export const calculVariation = (borgMetrics, oldBorgMetrics, variationBorgMetric
   const oldSupplyCirculation = NumFormat.convertNumberForCalcul(takeOffSpaceOldSupplyCirculation);
   const weeklyVolumeApp = NumFormat.convertNumberForCalcul(borgMetrics.weeklyVolumeApp);
   const oldWeeklyVolumeApp = NumFormat.convertNumberForCalcul(oldBorgMetrics.weeklyVolumeApp);
+  const userVerify = NumFormat.convertNumberForCalcul(borgMetrics.userVerify);
+  const oldUserVerify = NumFormat.convertNumberForCalcul(oldBorgMetrics.userVerify);
   const premiumUser = NumFormat.convertNumberForCalcul(borgMetrics.premiumUser);
   const oldPremiumUser = NumFormat.convertNumberForCalcul(oldBorgMetrics.premiumUser);
   const borgLock = NumFormat.convertNumberForCalcul(borgMetrics.borgLock);
@@ -238,10 +258,15 @@ export const calculVariation = (borgMetrics, oldBorgMetrics, variationBorgMetric
   variationBorgMetrics.marketCap = ((marketCap - oldMarketCap) / oldMarketCap * 100).toFixed(2);
   variationBorgMetrics.weeklyVolumeApp = ((weeklyVolumeApp - oldWeeklyVolumeApp) / oldWeeklyVolumeApp * 100).toFixed(2);
 
+  variationBorgMetrics.userVerify = userVerify - oldUserVerify;
   variationBorgMetrics.premiumUser = premiumUser - oldPremiumUser;
   variationBorgMetrics.borgLock = borgLock - oldBorgLock;
   variationBorgMetrics.supplyCirculation = supplyCirculation - oldSupplyCirculation;
   variationBorgMetrics.communityIndex = borgMetrics.communityIndex && oldBorgMetrics.communityIndex ? Number(borgMetrics.communityIndex) - Number(oldBorgMetrics.communityIndex) : undefined;
-  variationBorgMetrics.communityIndex = variationBorgMetrics.communityIndex ? Number.isInteger(variationBorgMetrics.communityIndex) ? variationBorgMetrics.communityIndex : variationBorgMetrics.communityIndex.toFixed(1) : 'N/A';
+  variationBorgMetrics.communityIndex = typeof variationBorgMetrics.communityIndex === 'number' ?
+                                        Number.isInteger(variationBorgMetrics.communityIndex) ?
+                                        variationBorgMetrics.communityIndex :
+                                        variationBorgMetrics.communityIndex.toFixed(1) :
+                                        'N/A';
   variationBorgMetrics.rank = borgMetrics.rank && oldBorgMetrics.rank ? Number(borgMetrics.rank) - Number(oldBorgMetrics.rank) : 'N/A';
 }

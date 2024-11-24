@@ -13,20 +13,10 @@ async function BotTelegram() {
   try {
     const dataFile = await fs.readFile('./old-value-telegram.txt','utf8');
     let oldBorgMetrics = JSON.parse(dataFile);
-    let variationBorgMetrics = {
-      value: '',
-      marketCap: '',
-      premiumUser: '',
-      borgLock: '',
-      supplyCirculation: '',
-      aum: '',
-      rank: '',
-      communityIndex: '',
-      weeklyVolumeApp: ''
-    };
     let borgMetrics = {
       value: '',
       marketCap: '',
+      userVerify: '',
       premiumUser: '',
       borgLock: '',
       supplyCirculation: '',
@@ -35,6 +25,7 @@ async function BotTelegram() {
       communityIndex: '',
       weeklyVolumeApp: '',
     }
+    let variationBorgMetrics = {...borgMetrics};
     borgMetrics = await Metrics(borgMetrics);
 
     await fs.writeFile('./old-value-telegram.txt', JSON.stringify(borgMetrics));
@@ -94,6 +85,7 @@ const sendMessageToTelegram = async (borgMetrics, oldBorgMetrics, variationBorgM
     const msgTelegram = "🟢 $BORG %26 SWISSBORG MÉTRICS 🟢%0A%0A" +
                         `• Prix actuel 💲%0A ${oldValue}$ \\-\\-\\> ${value}$ \\(${variationBorgMetrics.value}%\\)%0A%0A` +
                         `• Market Cap Ⓜ️%0A ${oldBorgMetrics.marketCap} \\-\\-\\> ${borgMetrics.marketCap} \\(${variationBorgMetrics.marketCap}%\\)%0A%0A` +
+                        `• Utilisateurs vérifiés ✅%0A ${oldBorgMetrics.userVerify} \\-\\-\\> ${borgMetrics.userVerify} \\(${NumFormat.abbreviateNumber(variationBorgMetrics.userVerify)}\\)%0A%0A` +
                         `• Utilisateurs premium ✍️%0A ${oldBorgMetrics.premiumUser} \\-\\-\\> ${borgMetrics.premiumUser} \\(${NumFormat.abbreviateNumber(variationBorgMetrics.premiumUser)}\\)%0A%0A` +
                         `• BORG bloqués 🔒%0A ${oldBorgMetrics.borgLock} \\-\\-\\> ${borgMetrics.borgLock} \\(${NumFormat.abbreviateNumber(variationBorgMetrics.borgLock)}\\)%0A%0A` +
                         `• Offre en circulation 💸%0A ${oldBorgMetrics.supplyCirculation} \\-\\-\\> ${borgMetrics.supplyCirculation} \\(${NumFormat.abbreviateNumber(variationBorgMetrics.supplyCirculation)}\\)%0A%0A` +

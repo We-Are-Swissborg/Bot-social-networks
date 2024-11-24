@@ -1,5 +1,5 @@
 import { By } from 'selenium-webdriver';
-import process from 'process'
+import { sendErrorToTelegram } from '../utils/errorToTelegram.js';
 
 // Get rank crypto.
 export const getRank = async (crypto, driver, maxLoop) => {
@@ -17,7 +17,7 @@ export const getRank = async (crypto, driver, maxLoop) => {
     console.log('Rank is acquired.');
   } catch(e) {
     console.error('Error for get rank :' + e);
-    await driver.quit();
-    process.exit(-1);
+    await driver.get(driver.getCurrentUrl());
+    await sendErrorToTelegram(e, 'Error for get rank :');
   }
 }

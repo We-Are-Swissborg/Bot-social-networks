@@ -2,8 +2,9 @@ import { Builder } from 'selenium-webdriver';
 import chrome from 'selenium-webdriver/chrome.js';
 import * as Swissborg from './pages/swissborg.js';
 import * as Coingecko from './pages/coingecko.js';
+import * as CoinMarketCap from './pages/coinMarketCap.js';
 
-async function Metrics(infos, platformName = 'all') {
+async function Metrics(infos) {
   const options = new chrome.Options();
 
   options.addArguments('--headless');
@@ -20,23 +21,28 @@ async function Metrics(infos, platformName = 'all') {
   .setChromeOptions(options)
   .build();
 
-  try {
-    const actions = driver.actions({async: true});
-
+  try {0
     let maxLoop = 5; // Use for return a error if data not found after loop equal 5.
-    let quitFrame = platformName === 'all' ? true : false; // For quit the frame on swissborg page.
-
+    let quitFrame = infos.borg ? false : true; // For quit the frame on swissborg page.
     const borgMetricsOrSeveralMetrics = infos.borg ? infos.borg : infos;
+    const propMetrics = infos.borg ? Object.keys(infos) : undefined;
+
+    // Crypto to add url CoinMarketCap.
+    const cryptoWasb = {
+      borg: 'swissborg',
+      btc: 'bitcoin',
+      xbg: 'xborg'
+    }  
 
     //Page https://swissborg.com/borg-overview
     await driver.get('https://swissborg.com/borg-overview');
     await new Promise(resolve => setTimeout(resolve, 2000));
-    await Swissborg.acceptCookieSwissborg(actions, driver);
+    await Swissborg.acceptCookieSwissborg(driver);
     await Swissborg.getValueBorg(borgMetricsOrSeveralMetrics, driver, maxLoop, quitFrame);
-    if(platformName === 'wasb') await Swissborg.getBorgVsBtc(borgMetricsOrSeveralMetrics, driver, maxLoop);
+    if(infos.borg) await Swissborg.getBorgVsBtc(borgMetricsOrSeveralMetrics, driver, maxLoop);
     await Swissborg.getWeeklyVolumeAppBorg(borgMetricsOrSeveralMetrics, driver, maxLoop);
     await Swissborg.getPremiumUserBorg(borgMetricsOrSeveralMetrics, driver, maxLoop);
-    if(platformName === 'wasb') await Swissborg.getNewPremiumUserBorg(borgMetricsOrSeveralMetrics, driver, maxLoop);
+    if(infos.borg) await Swissborg.getNewPremiumUserBorg(borgMetricsOrSeveralMetrics, driver, maxLoop);
     await Swissborg.getBorgLock(borgMetricsOrSeveralMetrics, driver, maxLoop);
     await Swissborg.getCommunityIndexBorg(borgMetricsOrSeveralMetrics, driver, maxLoop);
 
@@ -50,11 +56,52 @@ async function Metrics(infos, platformName = 'all') {
     await driver.get('https://swissborg.com/about');
     await new Promise(resolve => setTimeout(resolve, 2000));
     await Swissborg.getAumBorg(borgMetricsOrSeveralMetrics, driver, maxLoop);
+    await Swissborg.getUserVerify(borgMetricsOrSeveralMetrics, driver, maxLoop);
 
     //Page https://www.coingecko.com/en/coins/{nameCrypto}
     await driver.get('https://www.coingecko.com/en/coins/swissborg');
     await new Promise(resolve => setTimeout(resolve, 2000));
     await Coingecko.getRank(borgMetricsOrSeveralMetrics, driver, maxLoop);
+
+    if(infos.borg) {
+      // Value to get on CoinMarketCap.
+      const valueToGet = {
+        borg: [
+          'volumeCoinMarketCap',
+          'liquidity'
+        ],
+        btc: [
+          'value',
+          'marketCap',
+          'volumeCoinMarketCap',
+          'volumeCex',
+          'volumeDex',
+          'supplyCirculation',
+          'liquidity',
+        ],
+        xbg: [
+          'value',
+          'marketCap',
+          'volumeCoinMarketCap',
+          'supplyCirculation',
+          'liquidity'
+        ],
+      }
+
+      for (let i = 0; propMetrics.length > i; i++) {
+        const prop = propMetrics[i];
+        //Page https://coinmarketcap.com/en/currencies/{nameCrypto}
+        i !== 0 && await new Promise(resolve => setTimeout(resolve, 2500));
+        await driver.get(`https://coinmarketcap.com/en/currencies/${cryptoWasb[prop]}`);
+        await new Promise(resolve => setTimeout(resolve, 2000));
+        if(valueToGet[prop].includes('value')) await CoinMarketCap.getValue(infos[prop], driver, maxLoop, prop);
+        if(valueToGet[prop].includes('marketCap')) await CoinMarketCap.getMarketCap(infos[prop], driver, maxLoop, prop);
+        if(valueToGet[prop].includes('volumeCoinMarketCap')) await CoinMarketCap.getVolume(infos[prop], driver, maxLoop, prop);
+        if(valueToGet[prop].includes('volumeCex') && valueToGet[prop].includes('volumeDex')) await CoinMarketCap.getCexAndDexVolume(infos[prop], driver, maxLoop, prop);
+        if(valueToGet[prop].includes('supplyCirculation')) await CoinMarketCap.getSupplyCirculation(infos[prop], driver, maxLoop, prop);
+        if(valueToGet[prop].includes('liquidity')) await CoinMarketCap.getLiquidity(infos[prop], driver, maxLoop, prop);
+      }
+    }
 
     await driver.quit();
 
