@@ -13,14 +13,13 @@ const formatMessage = (errorMsg) => {
   return errorMsg;
 }
 
-export const sendErrorToTelegram = async (e, addErrorMsg = undefined) => {
-  let errorMsg = e.message;
+export const sendErrorToTelegram = async (e, addErrorMsg = undefined, idChat = process.env.MONITORING_ID_CHAT_TG) => {
+  let errorMsg =  e.response ? e.response.body : e.message;
 
   if(addErrorMsg) errorMsg = addErrorMsg + errorMsg;
   errorMsg = formatMessage(errorMsg);
 
-  // errorMsg = 'Error to send the real error';
-  await got.post(`https://api.telegram.org/bot${process.env.TG_TOKEN}/sendMessage?chat_id=${process.env.MONITORING_ID_CHAT_TG}&text=${errorMsg}&parse_mode=MarkdownV2`, {
+  await got.post(`https://api.telegram.org/bot${process.env.TG_TOKEN}/sendMessage?chat_id=${idChat}&text=${errorMsg}&parse_mode=MarkdownV2`, {
     headers: {
       accept: 'application/x-www-form-urlencoded'
     }

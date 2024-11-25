@@ -1,10 +1,11 @@
 import { By, until } from 'selenium-webdriver';
 import { sendErrorToTelegram } from '../utils/errorToTelegram.js';
+import process from 'process';
 
 const handlerError = async (e, driver, addErrorMsg) => {
   console.error(addErrorMsg + e);
   await driver.get(driver.getCurrentUrl());
-  await sendErrorToTelegram(e, addErrorMsg);
+  await sendErrorToTelegram(e, addErrorMsg, process.env.MONITORING_ID_BOT_WASB);
 }
 
 export const getValue = async (metrics, driver, maxLoop, crypto) => {

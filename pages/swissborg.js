@@ -9,10 +9,16 @@ const handlerError = async (e, driver, addErrorMsg) => {
 }
 
 // Click for accept cookie in Swissborg.
-export const acceptCookieSwissborg = async (driver) => {
+export const acceptCookieSwissborg = async (driver, maxLoop) => {
   try {
-    const cookieButtons = await driver.findElements(By.className('cookieBox__SButton-sc-v30xwb-5'));
-    await cookieButtons[1].click();
+    let cookieButtons = undefined;
+    while(!cookieButtons) {
+      cookieButtons = await driver.findElements(By.className('cookieBox__SButton-sc-v30xwb-5'));
+      if(cookieButtons) await cookieButtons[1].click();
+
+      if(maxLoop === 0) throw new Error('Nb loop max for cookie button.'); 
+      maxLoop--;
+    }
   } catch(e) {
     console.error('Error with cookie button :' + e);
     throw new Error('Error with cookie button :' + e);
