@@ -1,4 +1,3 @@
-import fs from 'node:fs';
 import dotenv from 'dotenv';
 import Metrics from "./metrics.js";
 import got from 'got';
@@ -18,7 +17,6 @@ async function BotWasb() {
         borgLock: '',
         supplyCirculation: '',
         aum: '',
-        rank: '',
         communityIndex: '',
         weeklyVolumeApp: '',
         newPremiumUserByWeek: '',
@@ -45,6 +43,22 @@ async function BotWasb() {
     }
 
     infos = await Metrics(infos);
+
+    const valueToAddDollar = [
+      ['borg', ['value', 'vsBtc', 'aum']],
+    ]
+
+    valueToAddDollar.forEach((value) => {
+      const cryptoName = value[0];
+      const cryptoProps = value[1];
+
+      cryptoProps.forEach((prop) => {
+        if(infos[cryptoName][prop]) {
+          infos[cryptoName][prop] = '$'+infos[cryptoName][prop];
+        }
+      })
+    })
+
 
     await got.post(process.env.URL_WASB, {
       headers: {

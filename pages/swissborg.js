@@ -51,8 +51,8 @@ export const getValueBorg = async (borgMetrics, driver, maxLoop, quitFrame = tru
 export const getBorgVsBtc = async (borgMetrics, driver, maxLoop) => {
   try {
     while(!borgMetrics.vsBtc) {
-      const cookieButtons = await driver.findElements(By.id('BITFINEX:BORGBTC'));
-      await cookieButtons[0].click();
+      const borgVsBtcButton = await driver.findElements(By.id('BITFINEX:BORGBTC'));
+      await borgVsBtcButton[0].click();
       const valueFrameBorgVs = await driver.findElements(By.className('tv-widget-chart__price-value symbol-last'));
 
       borgMetrics.vsBtc = await valueFrameBorgVs[1].getText();
@@ -108,8 +108,11 @@ export const getNewPremiumUserBorg = async (borgMetrics, driver, maxLoop) => {
   try {
     while(!borgMetrics.newPremiumUserByWeek) {
       const card = await driver.findElements(By.css('[class*="ecosystemCardFront"] p'));
+      const initText = await card[1].getText();
 
-      borgMetrics.newPremiumUserByWeek = await card[1].getText();
+      if(initText) {
+        borgMetrics.newPremiumUserByWeek = initText.split(' ')[0].split('(')[1];
+      }
       if(maxLoop === 0) throw new Error('Nb loop max in getNewPremiumUserBorg.');
       maxLoop--;
     }

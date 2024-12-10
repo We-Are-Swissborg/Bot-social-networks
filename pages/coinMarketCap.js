@@ -22,7 +22,7 @@ export const getValue = async (metrics, driver, maxLoop, crypto) => {
     maxLoop = 5;
     console.log(crypto + ' value is acquired.');
   } catch(e) {
-    await handlerError(e, driver, `Error to get ${crypto} value on CoinMarketcap`);
+    await handlerError(e, driver, `Error to get ${crypto} value on CoinMarketcap: `);
   }
 }
 
@@ -39,7 +39,7 @@ export const getMarketCap = async (metrics, driver, maxLoop, crypto) => {
     maxLoop = 5;
     console.log(crypto + ' marketCap is acquired.');
   } catch(e) {
-    await handlerError(e, driver, `Error to get ${crypto} marketCap on CoinMarketcap`);
+    await handlerError(e, driver, `Error to get ${crypto} marketCap on CoinMarketcap: `);
   }
 }
 
@@ -57,7 +57,7 @@ export const getVolume = async (metrics, driver, maxLoop, crypto) => {
     maxLoop = 5;
     console.log(crypto + ' volume is acquired.');
   } catch(e) {
-    await handlerError(e, driver, `Error to get ${crypto} volume on CoinMarketcap`);
+    await handlerError(e, driver, `Error to get ${crypto} volume on CoinMarketcap: `);
   }
 }
 
@@ -79,7 +79,7 @@ export const getCexAndDexVolume = async (metrics, driver, maxLoop, crypto) => {
     maxLoop = 5;
     console.log(crypto + ' CEX and DEX volume is acquired.');
   } catch(e) {
-    await handlerError(e, driver, `Error to get ${crypto} CEX and DEX volume on CoinMarketcap`);
+    await handlerError(e, driver, `Error to get ${crypto} CEX and DEX volume on CoinMarketcap: `);
   }
 }
 
@@ -97,7 +97,7 @@ export const getSupplyCirculation = async (metrics, driver, maxLoop, crypto) => 
     maxLoop = 5;
     console.log(crypto + ' supply circulation is acquired.');
   } catch(e) {
-    await handlerError(e, driver, `Error to get ${crypto} supply circulation on CoinMarketcap`);
+    await handlerError(e, driver, `Error to get ${crypto} supply circulation on CoinMarketcap: `);
   }
 }
 
@@ -115,6 +115,6 @@ export const getLiquidity = async (metrics, driver, maxLoop, crypto) => {
     maxLoop = 5;
     console.log(crypto + ' liquidity is acquired.');
   } catch(e) {
-    await handlerError(e, driver, `Error to get ${crypto} liquidity on CoinMarketcap`);
+    await handlerError(e, driver, `Error to get ${crypto} liquidity on CoinMarketcap: `);
   }
 }

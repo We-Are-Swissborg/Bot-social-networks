@@ -61,7 +61,7 @@ async function Metrics(infos) {
     //Page https://www.coingecko.com/en/coins/{nameCrypto}
     await driver.get('https://www.coingecko.com/en/coins/swissborg');
     await new Promise(resolve => setTimeout(resolve, 2000));
-    await Coingecko.getRank(borgMetricsOrSeveralMetrics, driver, maxLoop);
+    if(!infos.borg) await Coingecko.getRank(borgMetricsOrSeveralMetrics, driver, maxLoop);
 
     if(infos.borg) {
       // Value to get on CoinMarketCap.
