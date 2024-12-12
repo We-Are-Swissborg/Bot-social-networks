@@ -37,9 +37,9 @@ async function Metrics(infos) {
     //Page https://swissborg.com/borg-overview
     await driver.get('https://swissborg.com/borg-overview');
     await new Promise(resolve => setTimeout(resolve, 2000));
-    await Swissborg.acceptCookieSwissborg(driver, maxLoop);
+    // await Swissborg.acceptCookieSwissborg(driver, maxLoop);
     await Swissborg.getValueBorg(borgMetricsOrSeveralMetrics, driver, maxLoop, quitFrame);
-    if(infos.borg) await Swissborg.getBorgVsBtc(borgMetricsOrSeveralMetrics, driver, maxLoop);
+    // if(infos.borg) await Swissborg.getBorgVsBtc(borgMetricsOrSeveralMetrics, driver, maxLoop);
     await Swissborg.getWeeklyVolumeAppBorg(borgMetricsOrSeveralMetrics, driver, maxLoop);
     await Swissborg.getPremiumUserBorg(borgMetricsOrSeveralMetrics, driver, maxLoop);
     if(infos.borg) await Swissborg.getNewPremiumUserBorg(borgMetricsOrSeveralMetrics, driver, maxLoop);

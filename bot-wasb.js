@@ -3,6 +3,7 @@ import Metrics from "./metrics.js";
 import got from 'got';
 import process from 'process'
 import { sendErrorToTelegram } from './utils/errorToTelegram.js';
+import { compareTwoCrypto } from './utils/math.js';
 
 dotenv.config({ path: '.env.production' });
 
@@ -44,6 +45,10 @@ async function BotWasb() {
 
     infos = await Metrics(infos);
 
+    if(infos.borg.value && infos.btc.value) {
+      infos.borg.vsBtc = compareTwoCrypto(infos.borg.value, infos.btc.value);
+    }
+
     const valueToAddDollar = [
       ['borg', ['value', 'vsBtc', 'aum']],
     ]
@@ -58,7 +63,6 @@ async function BotWasb() {
         }
       })
     })
-
 
     await got.post(process.env.URL_WASB, {
       headers: {

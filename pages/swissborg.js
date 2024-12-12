@@ -40,7 +40,8 @@ export const getValueBorg = async (borgMetrics, driver, maxLoop, quitFrame = tru
     }
 
     maxLoop = 5;
-    quitFrame && await driver.switchTo().defaultContent();
+    // quitFrame && await driver.switchTo().defaultContent();
+    await driver.switchTo().defaultContent();
     console.log('Value BORG is acquired.');
   } catch(e) {
     await handlerError(e, driver, 'Error to get value BORG :');
@@ -51,7 +52,7 @@ export const getValueBorg = async (borgMetrics, driver, maxLoop, quitFrame = tru
 export const getBorgVsBtc = async (borgMetrics, driver, maxLoop) => {
   try {
     while(!borgMetrics.vsBtc) {
-      const borgVsBtcButton = await driver.findElements(By.id('BITFINEX:BORGBTC'));
+      const borgVsBtcButton = await driver.findElements(By.id('CRYPTO:BORGUSD'));
       await borgVsBtcButton[0].click();
       const valueFrameBorgVs = await driver.findElements(By.className('tv-widget-chart__price-value symbol-last'));
 
