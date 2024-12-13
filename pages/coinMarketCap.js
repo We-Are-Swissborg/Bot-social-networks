@@ -30,7 +30,7 @@ export const getMarketCap = async (metrics, driver, maxLoop, crypto) => {
   try {
     while(!metrics.marketCap) {
       const marketCap = await driver.findElements(By.css('.CoinMetrics_overflow-content__tlFu7 > div'));
-      metrics.marketCap = await marketCap[0].getText();
+      metrics.marketCap = await marketCap[0].getAttribute("innerText");
 
       if(maxLoop === 0) throw new Error(`Nb loop max in getMarketCap ${crypto}.`); 
       maxLoop--;
@@ -48,7 +48,7 @@ export const getVolume = async (metrics, driver, maxLoop, crypto) => {
   try {
     while(!metrics.volumeCoinMarketCap) {
       const coinMetrics = await driver.findElements(By.css('.CoinMetrics_overflow-content__tlFu7 > div'));
-      metrics.volumeCoinMarketCap = await coinMetrics[1].getText();
+      metrics.volumeCoinMarketCap = await coinMetrics[1].getAttribute("innerText");
 
       if(maxLoop === 0) throw new Error(`Nb loop max in getVolume ${crypto}.`); 
       maxLoop--;
@@ -69,8 +69,8 @@ export const getCexAndDexVolume = async (metrics, driver, maxLoop, crypto) => {
       await driver.actions().move({origin: buttonDisplay}).perform();
 
       const cexAndDex = await driver.wait(until.elementsLocated(By.className('sc-71024e3e-0 htpYOz')), 2000);
-      metrics.volumeCex = await cexAndDex[0].getText();
-      metrics.volumeDex = await cexAndDex[1].getText();
+      metrics.volumeCex = await cexAndDex[0].getAttribute("innerText");
+      metrics.volumeDex = await cexAndDex[1].getAttribute("innerText");
 
       if(maxLoop === 0) throw new Error(`Nb loop max in getCexAndDexVolume ${crypto}.`); 
       maxLoop--;
@@ -88,7 +88,7 @@ export const getSupplyCirculation = async (metrics, driver, maxLoop, crypto) => 
   try {
     while(!metrics.supplyCirculation) {
       const supplyCirculation = await driver.findElements(By.css('.CoinMetrics_sib-content-wrapper__E8lu8 > div'));
-      metrics.supplyCirculation = await supplyCirculation[8].getText();
+      metrics.supplyCirculation = await supplyCirculation[8].getAttribute("innerText");
 
       if(maxLoop === 0) throw new Error(`Nb loop max in getSupplyCirculation ${crypto}.`); 
       maxLoop--;
@@ -106,7 +106,7 @@ export const getLiquidity = async (metrics, driver, maxLoop, crypto) => {
   try {
     while(!metrics.liquidity) {
       const coinMetrics = await driver.findElements(By.css('.CoinMetrics_overflow-content__tlFu7'));
-      metrics.liquidity = await coinMetrics[3].getText();
+      metrics.liquidity = await coinMetrics[3].getAttribute("innerText");
 
       if(maxLoop === 0) throw new Error(`Nb loop max in getLiquidity ${crypto}.`); 
       maxLoop--;

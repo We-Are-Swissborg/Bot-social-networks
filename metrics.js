@@ -21,7 +21,7 @@ async function Metrics(infos) {
   .setChromeOptions(options)
   .build();
 
-  try {0
+  try {
     let maxLoop = 5; // Use for return a error if data not found after loop equal 5.
     let quitFrame = infos.borg ? false : true; // For quit the frame on swissborg page.
     const borgMetricsOrSeveralMetrics = infos.borg ? infos.borg : infos;

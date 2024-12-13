@@ -1,5 +1,5 @@
 import dotenv from 'dotenv';
-import Metrics from "./test_metrics.js";
+import Metrics from "./metrics.js";
 import got from 'got';
 import process from 'process'
 import { sendErrorToTelegram } from './utils/errorToTelegram.js';
