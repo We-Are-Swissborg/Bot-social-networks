@@ -3,7 +3,6 @@ import Metrics from "./metrics.js";
 import got from 'got';
 import process from 'process'
 import { sendErrorToTelegram } from './utils/errorToTelegram.js';
-import { compareTwoCrypto } from './utils/math.js';
 
 dotenv.config({ path: '.env.production' });
 
@@ -22,35 +21,39 @@ async function BotWasb() {
         weeklyVolumeApp: '',
         newPremiumUserByWeek: '',
         vsBtc: '',
-        volumeCoinMarketCap: '',
-        liquidity: '',
+        // volumeCoinMarketCap: '',
+        // liquidity: '',
+        maxSupply: '',
+        volumeCoinGecko: ''
       },
       btc: {
         value: '',
         marketCap: '',
-        volumeCoinMarketCap: '',
-        volumeCex: '',
-        volumeDex: '',
+        // volumeCoinMarketCap: '',
+        // volumeCex: '',
+        // volumeDex: '',
         supplyCirculation: '',
-        liquidity: '',
+        // liquidity: '',
+        maxSupply: '',
+        volumeCoinGecko: '',
       },
       xbg: {
         value: '',
         marketCap: '',
-        volumeCoinMarketCap: '',
+        // volumeCoinMarketCap: '',
         supplyCirculation: '',
-        liquidity: ''
+        // liquidity: '',
+        maxSupply: '',
+        volumeCoinGecko: ''
       },
     }
 
     infos = await Metrics(infos);
 
-    if(infos.borg.value && infos.btc.value) {
-      infos.borg.vsBtc = compareTwoCrypto(infos.borg.value, infos.btc.value);
-    }
-
     const valueToAddDollar = [
-      ['borg', ['value', 'vsBtc', 'aum']],
+      ['borg', ['value', 'vsBtc', 'aum', 'marketCap']],
+      ['btc', ['value', 'marketCap']],
+      ['xbg', ['value', 'marketCap']],
     ]
 
     valueToAddDollar.forEach((value) => {
@@ -58,7 +61,7 @@ async function BotWasb() {
       const cryptoProps = value[1];
 
       cryptoProps.forEach((prop) => {
-        if(infos[cryptoName][prop]) {
+        if(infos[cryptoName][prop] && !infos[cryptoName][prop].includes('$')) {
           infos[cryptoName][prop] = '$'+infos[cryptoName][prop];
         }
       })

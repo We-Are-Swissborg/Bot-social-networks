@@ -241,16 +241,15 @@ export const getUserVerify = async (borgMetrics, driver, maxLoop) => {
 
 // Calcul difference between old value and new value.
 export const calculVariation = (borgMetrics, oldBorgMetrics, variationBorgMetrics) => {
-  const unit = ['K', 'M', 'B', 'T'];
-  const marketCap = borgMetrics.marketCap ? Number(borgMetrics.marketCap.split(' ')[1].replace(',', '.')) : borgMetrics.marketCap;
-  const oldMarketCap = oldBorgMetrics.marketCap ? Number(oldBorgMetrics.marketCap.split(' ')[1].replace(',', '.')) : oldBorgMetrics.marketCap;
-  const unitSupplyCirculation = borgMetrics.supplyCirculation ? unit.find((u) => borgMetrics.supplyCirculation.includes(u)) : borgMetrics.supplyCirculation;
-  const unitOldSupplyCirculation = oldBorgMetrics.supplyCirculation ? unit.find((u) => oldBorgMetrics.supplyCirculation.includes(u)) : oldBorgMetrics.supplyCirculation;
-  const takeOffSpaceSupplyCirculation = borgMetrics.supplyCirculation ? borgMetrics.supplyCirculation.replace(',', '.').replace(unitSupplyCirculation, ' ').replace(' ', unitSupplyCirculation).trim() : borgMetrics.supplyCirculation;
-  const takeOffSpaceOldSupplyCirculation = oldBorgMetrics.supplyCirculation ? oldBorgMetrics.supplyCirculation.replace(',', '.').replace(unitOldSupplyCirculation, ' ').replace(' ', unitOldSupplyCirculation).trim() : oldBorgMetrics.supplyCirculation;
+  const replaceCommaMarketCap = borgMetrics.marketCap ? borgMetrics.marketCap.replaceAll(',', '') : borgMetrics.marketCap;
+  const replaceCommaOldMarketCap = oldBorgMetrics.marketCap ? oldBorgMetrics.marketCap.replaceAll(',', '') : oldBorgMetrics.marketCap;
+  const replaceCommaSupplyCirculation = borgMetrics.supplyCirculation ? borgMetrics.supplyCirculation.replaceAll(',', '') : borgMetrics.supplyCirculation;
+  const replaceCommaOlSupplyCirculation = oldBorgMetrics.supplyCirculation ? oldBorgMetrics.supplyCirculation.replaceAll(',', '') : oldBorgMetrics.supplyCirculation;
 
-  const supplyCirculation = NumFormat.convertNumberForCalcul(takeOffSpaceSupplyCirculation);
-  const oldSupplyCirculation = NumFormat.convertNumberForCalcul(takeOffSpaceOldSupplyCirculation);
+  const marketCap = NumFormat.convertNumberForCalcul(replaceCommaMarketCap);
+  const oldMarketCap = NumFormat.convertNumberForCalcul(replaceCommaOldMarketCap);
+  const supplyCirculation = NumFormat.convertNumberForCalcul(replaceCommaSupplyCirculation);
+  const oldSupplyCirculation = NumFormat.convertNumberForCalcul(replaceCommaOlSupplyCirculation);
   const weeklyVolumeApp = NumFormat.convertNumberForCalcul(borgMetrics.weeklyVolumeApp);
   const oldWeeklyVolumeApp = NumFormat.convertNumberForCalcul(oldBorgMetrics.weeklyVolumeApp);
   const userVerify = NumFormat.convertNumberForCalcul(borgMetrics.userVerify);

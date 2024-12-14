@@ -19,21 +19,23 @@ const addZeroInValue = (unit, value) => {
 }
 
 export const convertNumberForCalcul = (value) => {
-  let v = undefined;
+  let v = value;
 
-  if(value) {
-    if(value.includes(kilo)) {
-      if(value.includes('.')) v = addZeroInValue(kilo, value)
-      else v = Number(value.split(kilo)[0]) * Math.pow(10, 3);
-    } else if(value.includes(million)) {
-      if(value.includes('.')) v = addZeroInValue(million, value)
-      else v = Number(value.split(million)[0]) * Math.pow(10, 6);
-    } else if(value.includes(billion)) {
-      if(value.includes('.')) v = addZeroInValue(billion, value)
-      else v = Number(value.split(billion)[0]) * Math.pow(10, 9);
-    } else if(value.includes(trillion)) {
-      if(value.includes('.')) v = addZeroInValue(trillion, value)
-      else v = Number(value.split(trillion)[0]) * Math.pow(10, 12);
+  if(v) {
+    if(v.includes('$')) v = v.replace('$', '');
+
+    if(v.includes(kilo)) {
+      if(v.includes('.')) v = addZeroInValue(kilo, v)
+      else v = Number(v.split(kilo)[0]) * Math.pow(10, 3);
+    } else if(v.includes(million)) {
+      if(v.includes('.')) v = addZeroInValue(million, v)
+      else v = Number(v.split(million)[0]) * Math.pow(10, 6);
+    } else if(v.includes(billion)) {
+      if(v.includes('.')) v = addZeroInValue(billion, v)
+      else v = Number(v.split(billion)[0]) * Math.pow(10, 9);
+    } else if(v.includes(trillion)) {
+      if(v.includes('.')) v = addZeroInValue(trillion, v)
+      else v = Number(v.split(trillion)[0]) * Math.pow(10, 12);
     }
   }
 
@@ -56,11 +58,15 @@ const addUnitNumber = (unit, value, exponent, num) => {
       isTakeOffZero = false;
 
       if(lastDigit == '.') v = v.slice(0, lengthNum - 1);
-      if(v.includes('.')) v = v.replace('.', '\\,'); // Convert '.' to '\\,' for work with markdownV2.
       if(value.includes('\\-')) {
+        if(v.includes('.')) v = v.replace('.', '\\,'); // Convert '.' to '\\,' for work with markdownV2.
         v = value.slice(0, 2) + v + unit
       }
-      else v = value.slice(0, 4) + v + unit;
+      else if(value.includes('\\%2B')) {
+        if(v.includes('.')) v = v.replace('.', '\\,'); // Convert '.' to '\\,' for work with markdownV2.
+        v = value.slice(0, 4) + v + unit;
+      }
+      else v = v + unit;
     }
   }
 
@@ -71,13 +77,12 @@ export const abbreviateNumber = (value) => {
   let num = undefined;
   let v = value;
 
-  // Take off - (\\-) or + (\\%2B) for get number.
   if(value) {
-    if(value.includes('-')) {
-      num = Number(value.split('-')[1]);
-    } else {
-      num = Number(value.split('B')[1]);
-    }
+    // Take off - (\\-), + (\\%2B) and $ for get number.
+    if(value.includes('-')) num = Number(value.split('-')[1]);
+    else if(value.includes('B')) num = Number(value.split('B')[1]);
+    else if(value.includes('$')) num = Number(value.replace('$', ''));
+    else num = Number(value);
 
     if(1000 <= num && num <= 999999) v = addUnitNumber('K', value, 3, num);
     if(1000000 <= num && num <= 999999999) v = addUnitNumber('M', value, 6, num);
