@@ -25,50 +25,6 @@ export const acceptCookieSwissborg = async (driver, maxLoop) => {
   }
 }
 
-// Get value of the BORG.
-export const getValueBorg = async (borgMetrics, driver, maxLoop, quitFrame = true) => {
-  try {
-    while(!borgMetrics.value) {
-      await new Promise(resolve => setTimeout(resolve, 2500));
-      const iframe = await driver.findElement(By.css('.tradingview-widget-container > iframe'));
-      await driver.switchTo().frame(iframe);
-      const value = await driver.findElement(By.className('tv-widget-chart__price-value symbol-last'));
-      borgMetrics.value = await value.getText();
-
-      if(maxLoop === 0) throw new Error('Nb loop max in getValueBorg.'); 
-      maxLoop--;
-    }
-
-    maxLoop = 5;
-    // quitFrame && await driver.switchTo().defaultContent();
-    await driver.switchTo().defaultContent();
-    console.log('Value BORG is acquired.');
-  } catch(e) {
-    await handlerError(e, driver, 'Error to get value BORG :');
-  }
-}
-
-// Get value BORG vs BTC.
-export const getBorgVsBtc = async (borgMetrics, driver, maxLoop) => {
-  try {
-    while(!borgMetrics.vsBtc) {
-      const borgVsBtcButton = await driver.findElements(By.id('CRYPTO:BORGUSD'));
-      await borgVsBtcButton[0].click();
-      const valueFrameBorgVs = await driver.findElements(By.className('tv-widget-chart__price-value symbol-last'));
-
-      borgMetrics.vsBtc = await valueFrameBorgVs[1].getText();
-      if(maxLoop === 0) throw new Error('Nb loop max in getBorgVsBtc.'); 
-      maxLoop--;
-    }
-
-    maxLoop = 5;
-    await driver.switchTo().defaultContent();
-    console.log('Value BORG vs BTC is acquired.');
-  } catch(e) {
-    await handlerError(e, driver, 'Error to get value BORG vs BTC :');
-  }
-}
-
 // Get marketCap BORG.
 export const getMarketCapBorg = async (borgMetrics, driver, maxLoop) => {
   try {
@@ -90,38 +46,20 @@ export const getMarketCapBorg = async (borgMetrics, driver, maxLoop) => {
 export const getPremiumUserBorg = async (borgMetrics, driver, maxLoop) => {
   try {
     while(!borgMetrics.premiumUser) {
-      const card = await driver.findElements(By.css('[class*="ecosystemCardFront"] h3'));
-
-      borgMetrics.premiumUser = await card[1].getText();
+      await driver.actions()
+      .scroll(0, 0, 0, 300)
+      .perform()
+      await new Promise(resolve => setTimeout(resolve, 2000));
+      const premiumUser = await driver.findElement(By.className('stat-0'));
+      borgMetrics.premiumUser = await premiumUser.getText();
       if(maxLoop === 0) throw new Error('Nb loop max in getPremiumUserBorg.');
       maxLoop--;
     }
 
     maxLoop = 5;
-    console.log('Nb prenium user BORG is acquired.');
+    console.log('Nb premium user BORG is acquired.');
   } catch(e) {
-    await handlerError(e, driver, 'Error to get nb prenium user BORG :');
-  }
-}
-
-// Get new prenium user BORG by week.
-export const getNewPremiumUserBorg = async (borgMetrics, driver, maxLoop) => {
-  try {
-    while(!borgMetrics.newPremiumUserByWeek) {
-      const card = await driver.findElements(By.css('[class*="ecosystemCardFront"] p'));
-      const initText = await card[1].getText();
-
-      if(initText) {
-        borgMetrics.newPremiumUserByWeek = initText.split(' ')[0].split('(')[1];
-      }
-      if(maxLoop === 0) throw new Error('Nb loop max in getNewPremiumUserBorg.');
-      maxLoop--;
-    }
-
-    maxLoop = 5;
-    console.log('Nb new prenium user BORG is acquired.');
-  } catch(e) {
-    await handlerError(e, driver, 'Error to get nb new prenium user BORG :');
+    await handlerError(e, driver, 'Error to get nb premium user BORG :');
   }
 }
 
@@ -129,9 +67,9 @@ export const getNewPremiumUserBorg = async (borgMetrics, driver, maxLoop) => {
 export const getBorgLock = async (borgMetrics, driver, maxLoop) => {
   try {
     while(!borgMetrics.borgLock) {
-      const card = await driver.findElements(By.css('[class*="ecosystemCardFront"] h3'));
+      const borgLock = await driver.findElement(By.className('stat-2'));
+      borgMetrics.borgLock = await borgLock.getText();
 
-      borgMetrics.borgLock = await card[2].getText();
       if(maxLoop === 0) throw new Error('Nb loop max in getBorgLock.');
       maxLoop--;
     }
@@ -184,40 +122,21 @@ export const getAumBorg = async (borgMetrics, driver, maxLoop) => {
   }
 }
 
-// Get community index BORG.
-export const getCommunityIndexBorg = async (borgMetrics, driver, maxLoop) => {
+// Get 24h volume app BORG.
+export const getVolumeAppBorg = async (borgMetrics, driver, maxLoop) => {
   try {
-    while(!borgMetrics.communityIndex) {
-      const card = await driver.findElements(By.css('[class*="ecosystemCardFront"] h3'));
+    while(!borgMetrics.volumeApp) {
+      const card = await driver.findElements(By.className('hSYTrK'));
 
-      borgMetrics.communityIndex = await card[3].getText();
-
-      if(maxLoop === 0) throw new Error('Nb loop max in getCommunityIndexBorg.');
+      borgMetrics.volumeApp = await card[2].getText();
+      if(maxLoop === 0) throw new Error('Nb loop max in getVolumeAppBorg.');
       maxLoop--;
     }
 
     maxLoop = 5;
-    console.log('Community index BORG is acquired.');
+    console.log('24h volume app BORG is acquired.');
   } catch(e) {
-    await handlerError(e, driver, 'Error to get community index BORG :');
-  }
-}
-
-// Get weekly volume app BORG.
-export const getWeeklyVolumeAppBorg = async (borgMetrics, driver, maxLoop) => {
-  try {
-    while(!borgMetrics.weeklyVolumeApp) {
-      const card = await driver.findElements(By.css('[class*="ecosystemCardFront"] h3'));
-
-      borgMetrics.weeklyVolumeApp = await card[0].getText();
-      if(maxLoop === 0) throw new Error('Nb loop max in getWeeklyVolumeAppBorg.');
-      maxLoop--;
-    }
-
-    maxLoop = 5;
-    console.log('Weekly volume app BORG is acquired.');
-  } catch(e) {
-    await handlerError(e, driver, 'Error for weekly volume app BORG :');
+    await handlerError(e, driver, 'Error for get 24h volume app BORG :');
   }
 }
 
@@ -250,8 +169,8 @@ export const calculVariation = (borgMetrics, oldBorgMetrics, variationBorgMetric
   const oldMarketCap = NumFormat.convertNumberForCalcul(replaceCommaOldMarketCap);
   const supplyCirculation = NumFormat.convertNumberForCalcul(replaceCommaSupplyCirculation);
   const oldSupplyCirculation = NumFormat.convertNumberForCalcul(replaceCommaOlSupplyCirculation);
-  const weeklyVolumeApp = NumFormat.convertNumberForCalcul(borgMetrics.weeklyVolumeApp);
-  const oldWeeklyVolumeApp = NumFormat.convertNumberForCalcul(oldBorgMetrics.weeklyVolumeApp);
+  const volumeApp = NumFormat.convertNumberForCalcul(borgMetrics.volumeApp);
+  const oldVolumeApp = NumFormat.convertNumberForCalcul(oldBorgMetrics.volumeApp);
   const userVerify = NumFormat.convertNumberForCalcul(borgMetrics.userVerify);
   const oldUserVerify = NumFormat.convertNumberForCalcul(oldBorgMetrics.userVerify);
   const premiumUser = NumFormat.convertNumberForCalcul(borgMetrics.premiumUser);
@@ -265,17 +184,11 @@ export const calculVariation = (borgMetrics, oldBorgMetrics, variationBorgMetric
   variationBorgMetrics.value = borgMetrics.value && oldBorgMetrics.value ? ((Number(borgMetrics.value) - Number(oldBorgMetrics.value)) / Number(oldBorgMetrics.value) * 100).toFixed(2) : 'N/A';
   variationBorgMetrics.aum = ((aum - oldAum) / oldAum * 100).toFixed(2);
   variationBorgMetrics.marketCap = ((marketCap - oldMarketCap) / oldMarketCap * 100).toFixed(2);
-  variationBorgMetrics.weeklyVolumeApp = ((weeklyVolumeApp - oldWeeklyVolumeApp) / oldWeeklyVolumeApp * 100).toFixed(2);
+  variationBorgMetrics.volumeApp = ((volumeApp - oldVolumeApp) / oldVolumeApp * 100).toFixed(2);
 
   variationBorgMetrics.userVerify = userVerify - oldUserVerify;
   variationBorgMetrics.premiumUser = premiumUser - oldPremiumUser;
   variationBorgMetrics.borgLock = borgLock - oldBorgLock;
   variationBorgMetrics.supplyCirculation = supplyCirculation - oldSupplyCirculation;
-  variationBorgMetrics.communityIndex = borgMetrics.communityIndex && oldBorgMetrics.communityIndex ? Number(borgMetrics.communityIndex) - Number(oldBorgMetrics.communityIndex) : undefined;
-  variationBorgMetrics.communityIndex = typeof variationBorgMetrics.communityIndex === 'number' ?
-                                        Number.isInteger(variationBorgMetrics.communityIndex) ?
-                                        variationBorgMetrics.communityIndex :
-                                        variationBorgMetrics.communityIndex.toFixed(1) :
-                                        'N/A';
   variationBorgMetrics.rank = borgMetrics.rank && oldBorgMetrics.rank ? Number(borgMetrics.rank) - Number(oldBorgMetrics.rank) : 'N/A';
 }

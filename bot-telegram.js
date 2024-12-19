@@ -22,8 +22,7 @@ async function BotTelegram() {
       supplyCirculation: '',
       aum: '',
       rank: '',
-      communityIndex: '',
-      weeklyVolumeApp: '',
+      volumeApp: '',
     }
     let variationBorgMetrics = {...borgMetrics};
     borgMetrics = await Metrics(borgMetrics);
@@ -89,10 +88,9 @@ const sendMessageToTelegram = async (borgMetrics, oldBorgMetrics, variationBorgM
                         `• Utilisateurs premium ✍️%0A ${oldBorgMetrics.premiumUser} \\-\\-\\> ${borgMetrics.premiumUser} \\(${NumFormat.abbreviateNumber(variationBorgMetrics.premiumUser)}\\)%0A%0A` +
                         `• BORG bloqués 🔒%0A ${oldBorgMetrics.borgLock} \\-\\-\\> ${borgMetrics.borgLock} \\(${NumFormat.abbreviateNumber(variationBorgMetrics.borgLock)}\\)%0A%0A` +
                         `• Offre en circulation 💸%0A ${oldBorgMetrics.supplyCirculation} \\-\\-\\> ${borgMetrics.supplyCirculation} \\(${NumFormat.abbreviateNumber(variationBorgMetrics.supplyCirculation)}\\)%0A%0A` +
-                        `• Volume sur l'app \\(semaine\\) 📊%0A ${oldBorgMetrics.weeklyVolumeApp} \\-\\-\\> ${borgMetrics.weeklyVolumeApp} \\(${variationBorgMetrics.weeklyVolumeApp}%\\)%0A%0A` +
+                        `• Volume sur l'app \\(24h\\) 📊%0A ${oldBorgMetrics.volumeApp} \\-\\-\\> ${borgMetrics.volumeApp} \\(${variationBorgMetrics.volumeApp}%\\)%0A%0A` +
                         `• Actifs sous gestion 💵%0A ${oldBorgMetrics.aum} \\-\\-\\> ${borgMetrics.aum} \\(${variationBorgMetrics.aum}%\\)%0A%0A` +
-                        `• Rang CoinGecko 🦎%0A ${oldBorgMetrics.rank} \\-\\-\\> ${borgMetrics.rank} \\(${variationBorgMetrics.rank}\\)%0A%0A` +
-                        `• Community index 💥%0A ${oldBorgMetrics.communityIndex} \\-\\-\\> ${borgMetrics.communityIndex} \\(${variationBorgMetrics.communityIndex}\\)`;
+                        `• Rang CoinGecko 🦎%0A ${oldBorgMetrics.rank} \\-\\-\\> ${borgMetrics.rank} \\(${variationBorgMetrics.rank}\\)`;
 
     const responseTelegram = await got.post(`https://api.telegram.org/bot${process.env.TG_TOKEN}/sendMessage?chat_id=${process.env.ID_CHAT_TG}&text=${msgTelegram}&parse_mode=MarkdownV2`, {
       headers: {
