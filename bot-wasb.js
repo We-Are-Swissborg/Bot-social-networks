@@ -9,44 +9,46 @@ dotenv.config({ path: '.env.production' });
 async function BotWasb() {
   try {
     let infos = {
-      borg: {
-        value: '',
-        marketCap: '',
-        userVerify: '',
-        premiumUser: '',
-        borgLock: '',
-        supplyCirculation: '',
-        aum: '',
-        volumeApp: '',
-        vsBtc: '',
-        // volumeCoinMarketCap: '',
-        // liquidity: '',
-        maxSupply: '',
-        volumeCoinGecko: ''
+      crypto: {
+        borg: {
+          value: '',
+          marketCap: '',
+          userVerify: '',
+          premiumUser: '',
+          borgLock: '',
+          supplyCirculation: '',
+          aum: '',
+          vsBtc: '',
+          // volumeCoinMarketCap: '',
+          // liquidity: '',
+          maxSupply: '',
+          volumeCoinGecko: ''
+        },
+        btc: {
+          value: '',
+          marketCap: '',
+          // volumeCoinMarketCap: '',
+          // volumeCex: '',
+          // volumeDex: '',
+          supplyCirculation: '',
+          // liquidity: '',
+          maxSupply: '',
+          volumeCoinGecko: '',
+        },
+        xbg: {
+          value: '',
+          marketCap: '',
+          // volumeCoinMarketCap: '',
+          supplyCirculation: '',
+          // liquidity: '',
+          maxSupply: '',
+          volumeCoinGecko: ''
+        },
       },
-      btc: {
-        value: '',
-        marketCap: '',
-        // volumeCoinMarketCap: '',
-        // volumeCex: '',
-        // volumeDex: '',
-        supplyCirculation: '',
-        // liquidity: '',
-        maxSupply: '',
-        volumeCoinGecko: '',
-      },
-      xbg: {
-        value: '',
-        marketCap: '',
-        // volumeCoinMarketCap: '',
-        supplyCirculation: '',
-        // liquidity: '',
-        maxSupply: '',
-        volumeCoinGecko: ''
-      },
+      lastUpdate: undefined,
     }
 
-    infos = await Metrics(infos);
+    infos.crypto = await Metrics(infos.crypto);
 
     const valueToAddDollar = [
       ['borg', ['value', 'vsBtc', 'aum', 'marketCap']],
@@ -59,11 +61,13 @@ async function BotWasb() {
       const cryptoProps = value[1];
 
       cryptoProps.forEach((prop) => {
-        if(infos[cryptoName][prop] && !infos[cryptoName][prop].includes('$')) {
-          infos[cryptoName][prop] = '$'+infos[cryptoName][prop];
+        if(infos.crypto[cryptoName][prop] && !infos.crypto[cryptoName][prop].includes('$')) {
+          infos.crypto[cryptoName][prop] = '$'+infos.crypto[cryptoName][prop];
         }
       })
     })
+
+    infos.lastUpdate = new Date();
 
     await got.post(process.env.URL_WASB, {
       headers: {
@@ -74,13 +78,13 @@ async function BotWasb() {
       }
     });
 
-    console.log(new Date(), 'Metrics post OK !')
+    console.log(new Date().toLocaleString('fr-FR'), 'Metrics post OK !')
   } catch (e) {
     const errMsg = e.response ? e.response.body : e.message;
-    console.error(new Date() + ' Error to send metrics : ' + errMsg);
+    console.error(new Date().toLocaleString('fr-FR') + ' Error to send metrics : ' + errMsg);
     await sendErrorToTelegram(e, 'Error to send metrics : ', process.env.MONITORING_ID_BOT_WASB);
     process.exit(-1);
-  } 
+  }
 }
 
 BotWasb();

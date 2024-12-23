@@ -29,12 +29,6 @@ async function Metrics(infos) {
     const borgMetricsOrSeveralMetrics = infos.borg ? infos.borg : infos;
     const propMetrics = infos.borg ? Object.keys(infos) : undefined;
 
-    //Page https://swissborg.com/buy-borg
-    await driver.get('https://swissborg.com/buy-borg');
-    await new Promise(resolve => setTimeout(resolve, 2000));
-    // await Swissborg.acceptCookieSwissborg(driver, maxLoop);
-    await Swissborg.getVolumeAppBorg(borgMetricsOrSeveralMetrics, driver, maxLoop);
-
     //Page https://swissborg.com/premium-account
     await driver.get('https://swissborg.com/premium-account');
     await new Promise(resolve => setTimeout(resolve, 2000));
@@ -59,6 +53,7 @@ async function Metrics(infos) {
     if(!infos.borg) await Coingecko.getRank(borgMetricsOrSeveralMetrics, driver, maxLoop);
     await Coingecko.getMarketCap(borgMetricsOrSeveralMetrics, driver, maxLoop, 'BORG');
     await Coingecko.getSupplyCirculation(borgMetricsOrSeveralMetrics, driver, maxLoop, 'BORG');
+    await Coingecko.getVolume(borgMetricsOrSeveralMetrics, driver, maxLoop, 'BORG');
 
     // Crypto to add url CoinGecko.
     if(infos.borg) {
@@ -73,7 +68,6 @@ async function Metrics(infos) {
       borg: [
         'marketCap',
         'supplyCirculation',
-        'volumeCoinGecko',
         'maxSupply'
       ],
       btc: [

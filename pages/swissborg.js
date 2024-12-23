@@ -122,24 +122,6 @@ export const getAumBorg = async (borgMetrics, driver, maxLoop) => {
   }
 }
 
-// Get 24h volume app BORG.
-export const getVolumeAppBorg = async (borgMetrics, driver, maxLoop) => {
-  try {
-    while(!borgMetrics.volumeApp) {
-      const card = await driver.findElements(By.className('hSYTrK'));
-
-      borgMetrics.volumeApp = await card[2].getText();
-      if(maxLoop === 0) throw new Error('Nb loop max in getVolumeAppBorg.');
-      maxLoop--;
-    }
-
-    maxLoop = 5;
-    console.log('24h volume app BORG is acquired.');
-  } catch(e) {
-    await handlerError(e, driver, 'Error for get 24h volume app BORG :');
-  }
-}
-
 // Get verify user.
 export const getUserVerify = async (borgMetrics, driver, maxLoop) => {
   try {
@@ -158,19 +140,26 @@ export const getUserVerify = async (borgMetrics, driver, maxLoop) => {
   }
 }
 
+const replaceComma = (value) => {
+  if(value) return value.replaceAll(',', '')
+  else value;
+}
+
 // Calcul difference between old value and new value.
 export const calculVariation = (borgMetrics, oldBorgMetrics, variationBorgMetrics) => {
-  const replaceCommaMarketCap = borgMetrics.marketCap ? borgMetrics.marketCap.replaceAll(',', '') : borgMetrics.marketCap;
-  const replaceCommaOldMarketCap = oldBorgMetrics.marketCap ? oldBorgMetrics.marketCap.replaceAll(',', '') : oldBorgMetrics.marketCap;
-  const replaceCommaSupplyCirculation = borgMetrics.supplyCirculation ? borgMetrics.supplyCirculation.replaceAll(',', '') : borgMetrics.supplyCirculation;
-  const replaceCommaOlSupplyCirculation = oldBorgMetrics.supplyCirculation ? oldBorgMetrics.supplyCirculation.replaceAll(',', '') : oldBorgMetrics.supplyCirculation;
+  const replaceCommaMarketCap = replaceComma(borgMetrics.marketCap);
+  const replaceCommaOldMarketCap = replaceComma(oldBorgMetrics.marketCap);
+  const replaceCommaSupplyCirculation = replaceComma(borgMetrics.supplyCirculation);
+  const replaceCommaOldSupplyCirculation = replaceComma(oldBorgMetrics.supplyCirculation);
+  const replaceCommaVolumeCoinGecko = replaceComma(borgMetrics.volumeCoinGecko);
+  const replaceCommaOldVolumeCoinGecko= replaceComma(oldBorgMetrics.volumeCoinGecko);
 
   const marketCap = NumFormat.convertNumberForCalcul(replaceCommaMarketCap);
   const oldMarketCap = NumFormat.convertNumberForCalcul(replaceCommaOldMarketCap);
   const supplyCirculation = NumFormat.convertNumberForCalcul(replaceCommaSupplyCirculation);
-  const oldSupplyCirculation = NumFormat.convertNumberForCalcul(replaceCommaOlSupplyCirculation);
-  const volumeApp = NumFormat.convertNumberForCalcul(borgMetrics.volumeApp);
-  const oldVolumeApp = NumFormat.convertNumberForCalcul(oldBorgMetrics.volumeApp);
+  const oldSupplyCirculation = NumFormat.convertNumberForCalcul(replaceCommaOldSupplyCirculation);
+  const volumeCoinGecko = replaceCommaVolumeCoinGecko && Number(replaceCommaVolumeCoinGecko.replace('$', ''));
+  const oldVolumeCoinGecko = replaceCommaOldVolumeCoinGecko && Number(replaceCommaOldVolumeCoinGecko.replace('$', ''));
   const userVerify = NumFormat.convertNumberForCalcul(borgMetrics.userVerify);
   const oldUserVerify = NumFormat.convertNumberForCalcul(oldBorgMetrics.userVerify);
   const premiumUser = NumFormat.convertNumberForCalcul(borgMetrics.premiumUser);
@@ -184,7 +173,7 @@ export const calculVariation = (borgMetrics, oldBorgMetrics, variationBorgMetric
   variationBorgMetrics.value = borgMetrics.value && oldBorgMetrics.value ? ((Number(borgMetrics.value) - Number(oldBorgMetrics.value)) / Number(oldBorgMetrics.value) * 100).toFixed(2) : 'N/A';
   variationBorgMetrics.aum = ((aum - oldAum) / oldAum * 100).toFixed(2);
   variationBorgMetrics.marketCap = ((marketCap - oldMarketCap) / oldMarketCap * 100).toFixed(2);
-  variationBorgMetrics.volumeApp = ((volumeApp - oldVolumeApp) / oldVolumeApp * 100).toFixed(2);
+  variationBorgMetrics.volumeCoinGecko = ((volumeCoinGecko - oldVolumeCoinGecko) / oldVolumeCoinGecko * 100).toFixed(2);
 
   variationBorgMetrics.userVerify = userVerify - oldUserVerify;
   variationBorgMetrics.premiumUser = premiumUser - oldPremiumUser;

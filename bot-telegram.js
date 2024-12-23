@@ -22,7 +22,7 @@ async function BotTelegram() {
       supplyCirculation: '',
       aum: '',
       rank: '',
-      volumeApp: '',
+      volumeCoinGecko: '',
     }
     let variationBorgMetrics = {...borgMetrics};
     borgMetrics = await Metrics(borgMetrics);
@@ -88,7 +88,7 @@ const sendMessageToTelegram = async (borgMetrics, oldBorgMetrics, variationBorgM
                         `• Utilisateurs premium ✍️%0A ${oldBorgMetrics.premiumUser} \\-\\-\\> ${borgMetrics.premiumUser} \\(${NumFormat.abbreviateNumber(variationBorgMetrics.premiumUser)}\\)%0A%0A` +
                         `• BORG bloqués 🔒%0A ${oldBorgMetrics.borgLock} \\-\\-\\> ${borgMetrics.borgLock} \\(${NumFormat.abbreviateNumber(variationBorgMetrics.borgLock)}\\)%0A%0A` +
                         `• Offre en circulation 💸%0A ${oldBorgMetrics.supplyCirculation} \\-\\-\\> ${borgMetrics.supplyCirculation} \\(${NumFormat.abbreviateNumber(variationBorgMetrics.supplyCirculation)}\\)%0A%0A` +
-                        `• Volume sur l'app \\(24h\\) 📊%0A ${oldBorgMetrics.volumeApp} \\-\\-\\> ${borgMetrics.volumeApp} \\(${variationBorgMetrics.volumeApp}%\\)%0A%0A` +
+                        `• Volume sur CoinGecko \\(24h\\) 📊%0A ${oldBorgMetrics.volumeCoinGecko} \\-\\-\\> ${borgMetrics.volumeCoinGecko} \\(${variationBorgMetrics.volumeCoinGecko}%\\)%0A%0A` +
                         `• Actifs sous gestion 💵%0A ${oldBorgMetrics.aum} \\-\\-\\> ${borgMetrics.aum} \\(${variationBorgMetrics.aum}%\\)%0A%0A` +
                         `• Rang CoinGecko 🦎%0A ${oldBorgMetrics.rank} \\-\\-\\> ${borgMetrics.rank} \\(${variationBorgMetrics.rank}\\)`;
 
