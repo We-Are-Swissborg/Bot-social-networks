@@ -74,15 +74,16 @@ const addUnitNumber = (unit, value, exponent, num) => {
 }
 
 export const abbreviateNumber = (value) => {
-  let num = undefined;
+  let num = value;
   let v = value;
 
   if(value) {
     // Take off - (\\-), + (\\%2B) and $ for get number.
-    if(value.includes('-')) num = Number(value.split('-')[1]);
-    else if(value.includes('B')) num = Number(value.split('B')[1]);
-    else if(value.includes('$')) num = Number(value.replace('$', ''));
-    else num = Number(value);
+    if(value.includes('-')) num = value.split('-')[1];
+    else if(value.includes('B')) num = value.split('B')[1];
+    if(value.includes('$')) num = num.replace('$', '');
+    if(value.includes(',')) num = num.replaceAll(',', '');
+    num = Number(num);
 
     if(1000 <= num && num <= 999999) v = addUnitNumber('K', value, 3, num);
     if(1000000 <= num && num <= 999999999) v = addUnitNumber('M', value, 6, num);

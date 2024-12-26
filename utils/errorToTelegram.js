@@ -25,3 +25,10 @@ export const sendErrorToTelegram = async (e, addErrorMsg = undefined, idChat = p
     }
   });
 }
+
+export const handlerError = async (e, driver, addErrorMsg, isForTelegram = false) => {
+  const idChat = isForTelegram ? process.env.MONITORING_ID_CHAT_TG : process.env.MONITORING_ID_BOT_WASB;
+  console.error(addErrorMsg + e);
+  await driver.get(driver.getCurrentUrl());
+  await sendErrorToTelegram(e, addErrorMsg, idChat);
+}

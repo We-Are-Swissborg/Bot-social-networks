@@ -1,12 +1,6 @@
 import { By } from 'selenium-webdriver';
 import * as NumFormat from '../utils/numberFormatter.js';
-import { sendErrorToTelegram } from '../utils/errorToTelegram.js';
-
-const handlerError = async (e, driver, addErrorMsg) => {
-  console.error(addErrorMsg + e);
-  await driver.get(driver.getCurrentUrl());
-  await sendErrorToTelegram(e, addErrorMsg);
-}
+import { handlerError } from '../utils/errorToTelegram.js';
 
 // Click for accept cookie in Swissborg.
 export const acceptCookieSwissborg = async (driver, maxLoop) => {
@@ -38,7 +32,7 @@ export const getMarketCapBorg = async (borgMetrics, driver, maxLoop) => {
     maxLoop = 5;
     console.log('MarketCap BORG is acquired.');
   } catch(e) {
-    await handlerError(e, driver, 'Error to get marketCap BORG :');
+    await handlerError(e, driver, 'Error to get marketCap BORG :', true);
   }
 }
 
@@ -59,7 +53,7 @@ export const getPremiumUserBorg = async (borgMetrics, driver, maxLoop) => {
     maxLoop = 5;
     console.log('Nb premium user BORG is acquired.');
   } catch(e) {
-    await handlerError(e, driver, 'Error to get nb premium user BORG :');
+    await handlerError(e, driver, 'Error to get nb premium user BORG :', true);
   }
 }
 
@@ -70,14 +64,14 @@ export const getBorgLock = async (borgMetrics, driver, maxLoop) => {
       const borgLock = await driver.findElement(By.className('stat-2'));
       borgMetrics.borgLock = await borgLock.getText();
 
-      if(maxLoop === 0) throw new Error('Nb loop max in getBorgLock.');
+      if(maxLoop === 0) throw new Error('Nb loop max in getBorgLock.', true);
       maxLoop--;
     }
 
     maxLoop = 5;
     console.log('Nb BORG lock is acquired.');
   } catch(e) {
-    await handlerError(e, driver, 'Error to get nb BORG lock :');
+    await handlerError(e, driver, 'Error to get nb BORG lock :', true);
   }
 }
 
@@ -96,7 +90,7 @@ export const getSupplyCirculationBorg = async (borgMetrics, driver, maxLoop) => 
     maxLoop = 5;
     console.log('Nb supply in circulation is acquired.');
   } catch(e) {
-    await handlerError(e, driver, 'Error to get nb supply in circulation BORG :');
+    await handlerError(e, driver, 'Error to get nb supply in circulation BORG :', true);
   }
 }
 
@@ -118,7 +112,7 @@ export const getAumBorg = async (borgMetrics, driver, maxLoop) => {
     maxLoop = 5;
     console.log('AUM is acquired.');
   } catch(e) {
-    await handlerError(e, driver, 'Error to get AUM BORG :');
+    await handlerError(e, driver, 'Error to get AUM BORG :', true);
   }
 }
 
@@ -136,7 +130,7 @@ export const getUserVerify = async (borgMetrics, driver, maxLoop) => {
     maxLoop = 5;
     console.log('Verify user is acquired.');
   } catch(e) {
-    await handlerError(e, driver, 'Error to get verify user BORG :');
+    await handlerError(e, driver, 'Error to get verify user BORG :', true);
   }
 }
 
@@ -158,8 +152,8 @@ export const calculVariation = (borgMetrics, oldBorgMetrics, variationBorgMetric
   const oldMarketCap = NumFormat.convertNumberForCalcul(replaceCommaOldMarketCap);
   const supplyCirculation = NumFormat.convertNumberForCalcul(replaceCommaSupplyCirculation);
   const oldSupplyCirculation = NumFormat.convertNumberForCalcul(replaceCommaOldSupplyCirculation);
-  const volumeCoinGecko = replaceCommaVolumeCoinGecko && Number(replaceCommaVolumeCoinGecko.replace('$', ''));
-  const oldVolumeCoinGecko = replaceCommaOldVolumeCoinGecko && Number(replaceCommaOldVolumeCoinGecko.replace('$', ''));
+  const volumeCoinGecko = NumFormat.convertNumberForCalcul(replaceCommaVolumeCoinGecko);
+  const oldVolumeCoinGecko = NumFormat.convertNumberForCalcul(replaceCommaOldVolumeCoinGecko);
   const userVerify = NumFormat.convertNumberForCalcul(borgMetrics.userVerify);
   const oldUserVerify = NumFormat.convertNumberForCalcul(oldBorgMetrics.userVerify);
   const premiumUser = NumFormat.convertNumberForCalcul(borgMetrics.premiumUser);

@@ -21,7 +21,7 @@ async function BotWasb() {
           vsBtc: '',
           // volumeCoinMarketCap: '',
           // liquidity: '',
-          maxSupply: '',
+          maxSupply: '985M',
           volumeCoinGecko: ''
         },
         btc: {
@@ -32,7 +32,7 @@ async function BotWasb() {
           // volumeDex: '',
           supplyCirculation: '',
           // liquidity: '',
-          maxSupply: '',
+          maxSupply: '21M',
           volumeCoinGecko: '',
         },
         xbg: {
@@ -41,8 +41,17 @@ async function BotWasb() {
           // volumeCoinMarketCap: '',
           supplyCirculation: '',
           // liquidity: '',
-          maxSupply: '',
+          maxSupply: '1B',
           volumeCoinGecko: ''
+        },
+        borgy: {
+          value: '',
+          marketCap: '',
+          supplyCirculation: '77.777B',
+          maxSupply: '77.777B',
+          volumeDexScreener: '',
+          // holder: '',
+          // created: ''
         },
       },
       lastUpdate: undefined,
@@ -54,6 +63,7 @@ async function BotWasb() {
       ['borg', ['value', 'vsBtc', 'aum', 'marketCap']],
       ['btc', ['value', 'marketCap']],
       ['xbg', ['value', 'marketCap']],
+      ['borgy', ['value', 'marketCap']],
     ]
 
     valueToAddDollar.forEach((value) => {

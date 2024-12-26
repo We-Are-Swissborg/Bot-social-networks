@@ -1,12 +1,5 @@
 import { By } from 'selenium-webdriver';
-import { sendErrorToTelegram } from '../utils/errorToTelegram.js';
-import process from 'process';
-
-const handlerError = async (e, driver, addErrorMsg) => {
-  console.error(addErrorMsg + e);
-  await driver.get(driver.getCurrentUrl());
-  await sendErrorToTelegram(e, addErrorMsg, process.env.MONITORING_ID_BOT_WASB);
-}
+import { handlerError } from '../utils/errorToTelegram.js';
 
 const getValueTab = async (driver) => await driver.findElements(By.css('tbody')); 
 
@@ -65,25 +58,6 @@ export const getSupplyCirculation = async (metrics, driver, maxLoop, crypto) => 
     console.log(crypto + ' supply circulation is acquired.');
   } catch(e) {
     await handlerError(e, driver, `Error to get ${crypto} supply circulation on CoinGecko: `);
-  }
-}
-
-// Get max supply.
-export const getMaxSupply = async (metrics, driver, maxLoop, crypto) => {
-  try {
-    while(!metrics.maxSupply) {
-      const valueTab = await getValueTab(driver);
-      const maxSupply = await valueTab[1].findElements(By.css('td'));
-      metrics.maxSupply = await maxSupply[6].getText();
-
-      if(maxLoop === 0) throw new Error(`Nb loop max in getMaxSupply ${crypto}.`); 
-      maxLoop--;
-    }
-
-    maxLoop = 5;
-    console.log(crypto + ' maxSupply is acquired.');
-  } catch(e) {
-    await handlerError(e, driver, `Error to get ${crypto} maxSupply on CoinGecko: `);
   }
 }
 
