@@ -8,6 +8,7 @@ import * as NumFormat from './utils/numberFormatter.js';
 import { sendErrorToTelegram } from "./utils/errorToTelegram.js";
 
 dotenv.config({ path: '.env.production' });
+const date = new Date();
 
 async function BotTelegram() {
   try {
@@ -30,7 +31,7 @@ async function BotTelegram() {
     await fs.writeFile('./old-value-telegram.txt', JSON.stringify(borgMetrics));
 
     Swissborg.calculVariation(borgMetrics, oldBorgMetrics, variationBorgMetrics);
-    await sendMessageToTelegram(borgMetrics, oldBorgMetrics, variationBorgMetrics);
+    await sendMetrics(borgMetrics, oldBorgMetrics, variationBorgMetrics);
   } catch(e) {
     console.error(e);
     await sendErrorToTelegram(e);
@@ -72,9 +73,8 @@ const aroundValue = (value) => {
   return valueAround;
 }
 
-// Function to send a message to Telegram.
-const sendMessageToTelegram = async (borgMetrics, oldBorgMetrics, variationBorgMetrics) => {
-  const date = new Date();
+// Function to send a metrics message to Telegram.
+const sendMetrics = async (borgMetrics, oldBorgMetrics, variationBorgMetrics) => {
   const value = aroundValue(borgMetrics.value);
   const oldValue = aroundValue(oldBorgMetrics.value);
 
@@ -90,7 +90,8 @@ const sendMessageToTelegram = async (borgMetrics, oldBorgMetrics, variationBorgM
                         `• Offre en circulation 💸%0A ${oldBorgMetrics.supplyCirculation} \\-\\-\\> ${borgMetrics.supplyCirculation} \\(${NumFormat.abbreviateNumber(variationBorgMetrics.supplyCirculation)}\\)%0A%0A` +
                         `• Volume CoinGecko \\(24h\\) 📊%0A $ ${oldBorgMetrics.volumeCoinGecko} \\-\\-\\> $ ${borgMetrics.volumeCoinGecko} \\(${variationBorgMetrics.volumeCoinGecko}%\\)%0A%0A` +
                         `• Actifs sous gestion 💵%0A ${oldBorgMetrics.aum} \\-\\-\\> ${borgMetrics.aum} \\(${variationBorgMetrics.aum}%\\)%0A%0A` +
-                        `• Rang CoinGecko 🦎%0A ${oldBorgMetrics.rank} \\-\\-\\> ${borgMetrics.rank} \\(${variationBorgMetrics.rank}\\)`;
+                        `• Rang CoinGecko 🦎%0A ${oldBorgMetrics.rank} \\-\\-\\> ${borgMetrics.rank} \\(${variationBorgMetrics.rank}\\)%0A%0A` +
+                        `*_Message généré par WASBot_*\\.`;
 
     const responseTelegram = await got.post(`https://api.telegram.org/bot${process.env.TG_TOKEN}/sendMessage?chat_id=${process.env.ID_CHAT_TG}&text=${msgTelegram}&parse_mode=MarkdownV2`, {
       headers: {
@@ -107,4 +108,73 @@ const sendMessageToTelegram = async (borgMetrics, oldBorgMetrics, variationBorgM
   }
 }
 
+// Function to send a meetup message to Telegram.
+// const sendMeetup = async () => {
+//   const meet = [
+//     {
+//       place: 'Paris 🇫🇷',
+//       date: undefined,
+//       hour: '19h00\\-22h00',
+//       contact: 'napsborgmeetup@gmail\\.com'
+//     },
+//     {
+//       place: 'Belgique 🇧🇪',
+//       date: undefined,
+//       hour: '19h00\\-23h00',
+//       contact: 'https://x\\.com/BeauLent1'
+//     },
+//     {
+//       place: 'Lorient 🇫🇷',
+//       date: undefined,
+//       hour: '18h00\\-22h00',
+//       contact: 'mikzo@hotmail\\.fr'
+//     },
+//   ];
+
+//   let msgTelegram = "📅 WeAreSwissborg Meeting 📅%0A%0A";
+
+//   try {
+//     // tranformValueForMarkdown(borgMetrics, oldBorgMetrics, variationBorgMetrics);
+//     meet.forEach(m => {
+//       msgTelegram = msgTelegram +
+//       `Lieu: ${m.place}%0A` +
+//       `Date: m\\.date%0A` +
+//       `Heure: ${m.hour}%0A` +
+//       `Contact: ${m.contact}%0A%0A`;
+//     });
+
+//     msgTelegram += `*_Message généré par WASBot_*\\.`;
+//     const responseTelegram = await got.post(`https://api.telegram.org/bot${process.env.TG_TOKEN}/sendMessage?chat_id=${process.env.ID_CHAT_TG}&text=${msgTelegram}&parse_mode=MarkdownV2`, {
+//       headers: {
+//         accept: 'application/x-www-form-urlencoded'
+//       }
+//     });
+
+//     // Print the response
+//     console.log(date + ' Message to Telegram successfully:', responseTelegram.body);
+//     process.exit();
+//   } catch (error) {
+//     console.error(date + ' Error message to telegram: ' + error.response ? error.response.body : error);
+//     throw new Error(date + ' Error message to telegram: ' + error.response ? error.response.body : error);
+//   }
+// }
+
+// const getUpdates = async () => {
+//   const date = new Date();
+
+//   try {
+//     const answerTelegram = await got.post(`https://api.telegram.org/bot${process.env.TG_TOKEN}/getUpdates`, {
+//       headers: {
+//         accept: 'application/x-www-form-urlencoded'
+//       }
+//     });
+//     console.log(date + ' Message to Telegram successfully:', answerTelegram.body);
+//   } catch (error) {
+//     console.error(date + ' Error message to telegram: ' + error.response ? error.response.body : error);
+//     throw new Error(date + ' Error message to telegram: ' + error.response ? error.response.body : error);
+//   }
+// }
+
+// sendMeetup()
+// getUpdates()
 BotTelegram();
