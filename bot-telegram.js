@@ -164,6 +164,12 @@ const sendMeetup = async () => {
       hour: '18h00\\-22h00',
       contact: 'mikzo@hotmail\\.fr'
     },
+    {
+      place: 'Valais 🇨🇭',
+      date: getSecondWednesday(),
+      hour: '18h30\\-23h00',
+      contact: 'https://x\\.com/TheSwissKraken / https://x\\.com/YaBoSaCrYpT'
+    },
   ];
 
   let msgTelegram = "📅 WeAreSwissborg Meeting 📅%0A%0A";
@@ -172,7 +178,7 @@ const sendMeetup = async () => {
     meet.forEach(m => {
       msgTelegram = msgTelegram +
                     `Lieu: ${m.place}%0A` +
-                    `Date: ${m.date.}%0A` +
+                    `Date: ${m.date}%0A` +
                     `Heure: ${m.hour}%0A` +
                     `Contact: ${m.contact}%0A%0A`;
     });
