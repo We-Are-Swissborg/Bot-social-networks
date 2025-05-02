@@ -156,7 +156,7 @@ const sendMeetup = async () => {
       place: 'Belgique 🇧🇪',
       date: getSecondWednesday(),
       hour: '19h00\\-23h00',
-      contact: 'https://x\\.com/BeauLent1'
+      contact: '@beaulent'
     },
     {
       place: 'Lorient 🇫🇷',
@@ -168,7 +168,7 @@ const sendMeetup = async () => {
       place: 'Valais 🇨🇭',
       date: getSecondWednesday(),
       hour: '18h30\\-23h00',
-      contact: '@beaulent / https://x\\.com/YaBoSaCrYpT'
+      contact: 'https://x\\.com/TheSwissKraken / https://x\\.com/YaBoSaCrYpT'
     },
   ];
 
