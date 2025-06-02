@@ -22,7 +22,8 @@ async function BotTelegram() {
         marketCap: '',
         userVerify: '',
         premiumUser: '',
-        borgLock: '',
+        borgLockByPremium: '',
+        borgLockForGovernance: '',
         supplyCirculation: '',
         aum: '',
         rank: '',
@@ -51,13 +52,20 @@ const tranformValueForMarkdown = (borgMetrics, oldBorgMetrics, variationBorgMetr
   propsBorgInfo.forEach((prop) => {
     variationBorgMetrics[prop] = String(variationBorgMetrics[prop]);
 
-    if(borgMetrics[prop] && oldBorgMetrics[prop] && variationBorgMetrics[prop]) {
+    if(borgMetrics[prop]) {
       if(borgMetrics[prop].includes('.')) borgMetrics[prop] = borgMetrics[prop].replace('.', ',');
-      if(oldBorgMetrics[prop].includes('.')) oldBorgMetrics[prop] = oldBorgMetrics[prop].replace('.', ',');
-      if(variationBorgMetrics[prop].includes('.')) variationBorgMetrics[prop] = variationBorgMetrics[prop].replace('.', ',');
 
       if(borgMetrics[prop].includes(',')) borgMetrics[prop] = borgMetrics[prop].replace(',', ',');
+    }
+
+    if(oldBorgMetrics[prop]) {
+      if(oldBorgMetrics[prop].includes('.')) oldBorgMetrics[prop] = oldBorgMetrics[prop].replace('.', ',');
+
       if(oldBorgMetrics[prop].includes(',')) oldBorgMetrics[prop] = oldBorgMetrics[prop].replace(',', ',');
+    }
+
+    if(variationBorgMetrics[prop]) {
+      if(variationBorgMetrics[prop].includes('.')) variationBorgMetrics[prop] = variationBorgMetrics[prop].replace('.', ',');
 
       if(prop === 'rank' && variationBorgMetrics.rank != 0) {
         if(variationBorgMetrics[prop].includes('-')) variationBorgMetrics[prop] = variationBorgMetrics[prop].replace('-', '\\%2B'); // Convert '-' to '+' for work with markdownV2.
@@ -92,7 +100,8 @@ const sendMetrics = async (borgMetrics, oldBorgMetrics, variationBorgMetrics) =>
                         `• Market Cap Ⓜ️%0A $ ${oldBorgMetrics.marketCap} \\-\\-\\> $ ${borgMetrics.marketCap} \\(${variationBorgMetrics.marketCap}%\\)%0A%0A` +
                         `• Utilisateurs vérifiés ✅%0A ${oldBorgMetrics.userVerify} \\-\\-\\> ${borgMetrics.userVerify} \\(${NumFormat.abbreviateNumber(variationBorgMetrics.userVerify)}\\)%0A%0A` +
                         `• Utilisateurs premium ✍️%0A ${oldBorgMetrics.premiumUser} \\-\\-\\> ${borgMetrics.premiumUser} \\(${NumFormat.abbreviateNumber(variationBorgMetrics.premiumUser)}\\)%0A%0A` +
-                        `• BORG bloqués 🔒%0A ${oldBorgMetrics.borgLock} \\-\\-\\> ${borgMetrics.borgLock} \\(${NumFormat.abbreviateNumber(variationBorgMetrics.borgLock)}\\)%0A%0A` +
+                        `• BORG bloqués par les premium 🔒%0A ${oldBorgMetrics.borgLockByPremium} \\-\\-\\> ${borgMetrics.borgLockByPremium} \\(${NumFormat.abbreviateNumber(variationBorgMetrics.borgLockByPremium)}\\)%0A%0A` +
+                        `• BORG bloqués pour la gouvernance 🔒%0A ${oldBorgMetrics.borgLockForGovernance} \\-\\-\\> ${borgMetrics.borgLockForGovernance} \\(${NumFormat.abbreviateNumber(variationBorgMetrics.borgLockForGovernance)}\\)%0A%0A` +
                         `• Offre en circulation 💸%0A ${oldBorgMetrics.supplyCirculation} \\-\\-\\> ${borgMetrics.supplyCirculation} \\(${NumFormat.abbreviateNumber(variationBorgMetrics.supplyCirculation)}\\)%0A%0A` +
                         `• Volume CoinGecko \\(24h\\) 📊%0A $ ${oldBorgMetrics.volumeCoinGecko} \\-\\-\\> $ ${borgMetrics.volumeCoinGecko} \\(${variationBorgMetrics.volumeCoinGecko}%\\)%0A%0A` +
                         `• Actifs sous gestion 💵%0A ${oldBorgMetrics.aum} \\-\\-\\> ${borgMetrics.aum} \\(${variationBorgMetrics.aum}%\\)%0A%0A` +

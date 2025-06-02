@@ -15,7 +15,7 @@ async function getOnSwissborg(infos, driver, maxLoop) {
   await driver.get('https://swissborg.com/premium-account');
   await new Promise(resolve => setTimeout(resolve, 2000));
   await Swissborg.getPremiumUserBorg(borgMetricsOrSeveralMetrics, driver, maxLoop);
-  await Swissborg.getBorgLock(borgMetricsOrSeveralMetrics, driver, maxLoop);
+  await Swissborg.getBorgLockByPremium(borgMetricsOrSeveralMetrics, driver, maxLoop);
 
   //Page https://swissborg.com/marche-crypto/coins/swissborg-token
   // await driver.get('https://swissborg.com/crypto-market/coins/swissborg-token');
@@ -28,6 +28,11 @@ async function getOnSwissborg(infos, driver, maxLoop) {
   await new Promise(resolve => setTimeout(resolve, 2000));
   await Swissborg.getAumBorg(borgMetricsOrSeveralMetrics, driver, maxLoop);
   await Swissborg.getUserVerify(borgMetricsOrSeveralMetrics, driver, maxLoop);
+
+  //Page https://swissborg.com/buy-borg
+  await driver.get('https://swissborg.com/buy-borg');
+  await new Promise(resolve => setTimeout(resolve, 2000));
+  await Swissborg.getBorgLockForGovernance(borgMetricsOrSeveralMetrics, driver, maxLoop);
 
   //Page https://www.coingecko.com/en/coins/{nameCrypto}
   await driver.get('https://www.coingecko.com/en/coins/swissborg');

@@ -58,13 +58,13 @@ export const getPremiumUserBorg = async (borgMetrics, driver, maxLoop) => {
 }
 
 // Get BORG blocked by user.
-export const getBorgLock = async (borgMetrics, driver, maxLoop) => {
+export const getBorgLockByPremium = async (borgMetrics, driver, maxLoop) => {
   try {
-    while(!borgMetrics.borgLock) {
-      const borgLock = await driver.findElement(By.className('stat-2'));
-      borgMetrics.borgLock = await borgLock.getText();
+    while(!borgMetrics.borgLockByPremium) {
+      const borgLockByPremium = await driver.findElement(By.className('stat-2'));
+      borgMetrics.borgLockByPremium = await borgLockByPremium.getText();
 
-      if(maxLoop === 0) throw new Error('Nb loop max in getBorgLock.', true);
+      if(maxLoop === 0) throw new Error('Nb loop max in getBorgLockByPremium.', true);
       maxLoop--;
     }
 
@@ -134,6 +134,24 @@ export const getUserVerify = async (borgMetrics, driver, maxLoop) => {
   }
 }
 
+// Get nb borg lock for governance.
+export const getBorgLockForGovernance = async (borgMetrics, driver, maxLoop) => {
+  try {
+    while(!borgMetrics.borgLockForGovernance) {
+      const borgLockForGovernance = await driver.findElement(By.className('cZdGNf'));
+      borgMetrics.borgLockForGovernance = await borgLockForGovernance.getText();
+
+      if(maxLoop === 0) throw new Error('Nb loop max in getBorgLockForGovernance.');
+      maxLoop--;
+    }
+
+    maxLoop = 5;
+    console.log('Borg lock for governance is acquired.');
+  } catch(e) {
+    await handlerError(e, driver, 'Error to get borg lock for governance :', true);
+  }
+}
+
 const replaceComma = (value) => {
   if(value) return value.replaceAll(',', '')
   else value;
@@ -158,10 +176,12 @@ export const calculVariation = (borgMetrics, oldBorgMetrics, variationBorgMetric
   const oldUserVerify = NumFormat.convertNumberForCalcul(oldBorgMetrics.userVerify);
   const premiumUser = NumFormat.convertNumberForCalcul(borgMetrics.premiumUser);
   const oldPremiumUser = NumFormat.convertNumberForCalcul(oldBorgMetrics.premiumUser);
-  const borgLock = NumFormat.convertNumberForCalcul(borgMetrics.borgLock);
-  const oldBorgLock = NumFormat.convertNumberForCalcul(oldBorgMetrics.borgLock);
+  const borgLockByPremium = NumFormat.convertNumberForCalcul(borgMetrics.borgLockByPremium);
+  const oldBorgLockByPremium = NumFormat.convertNumberForCalcul(oldBorgMetrics.borgLockByPremium);
   const aum = NumFormat.convertNumberForCalcul(borgMetrics.aum);
   const oldAum = NumFormat.convertNumberForCalcul(oldBorgMetrics.aum);
+  const borgLockForGovernance = NumFormat.convertNumberForCalcul(borgMetrics.borgLockForGovernance);
+  const oldBorgLockForGovernance = NumFormat.convertNumberForCalcul(oldBorgMetrics.borgLockForGovernance);
 
   // Percent
   variationBorgMetrics.value = borgMetrics.value && oldBorgMetrics.value ? ((Number(borgMetrics.value) - Number(oldBorgMetrics.value)) / Number(oldBorgMetrics.value) * 100).toFixed(2) : 'N/A';
@@ -171,7 +191,8 @@ export const calculVariation = (borgMetrics, oldBorgMetrics, variationBorgMetric
 
   variationBorgMetrics.userVerify = userVerify - oldUserVerify;
   variationBorgMetrics.premiumUser = premiumUser - oldPremiumUser;
-  variationBorgMetrics.borgLock = borgLock - oldBorgLock;
+  variationBorgMetrics.borgLockByPremium = borgLockByPremium - oldBorgLockByPremium;
   variationBorgMetrics.supplyCirculation = supplyCirculation - oldSupplyCirculation;
   variationBorgMetrics.rank = borgMetrics.rank && oldBorgMetrics.rank ? Number(borgMetrics.rank) - Number(oldBorgMetrics.rank) : 'N/A';
+  variationBorgMetrics.borgLockForGovernance = borgLockForGovernance > 0 && oldBorgLockForGovernance > 0 ? borgLockForGovernance - oldBorgLockForGovernance : 'N/A';
 }
