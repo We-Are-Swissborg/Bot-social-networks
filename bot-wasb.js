@@ -23,7 +23,8 @@ async function BotWasb() {
           // volumeCoinMarketCap: '',
           // liquidity: '',
           maxSupply: '985M',
-          volumeCoinGecko: ''
+          volumeCoinGecko: '',
+          circulatingBorg: ''
         },
         btc: {
           value: '',

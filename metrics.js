@@ -33,6 +33,7 @@ async function getOnSwissborg(infos, driver, maxLoop) {
   await driver.get('https://swissborg.com/buy-borg');
   await new Promise(resolve => setTimeout(resolve, 2000));
   await Swissborg.getBorgLockForGovernance(borgMetricsOrSeveralMetrics, driver, maxLoop);
+  await Swissborg.getCirculatingBorg(borgMetricsOrSeveralMetrics, driver, maxLoop);
 
   //Page https://www.coingecko.com/en/coins/{nameCrypto}
   await driver.get('https://www.coingecko.com/en/coins/swissborg');

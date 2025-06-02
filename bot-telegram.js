@@ -28,6 +28,7 @@ async function BotTelegram() {
         aum: '',
         rank: '',
         volumeCoinGecko: '',
+        circulatingBorg: '',
       }
       let variationBorgMetrics = {...borgMetrics};
       borgMetrics = await Metrics(borgMetrics);
@@ -101,10 +102,11 @@ const sendMetrics = async (borgMetrics, oldBorgMetrics, variationBorgMetrics) =>
                         `• Utilisateurs vérifiés ✅%0A ${oldBorgMetrics.userVerify} \\-\\-\\> ${borgMetrics.userVerify} \\(${NumFormat.abbreviateNumber(variationBorgMetrics.userVerify)}\\)%0A%0A` +
                         `• Utilisateurs premium ✍️%0A ${oldBorgMetrics.premiumUser} \\-\\-\\> ${borgMetrics.premiumUser} \\(${NumFormat.abbreviateNumber(variationBorgMetrics.premiumUser)}\\)%0A%0A` +
                         `• BORG bloqués par les premium 🔒%0A ${oldBorgMetrics.borgLockByPremium} \\-\\-\\> ${borgMetrics.borgLockByPremium} \\(${NumFormat.abbreviateNumber(variationBorgMetrics.borgLockByPremium)}\\)%0A%0A` +
-                        `• BORG bloqués pour la gouvernance 🔒%0A ${oldBorgMetrics.borgLockForGovernance} \\-\\-\\> ${borgMetrics.borgLockForGovernance} \\(${NumFormat.abbreviateNumber(variationBorgMetrics.borgLockForGovernance)}\\)%0A%0A` +
+                        `• BORG bloqués par la gouvernance 🔒%0A ${oldBorgMetrics.borgLockForGovernance} \\-\\-\\> ${borgMetrics.borgLockForGovernance} \\(${NumFormat.abbreviateNumber(variationBorgMetrics.borgLockForGovernance)}\\)%0A%0A` +
                         `• Offre en circulation 💸%0A ${oldBorgMetrics.supplyCirculation} \\-\\-\\> ${borgMetrics.supplyCirculation} \\(${NumFormat.abbreviateNumber(variationBorgMetrics.supplyCirculation)}\\)%0A%0A` +
                         `• Volume CoinGecko \\(24h\\) 📊%0A $ ${oldBorgMetrics.volumeCoinGecko} \\-\\-\\> $ ${borgMetrics.volumeCoinGecko} \\(${variationBorgMetrics.volumeCoinGecko}%\\)%0A%0A` +
                         `• Actifs sous gestion 💵%0A ${oldBorgMetrics.aum} \\-\\-\\> ${borgMetrics.aum} \\(${variationBorgMetrics.aum}%\\)%0A%0A` +
+                        `• BORG en circulation 💚%0A ${oldBorgMetrics.circulatingBorg} \\-\\-\\> ${borgMetrics.circulatingBorg} \\(${variationBorgMetrics.circulatingBorg}%\\)%0A%0A` +
                         `• Rang CoinGecko 🦎%0A ${oldBorgMetrics.rank} \\-\\-\\> ${borgMetrics.rank} \\(${variationBorgMetrics.rank}\\)%0A%0A` +
                         `*_Message généré par WASBot_*\\.`;
 

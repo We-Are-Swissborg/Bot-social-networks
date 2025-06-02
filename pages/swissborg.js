@@ -138,8 +138,8 @@ export const getUserVerify = async (borgMetrics, driver, maxLoop) => {
 export const getBorgLockForGovernance = async (borgMetrics, driver, maxLoop) => {
   try {
     while(!borgMetrics.borgLockForGovernance) {
-      const borgLockForGovernance = await driver.findElement(By.className('cZdGNf'));
-      borgMetrics.borgLockForGovernance = await borgLockForGovernance.getText();
+      const borgLockForGovernance = await driver.findElements(By.className('cZdGNf'));
+      borgMetrics.borgLockForGovernance = await borgLockForGovernance[2].getText();
 
       if(maxLoop === 0) throw new Error('Nb loop max in getBorgLockForGovernance.');
       maxLoop--;
@@ -149,6 +149,24 @@ export const getBorgLockForGovernance = async (borgMetrics, driver, maxLoop) => 
     console.log('Borg lock for governance is acquired.');
   } catch(e) {
     await handlerError(e, driver, 'Error to get borg lock for governance :', true);
+  }
+}
+
+// Get circulating Borg.
+export const getCirculatingBorg = async (borgMetrics, driver, maxLoop) => {
+  try {
+    while(!borgMetrics.circulatingBorg) {
+      const circulatingBorg = await driver.findElements(By.className('cZdGNf'));
+      borgMetrics.circulatingBorg = await circulatingBorg[0].getText();
+
+      if(maxLoop === 0) throw new Error('Nb loop max in getCirculatingBorg.');
+      maxLoop--;
+    }
+
+    maxLoop = 5;
+    console.log('Circulating Borg is acquired.');
+  } catch(e) {
+    await handlerError(e, driver, 'Error to get circulating Borg :', true);
   }
 }
 
@@ -182,6 +200,8 @@ export const calculVariation = (borgMetrics, oldBorgMetrics, variationBorgMetric
   const oldAum = NumFormat.convertNumberForCalcul(oldBorgMetrics.aum);
   const borgLockForGovernance = NumFormat.convertNumberForCalcul(borgMetrics.borgLockForGovernance);
   const oldBorgLockForGovernance = NumFormat.convertNumberForCalcul(oldBorgMetrics.borgLockForGovernance);
+  const circulatingBorg = NumFormat.convertNumberForCalcul(borgMetrics.circulatingBorg);
+  const oldCirculatingBorg = NumFormat.convertNumberForCalcul(oldBorgMetrics.circulatingBorg);
 
   // Percent
   variationBorgMetrics.value = borgMetrics.value && oldBorgMetrics.value ? ((Number(borgMetrics.value) - Number(oldBorgMetrics.value)) / Number(oldBorgMetrics.value) * 100).toFixed(2) : 'N/A';
@@ -195,4 +215,5 @@ export const calculVariation = (borgMetrics, oldBorgMetrics, variationBorgMetric
   variationBorgMetrics.supplyCirculation = supplyCirculation - oldSupplyCirculation;
   variationBorgMetrics.rank = borgMetrics.rank && oldBorgMetrics.rank ? Number(borgMetrics.rank) - Number(oldBorgMetrics.rank) : 'N/A';
   variationBorgMetrics.borgLockForGovernance = borgLockForGovernance > 0 && oldBorgLockForGovernance > 0 ? borgLockForGovernance - oldBorgLockForGovernance : 'N/A';
+  variationBorgMetrics.circulatingBorg = circulatingBorg > 0 && oldCirculatingBorg > 0 ? circulatingBorg - oldCirculatingBorg : 'N/A';
 }
