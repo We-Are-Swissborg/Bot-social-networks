@@ -7,7 +7,7 @@ export const acceptCookieSwissborg = async (driver, maxLoop) => {
   try {
     let cookieButtons = undefined;
     while(!cookieButtons) {
-      cookieButtons = await driver.findElements(By.className('cookieBox__SButton-sc-v30xwb-5'));
+      cookieButtons = await driver.findElements(By.className('kxZeCm'));
       if(cookieButtons) await cookieButtons[1].click();
 
       if(maxLoop === 0) throw new Error('Nb loop max for cookie button.'); 
@@ -138,8 +138,14 @@ export const getUserVerify = async (borgMetrics, driver, maxLoop) => {
 export const getBorgLockForGovernance = async (borgMetrics, driver, maxLoop) => {
   try {
     while(!borgMetrics.borgLockForGovernance) {
+      const title = await driver.findElement(By.className('dzQGEI'));
+      await driver.actions()
+      .scroll(0, 0, 0, 0, title)
+      .perform()
+      await new Promise(resolve => setTimeout(resolve, 2000));
+
       const borgLockForGovernance = await driver.findElements(By.className('cZdGNf'));
-      borgMetrics.borgLockForGovernance = await borgLockForGovernance[2].getText();
+      borgMetrics.borgLockForGovernance = await borgLockForGovernance[7].getText();
 
       if(maxLoop === 0) throw new Error('Nb loop max in getBorgLockForGovernance.');
       maxLoop--;
@@ -157,7 +163,7 @@ export const getCirculatingBorg = async (borgMetrics, driver, maxLoop) => {
   try {
     while(!borgMetrics.circulatingBorg) {
       const circulatingBorg = await driver.findElements(By.className('cZdGNf'));
-      borgMetrics.circulatingBorg = await circulatingBorg[0].getText();
+      borgMetrics.circulatingBorg = await circulatingBorg[5].getText();
 
       if(maxLoop === 0) throw new Error('Nb loop max in getCirculatingBorg.');
       maxLoop--;

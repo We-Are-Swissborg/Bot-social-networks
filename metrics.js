@@ -14,6 +14,7 @@ async function getOnSwissborg(infos, driver, maxLoop) {
   //Page https://swissborg.com/premium-account
   await driver.get('https://swissborg.com/premium-account');
   await new Promise(resolve => setTimeout(resolve, 2000));
+  await Swissborg.acceptCookieSwissborg(driver, maxLoop);
   await Swissborg.getPremiumUserBorg(borgMetricsOrSeveralMetrics, driver, maxLoop);
   await Swissborg.getBorgLockByPremium(borgMetricsOrSeveralMetrics, driver, maxLoop);
 
