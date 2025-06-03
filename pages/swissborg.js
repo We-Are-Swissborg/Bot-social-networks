@@ -145,7 +145,7 @@ export const getBorgLockForGovernance = async (borgMetrics, driver, maxLoop) => 
       await new Promise(resolve => setTimeout(resolve, 2000));
 
       const borgLockForGovernance = await driver.findElements(By.className('cZdGNf'));
-      borgMetrics.borgLockForGovernance = await borgLockForGovernance[7].getText();
+      borgMetrics.borgLockForGovernance = await borgLockForGovernance[2].getText();
 
       if(maxLoop === 0) throw new Error('Nb loop max in getBorgLockForGovernance.');
       maxLoop--;
@@ -163,7 +163,7 @@ export const getCirculatingBorg = async (borgMetrics, driver, maxLoop) => {
   try {
     while(!borgMetrics.circulatingBorg) {
       const circulatingBorg = await driver.findElements(By.className('cZdGNf'));
-      borgMetrics.circulatingBorg = await circulatingBorg[5].getText();
+      borgMetrics.circulatingBorg = await circulatingBorg[0].getText();
 
       if(maxLoop === 0) throw new Error('Nb loop max in getCirculatingBorg.');
       maxLoop--;
