@@ -14,7 +14,7 @@ async function BotTelegram() {
   const metricsSendTime = 12;
   const meetupSendTime = 15;
   try {
-    if(12 == metricsSendTime) {
+    if(date.getHours() == metricsSendTime) {
       const dataFile = await fs.readFile('./old-value-telegram.txt','utf8');
       let oldBorgMetrics = JSON.parse(dataFile);
       let borgMetrics = {
