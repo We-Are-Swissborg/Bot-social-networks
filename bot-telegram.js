@@ -106,7 +106,7 @@ const sendMetrics = async (borgMetrics, oldBorgMetrics, variationBorgMetrics) =>
                         `• Offre en circulation 💸%0A ${oldBorgMetrics.supplyCirculation} \\-\\-\\> ${borgMetrics.supplyCirculation} \\(${NumFormat.abbreviateNumber(variationBorgMetrics.supplyCirculation)}\\)%0A%0A` +
                         `• Volume CoinGecko \\(24h\\) 📊%0A $ ${oldBorgMetrics.volumeCoinGecko} \\-\\-\\> $ ${borgMetrics.volumeCoinGecko} \\(${variationBorgMetrics.volumeCoinGecko}%\\)%0A%0A` +
                         `• Actifs sous gestion 💵%0A ${oldBorgMetrics.aum} \\-\\-\\> ${borgMetrics.aum} \\(${variationBorgMetrics.aum}%\\)%0A%0A` +
-                        `• BORG en circulation 💚%0A ${oldBorgMetrics.circulatingBorg} \\-\\-\\> ${borgMetrics.circulatingBorg} \\(${variationBorgMetrics.circulatingBorg}%\\)%0A%0A` +
+                        `• BORG en circulation 💚%0A ${oldBorgMetrics.circulatingBorg} \\-\\-\\> ${borgMetrics.circulatingBorg} \\(${NumFormat.abbreviateNumber(variationBorgMetrics.circulatingBorg)}\\)%0A%0A` +
                         `• Rang CoinGecko 🦎%0A ${oldBorgMetrics.rank} \\-\\-\\> ${borgMetrics.rank} \\(${variationBorgMetrics.rank}\\)%0A%0A` +
                         `*_Message généré par WASBot_*\\.`;
 
