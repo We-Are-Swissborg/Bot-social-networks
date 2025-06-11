@@ -181,6 +181,18 @@ const sendMeetup = async () => {
       hour: '18h30\\-23h00',
       contact: 'https://x\\.com/TheSwissKraken / https://x\\.com/YaBoSaCrYpT'
     },
+    {
+      place: 'London GB',
+      date: getSecondWednesday(),
+      hour: '18h45\\-21h30',
+      contact: '@Claire_InCrypto'
+    },
+    // {
+    //   place: 'Besançon 🇫🇷',
+    //   date: getSecondWednesday(),
+    //   hour: '18h45\\-22h00',
+    //   contact: ''
+    // },
   ];
 
   let msgTelegram = "📅 WeAreSwissborg Meeting 📅%0A%0A";
