@@ -182,10 +182,10 @@ const sendMeetup = async () => {
       contact: 'https://x\\.com/TheSwissKraken / https://x\\.com/YaBoSaCrYpT'
     },
     {
-      place: 'London GB',
+      place: 'London 🇬🇧',
       date: getSecondWednesday(),
       hour: '18h45\\-21h30',
-      contact: '@Claire_InCrypto'
+      contact: '@Claire\\_InCrypto'
     },
     // {
     //   place: 'Besançon 🇫🇷',
