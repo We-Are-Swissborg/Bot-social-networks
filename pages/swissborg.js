@@ -7,7 +7,7 @@ export const acceptCookieSwissborg = async (driver, maxLoop) => {
   try {
     let cookieButtons = undefined;
     while(!cookieButtons) {
-      cookieButtons = await driver.findElements(By.className('kxZeCm'));
+      cookieButtons = await driver.findElements(By.className('cookieBanner__SButton-sc-190qymo-5'));
       if(cookieButtons) await cookieButtons[1].click();
 
       if(maxLoop === 0) throw new Error('Nb loop max for cookie button.'); 
