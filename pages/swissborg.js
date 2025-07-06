@@ -102,8 +102,9 @@ export const getAumBorg = async (borgMetrics, driver, maxLoop) => {
       .scroll(0, 0, 0, 1000)
       .perform()
       await new Promise(resolve => setTimeout(resolve, 2000));
-      const aum = await driver.findElement(By.className('stat-2'));
-      borgMetrics.aum = await aum.getText();
+
+      const listData = await driver.findElements(By.className('bjTDmW'));
+      borgMetrics.aum = await listData[2].getText();
 
       if(maxLoop === 0) throw new Error('Nb loop max in getAumBorg.');
       maxLoop--;
@@ -120,8 +121,8 @@ export const getAumBorg = async (borgMetrics, driver, maxLoop) => {
 export const getUserVerify = async (borgMetrics, driver, maxLoop) => {
   try {
     while(!borgMetrics.userVerify) {
-      const userVerify = await driver.findElement(By.className('stat-1'));
-      borgMetrics.userVerify = await userVerify.getText();
+      const listData = await  await driver.findElements(By.className('bjTDmW'));
+      borgMetrics.userVerify = await listData[1].getText();
 
       if(maxLoop === 0) throw new Error('Nb loop max in getUserVerify.');
       maxLoop--;
@@ -138,14 +139,14 @@ export const getUserVerify = async (borgMetrics, driver, maxLoop) => {
 export const getBorgLockForGovernance = async (borgMetrics, driver, maxLoop) => {
   try {
     while(!borgMetrics.borgLockForGovernance) {
-      const title = await driver.findElement(By.className('dzQGEI'));
+      const title = await driver.findElement(By.className('iCCdso'));
       await driver.actions()
       .scroll(0, 0, 0, 0, title)
       .perform()
       await new Promise(resolve => setTimeout(resolve, 2000));
 
-      const borgLockForGovernance = await driver.findElements(By.className('cZdGNf'));
-      borgMetrics.borgLockForGovernance = await borgLockForGovernance[7].getText(); // Return error or wrong value in DEV but not in PROD. Put 2 in DEV
+      const borgLockForGovernance = await driver.findElements(By.className('SZCGg'));
+      borgMetrics.borgLockForGovernance = await borgLockForGovernance[2].getText(); // Return error or wrong value in DEV but not in PROD. Put 2 in DEV
 
       if(maxLoop === 0) throw new Error('Nb loop max in getBorgLockForGovernance.');
       maxLoop--;
@@ -162,8 +163,8 @@ export const getBorgLockForGovernance = async (borgMetrics, driver, maxLoop) => 
 export const getCirculatingBorg = async (borgMetrics, driver, maxLoop) => {
   try {
     while(!borgMetrics.circulatingBorg) {
-      const circulatingBorg = await driver.findElements(By.className('cZdGNf'));
-      borgMetrics.circulatingBorg = await circulatingBorg[5].getText(); // Return error or wrong value in DEV but not in PROD. Put 0 in DEV
+      const circulatingBorg = await driver.findElements(By.className('SZCGg'));
+      borgMetrics.circulatingBorg = await circulatingBorg[0].getText(); // Return error or wrong value in DEV but not in PROD. Put 0 in DEV
 
       if(maxLoop === 0) throw new Error('Nb loop max in getCirculatingBorg.');
       maxLoop--;
