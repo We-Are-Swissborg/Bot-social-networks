@@ -116,11 +116,18 @@ const sendMetrics = async (borgMetrics, oldBorgMetrics, variationBorgMetrics) =>
       }
     });
 
+    const bodyTelegram = JSON.parse(responseTelegram.body);
+    const idMessage = bodyTelegram.result.message_id;
+
+    await got.get(`https://api.telegram.org/bot${process.env.TG_TOKEN}/pinChatMessage?chat_id=${process.env.ID_CHAT_TG}&message_id=${idMessage}`);
+
     // Print the response
-    console.log(date + ' Metrics message to Telegram successfully:', responseTelegram.body);
+    console.log(date + ' Metrics message to Telegram successfully:', JSON.stringify(bodyTelegram));
   } catch (error) {
-    console.error(date + ' Error Metrics message to telegram: ' + error.response ? error.response.body : error);
-    throw new Error(date + ' Error Metrics message to telegram: ' + error.response ? error.response.body : error);
+    const errorMessage = error.response ? error.response.body : error;
+
+    console.error(date + ' Error Metrics message to telegram: ' + errorMessage);
+    throw new Error(date + ' Error Metrics message to telegram: ' + errorMessage);
   }
 }
 
@@ -214,11 +221,18 @@ const sendMeetup = async () => {
       }
     });
 
+    const bodyTelegram = JSON.parse(responseTelegram.body);
+    const idMessage = bodyTelegram.result.message_id;
+
+    await got.get(`https://api.telegram.org/bot${process.env.TG_TOKEN}/pinChatMessage?chat_id=${process.env.ID_CHAT_TG}&message_id=${idMessage}`);
+
     // Print the response
-    console.log(date + ' Meetup message to Telegram successfully:', responseTelegram.body);
+    console.log(date + ' Meetup message to Telegram successfully:', JSON.stringify(bodyTelegram));
   } catch (error) {
-    console.error(date + ' Error Meetup message to telegram: ' + error.response ? error.response.body : error);
-    throw new Error(date + ' Error Meetup message to telegram: ' + error.response ? error.response.body : error);
+    const errorMessage = error.response ? error.response.body : error;
+
+    console.error(date + ' Error Meetup message to telegram: ' + errorMessage);
+    throw new Error(date + ' Error Meetup message to telegram: ' + errorMessage);
   }
 }
 
