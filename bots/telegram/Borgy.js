@@ -11,7 +11,7 @@ async function Borgy(isPolling = false) {
   const voteSendTime = 12;
   try {
     if(date.getHours() == voteSendTime && !isPolling) {
-      const photoVoteMessage = 'AgACAgQAAyEFAASLu9f3AAIlIWenh54n8JC-tUcoA7HrCCHJJAABsQAC7cgxG7G8MVH-SuLXZ-FWKQEAAwIAA3kAAzYE';
+      const photoVoteMessage = 'AgACAgQAAyEFAASLu9f3AAJJuWiaxNNCIuulCdOqcMxie19g55QlAAKJzDEblyPYUC9tVrb7PuMKAQADAgADbQADNgQ';
       const frVoteMessage = FR['vote-message'];
       const enVoteMessage = EN['vote-message'];
 
