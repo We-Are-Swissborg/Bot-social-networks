@@ -1,6 +1,6 @@
 import { By } from 'selenium-webdriver';
 import * as NumFormat from '../utils/numberFormatter.js';
-import { handlerError } from '../utils/errorToTelegram.js';
+import { handlerError } from '../utils/telegram.js';
 
 // Click for accept cookie in Swissborg.
 export const acceptCookieSwissborg = async (driver, maxLoop) => {
@@ -32,7 +32,7 @@ export const getMarketCapBorg = async (borgMetrics, driver, maxLoop) => {
     maxLoop = 5;
     console.log('MarketCap BORG is acquired.');
   } catch(e) {
-    await handlerError(e, driver, 'Error to get marketCap BORG :', true);
+    await handlerError(e, driver, 'Error to get marketCap BORG :');
   }
 }
 
@@ -53,7 +53,7 @@ export const getPremiumUserBorg = async (borgMetrics, driver, maxLoop) => {
     maxLoop = 5;
     console.log('Nb premium user BORG is acquired.');
   } catch(e) {
-    await handlerError(e, driver, 'Error to get nb premium user BORG :', true);
+    await handlerError(e, driver, 'Error to get nb premium user BORG :');
   }
 }
 
@@ -71,7 +71,7 @@ export const getBorgLockByPremium = async (borgMetrics, driver, maxLoop) => {
     maxLoop = 5;
     console.log('Nb BORG lock is acquired.');
   } catch(e) {
-    await handlerError(e, driver, 'Error to get nb BORG lock :', true);
+    await handlerError(e, driver, 'Error to get nb BORG lock :');
   }
 }
 
@@ -90,7 +90,7 @@ export const getSupplyCirculationBorg = async (borgMetrics, driver, maxLoop) => 
     maxLoop = 5;
     console.log('Nb supply in circulation is acquired.');
   } catch(e) {
-    await handlerError(e, driver, 'Error to get nb supply in circulation BORG :', true);
+    await handlerError(e, driver, 'Error to get nb supply in circulation BORG :');
   }
 }
 
@@ -113,7 +113,7 @@ export const getAumBorg = async (borgMetrics, driver, maxLoop) => {
     maxLoop = 5;
     console.log('AUM is acquired.');
   } catch(e) {
-    await handlerError(e, driver, 'Error to get AUM BORG :', true);
+    await handlerError(e, driver, 'Error to get AUM BORG :');
   }
 }
 
@@ -131,7 +131,7 @@ export const getUserVerify = async (borgMetrics, driver, maxLoop) => {
     maxLoop = 5;
     console.log('Verify user is acquired.');
   } catch(e) {
-    await handlerError(e, driver, 'Error to get verify user BORG :', true);
+    await handlerError(e, driver, 'Error to get verify user BORG :');
   }
 }
 
@@ -155,7 +155,7 @@ export const getBorgLockForGovernance = async (borgMetrics, driver, maxLoop) => 
     maxLoop = 5;
     console.log('Borg lock for governance is acquired.');
   } catch(e) {
-    await handlerError(e, driver, 'Error to get borg lock for governance :', true);
+    await handlerError(e, driver, 'Error to get borg lock for governance :');
   }
 }
 
@@ -173,7 +173,7 @@ export const getCirculatingBorg = async (borgMetrics, driver, maxLoop) => {
     maxLoop = 5;
     console.log('Circulating Borg is acquired.');
   } catch(e) {
-    await handlerError(e, driver, 'Error to get circulating Borg :', true);
+    await handlerError(e, driver, 'Error to get circulating Borg :');
   }
 }
 

@@ -1,5 +1,5 @@
 import { By } from 'selenium-webdriver';
-import { handlerError } from '../utils/errorToTelegram.js';
+import { handlerError } from '../utils/telegram.js';
 
 const getValueTab = async (driver) => await driver.findElements(By.css('tbody')); 
 
