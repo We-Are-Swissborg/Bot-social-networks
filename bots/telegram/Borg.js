@@ -33,9 +33,9 @@ async function Borg() {
       }
       const variationBorgMetrics = {...borgMetrics};
       borgMetrics = await GetMetrics(borgMetrics);
-  
+
       await fs.writeFile('./old-value-telegram.txt', JSON.stringify(borgMetrics));
-  
+
       Swissborg.calculVariation(borgMetrics, oldBorgMetrics, variationBorgMetrics);
       await sendMetrics(borgMetrics, oldBorgMetrics, variationBorgMetrics);
     }
@@ -135,7 +135,7 @@ const getSecondWednesday = () => {
   let year = date.getFullYear();
   let month = date.getMonth();
 
-  let firstDayOfMonth = new Date(year, month, 1);  
+  let firstDayOfMonth = new Date(year, month, 1);
   let firstWednesday = (7 - firstDayOfMonth.getDay() + 3) % 7;
   let secondWednesday = new Date(year, month, 1 + firstWednesday + 7);
 
