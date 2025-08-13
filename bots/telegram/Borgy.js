@@ -3,7 +3,7 @@ import dotenv from 'dotenv';
 import { sendErrorToTelegram, sendMessageWithPhotoToTelegram } from '../../utils/telegram.js';
 import FR from '../../translations/fr.js';
 import EN from '../../translations/en.js';
-dotenv.config({ path: '.env.production' });
+dotenv.config({ path: '../../env.production' });
 
 const date = new Date();
 
@@ -33,4 +33,4 @@ async function Borgy(isPolling = false) {
   }
 }
 
-export default Borgy;
+Borgy();

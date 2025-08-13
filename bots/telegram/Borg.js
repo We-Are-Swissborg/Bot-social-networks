@@ -8,7 +8,7 @@ import * as Swissborg from '../../pages/swissborg.js';
 import * as NumFormat from '../../utils/numberFormatter.js';
 import { sendErrorToTelegram } from "../../utils/telegram.js";
 
-dotenv.config({ path: '.env.production' });
+dotenv.config({ path: '../../env.production' });
 const date = new Date();
 
 async function Borg() {
@@ -236,4 +236,4 @@ const sendMeetup = async () => {
   }
 }
 
-export default Borg;
+Borg();
