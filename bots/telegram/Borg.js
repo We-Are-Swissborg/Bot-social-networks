@@ -8,15 +8,16 @@ import * as Swissborg from '../../pages/swissborg.js';
 import * as NumFormat from '../../utils/numberFormatter.js';
 import { sendErrorToTelegram } from "../../utils/telegram.js";
 
-dotenv.config({ path: '../../env.production' });
+dotenv.config({ path: '../../.env.production' });
 const date = new Date();
 
 async function Borg() {
   const metricsSendTime = 12;
   const meetupSendTime = 15;
+  const pathFile = '../../old-metrics-Borg.txt';
   try {
     if(date.getHours() == metricsSendTime) {
-      const dataFile = await fs.readFile('./old-value-telegram.txt','utf8');
+      const dataFile = await fs.readFile(pathFile,'utf8');
       const oldBorgMetrics = JSON.parse(dataFile);
       let borgMetrics = {
         value: '',
@@ -34,7 +35,7 @@ async function Borg() {
       const variationBorgMetrics = {...borgMetrics};
       borgMetrics = await GetMetrics(borgMetrics);
 
-      await fs.writeFile('./old-value-telegram.txt', JSON.stringify(borgMetrics));
+      await fs.writeFile(pathFile, JSON.stringify(borgMetrics));
 
       Swissborg.calculVariation(borgMetrics, oldBorgMetrics, variationBorgMetrics);
       await sendMetrics(borgMetrics, oldBorgMetrics, variationBorgMetrics);

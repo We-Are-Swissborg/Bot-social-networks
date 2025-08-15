@@ -1,5 +1,11 @@
 import { Builder } from 'selenium-webdriver';
 import chrome from 'selenium-webdriver/chrome.js';
+// eslint-disable-next-line import/no-unresolved
+import got from 'got';
+import process from 'process';
+import dotenv from 'dotenv';
+
+dotenv.config({ path: '../.env.production' });
 
 async function getDriver() {
   try {
@@ -31,7 +37,7 @@ export default getDriver;
 //   const date = new Date();
 
 //   try {
-//     const answerTelegram = await got.post(`https://api.telegram.org/bot${process.env.WASB_TG_TOKEN}/getUpdates`, {
+//     const answerTelegram = await got.post(`https://api.telegram.org/bot${process.env.BORGY_TG_TOKEN}/getUpdates`, {
 //       headers: {
 //         accept: 'application/x-www-form-urlencoded'
 //       }
@@ -39,7 +45,6 @@ export default getDriver;
 //     console.log(date + ' Message to Telegram successfully:', answerTelegram.body);
 //   } catch (error) {
 //     console.error(date + ' Error message to telegram: ' + error.response ? error.response.body : error);
-//     throw new Error(date + ' Error message to telegram: ' + error.response ? error.response.body : error);
 //   }
 // }
 

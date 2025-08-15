@@ -19,7 +19,7 @@ const addZeroInValue = (unit, value) => {
 }
 
 export const convertNumberForCalcul = (value) => {
-  let v = value;
+  let v = value.replaceAll(',', '');
 
   if(v) {
     if(v.includes('$')) v = v.replace('$', '');
@@ -92,4 +92,24 @@ export const abbreviateNumber = (value) => {
   }
 
   return v;
+}
+
+export const formatValue = (value) => {
+  if(value.includes(',')) value = value.replaceAll(',', '');
+  value = Number(value);
+  if(value.toString().charAt(0) == '0') {
+    let nbAfterDot = 4;
+    let indexString = 2;
+
+    while(value.toString().charAt(indexString) == '0') {
+      indexString += 1;
+      nbAfterDot += 1;
+    }
+    return value.toFixed(nbAfterDot);
+  } else {
+    value = value.toFixed(2);
+  }
+  const numberFormat = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' });
+
+  return numberFormat.format(value);
 }

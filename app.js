@@ -1,11 +1,9 @@
 import http from 'node:http';
 import dotenv from 'dotenv';
 import process from 'process';
-import cron from 'node-cron';
-import BotWasb from './bots/BotWasb.js';
-import Borg from './bots/telegram/Borg.js';
-import Borgy from './bots/telegram/Borgy.js';
+import BorgyPolling from './bots/telegram/Borgy.js';
 import { sendErrorToTelegram } from './utils/telegram.js';
+import getDriver from './utils/getDriver.js';
 
 dotenv.config({ path: '.env.production' });
 
@@ -16,37 +14,14 @@ const server = http.createServer();
 server.listen(port, async () => {
   try {
     console.log('Server run');
+    const driver = await getDriver();
 
-    // Every hour.
-    const everyHour = cron.schedule('*/60 * * * *', async () => {
-      console.log('Task every hour actived');
-      await BotWasb();
-    });
+    await BorgyPolling(driver, true);
 
-    // Every noon.
-    const everyNoon = cron.schedule('0 12 * * *', async () => {
-      console.log('Task every noon actived');
-      await Borg();
-      await Borgy();
-    });
-
-    await everyHour.start();
-    await everyNoon.start();
-
-    // // Every Wednesday at 3 p.m.
-    // cron.schedule('0 15 * * 3', async () => {
-    //   console.log('Task every Wednesday at 3 p.m actived');
-    //   await Borg();
-    // });
-
-    // await Borgy(true);
-
-    // // Polling.
-    // setInterval(async () => {
-    //   // await driver.get(driver.getCurrentUrl());
-    //   // await new Promise(resolve => setTimeout(resolve, 2000));
-    //   await Borgy(true);
-    // }, 60000);
+    // Polling.
+    setInterval(async () => {
+      await BorgyPolling(driver, false);
+    }, 60000);
 
   } catch(e) {
     const errMsg = e.response ? e.response.body : e.message;

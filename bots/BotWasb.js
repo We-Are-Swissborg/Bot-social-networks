@@ -5,7 +5,7 @@ import got from 'got';
 import process from 'process'
 import { sendErrorToTelegram } from '../utils/telegram.js';
 
-dotenv.config({ path: '../env.production' });
+dotenv.config({ path: '../.env.production' });
 
 async function BotWasb() {
   try {

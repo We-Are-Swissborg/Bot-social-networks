@@ -1,6 +1,9 @@
 // eslint-disable-next-line import/no-unresolved
 import got from 'got';
 import process from 'process';
+import dotenv from 'dotenv';
+
+dotenv.config({ path: '../.env.production' });
 
 const formatMessage = (errorMsg) => {
   const characterToEdit = ['_', '*', '[', ']', '(', ')', '~', '`', '>', '#', '+', '-', '=', '|', '{', '}', '.', '!'];
@@ -35,18 +38,18 @@ export const handlerError = async (e, driver, addErrorMsg, isBorgyBot = false) =
   await sendErrorToTelegram(e, addErrorMsg, botToken);
 }
 
-export const sendMessageWithPhotoToTelegram = async (idThreadTelegram, idPhoto, message, about) => {
+export const sendMessageWithPhotoToTelegram = async (infos) => {
   try {
-    await got.post(`https://api.telegram.org/bot${process.env.TG_TOKEN}/sendPhoto?chat_id=${process.env.ID_CHAT_TG}&photo=${idPhoto}&message_thread_id=${idThreadTelegram}&caption=${message}&parse_mode=MarkdownV2`, {
+    await got.post(`https://api.telegram.org/bot${infos.botToken}/sendPhoto?chat_id=${infos.chatId}&photo=${infos.idPhoto}&message_thread_id=${infos.idThreadTelegram}&caption=${infos.message}&parse_mode=MarkdownV2`, {
       headers: {
         accept: 'application/x-www-form-urlencoded',
       }
     });
 
     // Print the response
-    console.log(`${about} message to Telegram successfully.`);
+    console.log(`${infos.about} message to Telegram successfully.`);
   } catch (error) {
-    console.error(`Error ${about.toLowerCase()} message to telegram: ` + error.response ? error.response.body : error);
-    throw new Error(`Error ${about.toLowerCase()} message to telegram: ` + error.response ? error.response.body : error);
+    console.error(`Error ${infos.about.toLowerCase()} message to telegram: ` + error.response ? error.response.body : error);
+    throw new Error(`Error ${infos.about.toLowerCase()} message to telegram: ` + error.response ? error.response.body : error);
   }
 }

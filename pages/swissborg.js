@@ -177,26 +177,14 @@ export const getCirculatingBorg = async (borgMetrics, driver, maxLoop) => {
   }
 }
 
-const replaceComma = (value) => {
-  if(value) return value.replaceAll(',', '')
-  else value;
-}
-
 // Calcul difference between old value and new value.
 export const calculVariation = (borgMetrics, oldBorgMetrics, variationBorgMetrics) => {
-  const replaceCommaMarketCap = replaceComma(borgMetrics.marketCap);
-  const replaceCommaOldMarketCap = replaceComma(oldBorgMetrics.marketCap);
-  const replaceCommaSupplyCirculation = replaceComma(borgMetrics.supplyCirculation);
-  const replaceCommaOldSupplyCirculation = replaceComma(oldBorgMetrics.supplyCirculation);
-  const replaceCommaVolumeCoinGecko = replaceComma(borgMetrics.volumeCoinGecko);
-  const replaceCommaOldVolumeCoinGecko= replaceComma(oldBorgMetrics.volumeCoinGecko);
-
-  const marketCap = NumFormat.convertNumberForCalcul(replaceCommaMarketCap);
-  const oldMarketCap = NumFormat.convertNumberForCalcul(replaceCommaOldMarketCap);
-  const supplyCirculation = NumFormat.convertNumberForCalcul(replaceCommaSupplyCirculation);
-  const oldSupplyCirculation = NumFormat.convertNumberForCalcul(replaceCommaOldSupplyCirculation);
-  const volumeCoinGecko = NumFormat.convertNumberForCalcul(replaceCommaVolumeCoinGecko);
-  const oldVolumeCoinGecko = NumFormat.convertNumberForCalcul(replaceCommaOldVolumeCoinGecko);
+  const marketCap = NumFormat.convertNumberForCalcul(borgMetrics.marketCap);
+  const oldMarketCap = NumFormat.convertNumberForCalcul(oldBorgMetrics.marketCap);
+  const supplyCirculation = NumFormat.convertNumberForCalcul(borgMetrics.supplyCirculation);
+  const oldSupplyCirculation = NumFormat.convertNumberForCalcul(oldBorgMetrics.supplyCirculation);
+  const volumeCoinGecko = NumFormat.convertNumberForCalcul(borgMetrics.volumeCoinGecko);
+  const oldVolumeCoinGecko = NumFormat.convertNumberForCalcul(oldBorgMetrics.volumeCoinGecko);
   const userVerify = NumFormat.convertNumberForCalcul(borgMetrics.userVerify);
   const oldUserVerify = NumFormat.convertNumberForCalcul(oldBorgMetrics.userVerify);
   const premiumUser = NumFormat.convertNumberForCalcul(borgMetrics.premiumUser);
