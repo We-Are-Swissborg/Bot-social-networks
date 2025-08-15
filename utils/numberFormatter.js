@@ -95,7 +95,7 @@ export const abbreviateNumber = (value) => {
 }
 
 export const formatValue = (value) => {
-  if(value.includes(',')) value = value.replaceAll(',', '');
+  if(value.toString().includes(',')) value = value.replaceAll(',', '');
   value = Number(value);
   if(value.toString().charAt(0) == '0') {
     let nbAfterDot = 4;
