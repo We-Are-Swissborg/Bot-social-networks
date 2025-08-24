@@ -119,10 +119,12 @@ async def get_on_dexscreener(infos: dict, page: Page, prop_metrics: list):
 
 async def get_metrics(infos: dict):
   try:
+    os_camoufox = os.getenv("OS_CAMOUFOX")
+    headless_camoufox = os.getenv("HEADLESS_CAMOUFOX") if os_camoufox == 'linux' else bool(os.getenv("HEADLESS_CAMOUFOX"))
     async with AsyncCamoufox(
-      os=os.getenv("OS_CAMOUFOX"),
+      os=os_camoufox,
       humanize=True,
-      headless=bool(os.getenv("HEADLESS_CAMOUFOX")),
+      headless=headless_camoufox,
       disable_coop=True,
       i_know_what_im_doing=True,
       window=(1280, 720),
