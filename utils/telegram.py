@@ -21,7 +21,7 @@ async def send_error_to_telegram(e: Exception, add_error_msg: str = None, bot_to
 
   if add_error_msg: error_msg = f'{add_error_msg} : {e}'
   error_msg = format_message(error_msg)
-  print('Bot_token :', bot_token)
+
   requests.post(f'https://api.telegram.org/bot{bot_token}/sendMessage?chat_id={chat_id}&text={error_msg}&parse_mode=MarkdownV2',
     headers = {
       'accept': 'application/x-www-form-urlencoded'

@@ -1,5 +1,5 @@
 import os
-import asyncio
+import time
 from camoufox.async_api import AsyncCamoufox
 from playwright.async_api import Page
 import pages.swissborg as Swissborg
@@ -16,37 +16,38 @@ async def get_on_swissborg(infos: dict, page: Page, max_loop: int):
 
     # Page https://swissborg.com/premium-account
     await page.goto('https://swissborg.com/premium-account')
-    await asyncio.sleep(2)
+    time.sleep(2)
     await Swissborg.accept_cookie_swissborg(page, max_loop)
     await Swissborg.get_premium_user_borg(borg_metrics_or_several_metrics, page, max_loop)
     await Swissborg.get_borg_lock_by_premium(borg_metrics_or_several_metrics, page, max_loop)
 
     # Page https://swissborg.com/marche-crypto/coins/swissborg-token
     # await page.goto('https://swissborg.com/crypto-market/coins/swissborg-token')
-    # await asyncio.sleep(2)
+    # time.sleep(2)
     # await Swissborg.get_market_cap_borg(borg_metrics_or_several_metrics, page, max_loop)
     # await Swissborg.get_supply_circulation_borg(borg_metrics_or_several_metrics, page, max_loop)
 
     # Page https://swissborg.com/about
     await page.goto('https://swissborg.com/about')
-    await asyncio.sleep(2)
+    time.sleep(2)
     await Swissborg.get_aum_borg(borg_metrics_or_several_metrics, page, max_loop)
     await Swissborg.get_user_verify(borg_metrics_or_several_metrics, page, max_loop)
 
     # Page https://swissborg.com/buy-borg
     await page.goto('https://swissborg.com/buy-borg')
-    await asyncio.sleep(2)
+    time.sleep(2)
     await Swissborg.get_borg_lock_for_governance(borg_metrics_or_several_metrics, page, max_loop)
     await Swissborg.get_circulating_borg(borg_metrics_or_several_metrics, page, max_loop)
 
     # Page https://www.coingecko.com/en/coins/{nameCrypto}
     await page.goto('https://www.coingecko.com/en/coins/swissborg')
-    await asyncio.sleep(2)
+    time.sleep(2)
     if infos['borg'] is None: await Coingecko.get_rank(borg_metrics_or_several_metrics, page, max_loop)
     await Coingecko.get_market_cap(borg_metrics_or_several_metrics, page, max_loop, 'BORG')
     await Coingecko.get_supply_circulation(borg_metrics_or_several_metrics, page, max_loop, 'BORG')
     await Coingecko.get_volume(borg_metrics_or_several_metrics, page, max_loop, 'BORG')
   except Exception as e:
+    if 'page.goto' in str(e): return print(f'Error to get datas on Swissborg {e}')
     await handler_error(e, page, 'Error to get datas on Swissborg :')
 
 async def get_on_coingecko(infos: dict, page: Page, max_loop: int, prop_metrics: list):
@@ -81,7 +82,7 @@ async def get_on_coingecko(infos: dict, page: Page, max_loop: int, prop_metrics:
     for prop in prop_metrics:
       if prop in value_to_get_coingecko:
         # Page https://coingecko.com/en/coins/{nameCrypto}
-        if inc != 0: await asyncio.sleep(2.5)
+        if inc != 0: time.sleep(2.5)
         await page.goto(f'https://www.coingecko.com/en/coins/{params_coingecko[prop]}')
         if 'marketCap' in value_to_get_coingecko[prop]: await Coingecko.get_market_cap(infos[prop], page, max_loop, prop)
         if 'volumeCoinGecko' in value_to_get_coingecko[prop]: await Coingecko.get_volume(infos[prop], page, max_loop, prop)
@@ -89,6 +90,7 @@ async def get_on_coingecko(infos: dict, page: Page, max_loop: int, prop_metrics:
       inc = inc + 1
 
   except Exception as e:
+    if 'page.goto' in str(e): return print(f'Error to get datas on CoinGecko {e}')
     await handler_error(e, page, 'Error to get datas on CoinGecko')
 
 async def get_on_dexscreener(infos: dict, page: Page, prop_metrics: list):
@@ -115,6 +117,7 @@ async def get_on_dexscreener(infos: dict, page: Page, prop_metrics: list):
         # if value_to_get_dexscreener[prop]['props'].includes('created')) infos[prop].created = String(res['pairs'][value_to_get_dexscreener[prop]['pairs_id']].pairCreatedAt)
         # if value_to_get_dexscreener[prop].includes('holder')) await DexScreener.getHolder(infos[prop], page, max_loop, prop)
   except Exception as e:
+    if 'page.goto' in str(e): return print(f'Error to get datas on CoinGecko {e}')
     await handler_error(e, page, 'Error to get datas on DexScreener')
 
 async def get_metrics(infos: dict):
@@ -178,10 +181,10 @@ async def get_metrics(infos: dict):
         if is_supply_circulation: infos['supplyCirculation'] = abbreviate_number(infos['supplyCirculation'])
         if is_volume_coingecko: infos['volumeCoinGecko'] = abbreviate_number(infos['volumeCoinGecko'])
 
-      await page.close()
-      await browser.close()
       return infos
   except Exception:
-    await page.close()
-    await browser.close()
+    print('GET METRICS ERROR')
     raise
+  finally:
+    await browser.close()
+    await page.close()

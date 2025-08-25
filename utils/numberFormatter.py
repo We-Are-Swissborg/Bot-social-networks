@@ -22,7 +22,7 @@ def add_zero_in_value(unit: str, value: str):
 def convert_number_for_calcul(value: str):
   v = value.replace(',', '')
 
-  if v:
+  if v != '':
     if '$' in v: v = v.replace('$', '')
     if KILO in v:
       if '.' in v: v = add_zero_in_value(KILO, v)

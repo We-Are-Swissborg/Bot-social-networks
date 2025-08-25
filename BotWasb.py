@@ -81,7 +81,7 @@ async def bot_wasb():
 
     infos['last_update'] = str(datetime.datetime.now())
 
-    await requests.post(os.getenv('URL_WASB'),
+    requests.post(os.getenv('URL_WASB'),
       headers = {
         'Authorization': 'bearer ' + os.getenv('ID_WASB_SITE'),
       },

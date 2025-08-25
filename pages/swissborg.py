@@ -15,7 +15,7 @@ async def accept_cookie_swissborg(page: Page, max_loop: int):
       max_loop = max_loop - 1
   except Exception as e:
     print(f'Error with cookie button : {e}')
-    raise Exception(f'Error with cookie button : {e}') from e
+    # raise Exception(f'Error with cookie button : {e}') from e
 
 # Get marketCap BORG.
 async def get_market_cap_borg(borg_metrics: dict, page: Page, max_loop: int):
