@@ -25,7 +25,7 @@ async def polling():
       window=(1280, 720),
     ) as browser:
       page = await browser.new_page()
-      await page.goto("https://solscan.io/token/BorGY4ub2Fz4RLboGxnuxWdZts7EKhUTB624AFmfCgX?activity_type=ACTIVITY_TOKEN_SWAP&page_size=10&value=50&value=#defiactivities")
+      await page.goto("https://solscan.io/token/BorGY4ub2Fz4RLboGxnuxWdZts7EKhUTB624AFmfCgX?activity_type=ACTIVITY_TOKEN_SWAP&page_size=10&value=100&value=#defiactivities")
       await page.wait_for_load_state(state="domcontentloaded")
       await page.wait_for_load_state('networkidle')
       await page.wait_for_timeout(5000)

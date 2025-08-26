@@ -32,6 +32,13 @@ async def get_trades(page: Page):
     old_signatures = json.loads(data_file.read())
     rows_transactions = await page.locator('tbody').locator('tr').all()
 
+    while len(rows_transactions) == 0:
+      await page.wait_for_load_state(state="domcontentloaded")
+      await page.wait_for_load_state('networkidle')
+      await page.wait_for_timeout(5000)
+      await page.mouse.click(210, 290)
+      rows_transactions = await page.locator('tbody').locator('tr').all()
+
     array_transfer = []
     row_number = 1
 

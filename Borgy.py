@@ -64,6 +64,7 @@ async def borgy_polling(page: Page, is_not_first_req: bool):
 
     for swap in transfers:
       print('Swap :', swnap_number)
+      swnap_number = swnap_number + 1
       infos_for_telegram = {
         'bot_token': os.getenv('BORGY_TG_TOKEN'),
         'chat_id': os.getenv('ID_CHAT_BORGY_TG'),
@@ -76,7 +77,7 @@ async def borgy_polling(page: Page, is_not_first_req: bool):
       prop_swap = swap.keys()
 
       for prop in prop_swap:
-        if '.' in str(swap[prop]) and prop != 'amount' and prop != 'price_without_fee':
+        if '.' in str(swap[prop]) and prop != 'amount':
           swap[prop] = str(swap[prop]).replace('.', '\\.')
 
       swap['amount'] = format_value(float(swap['amount'].replace(',', '')))
@@ -91,7 +92,7 @@ async def borgy_polling(page: Page, is_not_first_req: bool):
       await send_message_with_photo_to_telegram(infos_for_telegram)
 
   except Exception as e:
-    send_error_to_telegram(e, 'Buy messages :', os.getenv('BORGY_TG_TOKEN'))
+    await send_error_to_telegram(e, 'Buy messages :', os.getenv('BORGY_TG_TOKEN'))
 
 IS_CRON_JOB = False if len(sys.argv) != 2 else True
 
