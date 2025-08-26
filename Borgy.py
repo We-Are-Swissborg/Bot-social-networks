@@ -27,7 +27,7 @@ async def borgy():
       infos_for_telegram = {
         'bot_token': os.getenv('BORGY_TG_TOKEN'),
         'chat_id': os.getenv('ID_CHAT_BORGY_TG'),
-        'id_photo': 'AgACAgQAAyEFAASLu9f3AAJJuWiaxNNCIuulCdOqcMxie19g55QlAAKJzDEblyPYUC9tVrb7PuMKAQADAgADbQADNgQ',
+        'id_photo': os.getenv('VOTE_IMG'),
         'id_thread_telegram': '',
         'message': '',
         'about': 'Vote',
@@ -68,7 +68,7 @@ async def borgy_polling(page: Page, is_not_first_req: bool):
       infos_for_telegram = {
         'bot_token': os.getenv('BORGY_TG_TOKEN'),
         'chat_id': os.getenv('ID_CHAT_BORGY_TG'),
-        'id_photo': 'AgACAgQAAyEFAASLu9f3AAJLRWievaNj8u1QT6Di1hiBWGXQLSd4AAIFyDEbm6_4UOibMDiBTIVqAQADAgADcwADNgQ',
+        'id_photo': os.getenv('BUY_IMG'),
         'id_thread_telegram': os.getenv('ID_BUY_THREAD'),
         'message': '',
         'about': 'Buy',
