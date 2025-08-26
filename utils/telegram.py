@@ -16,8 +16,7 @@ def format_message(error_msg: str):
 
 async def send_error_to_telegram(e: Exception, add_error_msg: str = None, bot_token: str = os.getenv('WASB_TG_TOKEN')):
   chat_id = os.getenv('MONITORING_ID_CHAT_TG')
-  # error_msg =  e.response ? e.response.body : e.message
-  error_msg = any
+  error_msg = str(e)
 
   if add_error_msg: error_msg = f'{add_error_msg} : {e}'
   error_msg = format_message(error_msg)

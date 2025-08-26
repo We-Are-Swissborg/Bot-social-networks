@@ -21,7 +21,6 @@ def add_zero_in_value(unit: str, value: str):
 
 def convert_number_for_calcul(value: str):
   v = value.replace(',', '')
-
   if v != '':
     if '$' in v: v = v.replace('$', '')
     if KILO in v:
@@ -36,8 +35,10 @@ def convert_number_for_calcul(value: str):
     elif TRILLION in v:
       if '.' in v: v = add_zero_in_value(TRILLION, v)
       else: v = int(v.split(TRILLION)[0]) * math.pow(10, 12)
-
-  return int(v)
+    else:
+      if '.' in v: v = float(v)
+      else: v = int(v)
+  return v
 
 def add_unit_number(unit: str, value: str, exponent: int, num: int | float):
   n = round((num / math.pow(10, exponent)), 3)

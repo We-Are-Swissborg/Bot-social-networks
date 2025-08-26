@@ -47,7 +47,7 @@ async def get_on_swissborg(infos: dict, page: Page, max_loop: int):
     await Coingecko.get_supply_circulation(borg_metrics_or_several_metrics, page, max_loop, 'BORG')
     await Coingecko.get_volume(borg_metrics_or_several_metrics, page, max_loop, 'BORG')
   except Exception as e:
-    if 'page.goto' in str(e): return print(f'Error to get datas on Swissborg {e}')
+    if 'Page.goto' in str(e): return print(f'Error to get datas on Swissborg {e}')
     await handler_error(e, page, 'Error to get datas on Swissborg :')
 
 async def get_on_coingecko(infos: dict, page: Page, max_loop: int, prop_metrics: list):
@@ -90,7 +90,7 @@ async def get_on_coingecko(infos: dict, page: Page, max_loop: int, prop_metrics:
       inc = inc + 1
 
   except Exception as e:
-    if 'page.goto' in str(e): return print(f'Error to get datas on CoinGecko {e}')
+    if 'Page.goto' in str(e): return print(f'Error to get datas on CoinGecko {e}')
     await handler_error(e, page, 'Error to get datas on CoinGecko')
 
 async def get_on_dexscreener(infos: dict, page: Page, prop_metrics: list):
@@ -117,7 +117,7 @@ async def get_on_dexscreener(infos: dict, page: Page, prop_metrics: list):
         # if value_to_get_dexscreener[prop]['props'].includes('created')) infos[prop].created = String(res['pairs'][value_to_get_dexscreener[prop]['pairs_id']].pairCreatedAt)
         # if value_to_get_dexscreener[prop].includes('holder')) await DexScreener.getHolder(infos[prop], page, max_loop, prop)
   except Exception as e:
-    if 'page.goto' in str(e): return print(f'Error to get datas on CoinGecko {e}')
+    if 'Page.goto' in str(e): return print(f'Error to get datas on CoinGecko {e}')
     await handler_error(e, page, 'Error to get datas on DexScreener')
 
 async def get_metrics(infos: dict):
