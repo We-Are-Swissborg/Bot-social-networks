@@ -16,21 +16,26 @@ load_dotenv('./.env.production')
 date = datetime.datetime.now()
 
 async def borgy():
-  vote_send_time = 12
+  hour_sending = [12, 13]
+  fr_message = FR['ticket-message'] if date.hour == 13 else FR['vote-message']
+  en_message = EN['ticket-message'] if date.hour == 13 else EN['vote-message']
+  id_photo = os.getenv('TICKET_IMG') if date.hour == 13 else os.getenv('VOTE_IMG')
+  about = 'Ticket' if date.hour == 13 else 'Vote'
+
   try:
-    if date.hour == vote_send_time:
+    if date.hour in hour_sending:
       vote_messages = [
-        {'id_thread': os.getenv('ID_FR_THREAD'), 'message': FR['vote-message']},
-        {'id_thread': os.getenv('ID_EN_THREAD'), 'message': EN['vote-message']}
+        {'id_thread': os.getenv('ID_FR_THREAD'), 'message': fr_message},
+        {'id_thread': os.getenv('ID_EN_THREAD'), 'message': en_message}
       ]
 
       infos_for_telegram = {
         'bot_token': os.getenv('BORGY_TG_TOKEN'),
         'chat_id': os.getenv('ID_CHAT_BORGY_TG'),
-        'id_photo': os.getenv('VOTE_IMG'),
+        'id_photo': id_photo,
         'id_thread_telegram': '',
         'message': '',
-        'about': 'Vote',
+        'about': about,
       }
 
       for data in vote_messages:
@@ -39,7 +44,7 @@ async def borgy():
         await send_message_with_photo_to_telegram(infos_for_telegram)
 
     else:
-      raise Exception("It's not time to send Borgy vote.")
+      raise Exception("It's not time to send Borgy message.")
   except Exception as e:
     print(e)
     await send_error_to_telegram(e)

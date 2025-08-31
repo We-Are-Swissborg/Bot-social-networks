@@ -12,4 +12,15 @@ EN = {
                       f"🔄Receipt {data['amount']} BORGY%0A"+
                       f"💲Price ${data['price_without_fee']}%0A"+
                       f"📝[TX]({data['tx_link']})",
+  "ticket-message": "🔊 $BORGY MILLIONS 🎊%0A%0A" +
+                    "🎟️ Grab your tickets and get a chance to become one of the 3 lucky winners 🍀🍀🍀%0A%0A" +
+                    "• Details ⤵️%0A" +
+                    "💰10’000$ guaranteed prize pool%0A" +
+                    "🎟️ Ticket price: 164K $BORGY \\~ 10$%0A" +
+                    "🏆 3 winners: 70%25 split%0A" +
+                    "\\(40%25 \\- 20%25 \\- 10%25\\)%0A" +
+                    "🏦 20%25 warchest%0A" +
+                    "\\*redistributed to our community 💚%0A%0A" +
+                    "➡️ [borgy\\.memesforge\\.fun/millions](https://borgy.memesforge.fun/millions) ⬅️%0A%0A" +
+                    "🗓 Draw: Monday, Sept 8 @ 8PM UTC",
 }

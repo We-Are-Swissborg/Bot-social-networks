@@ -81,7 +81,7 @@ async def bot_wasb():
 
     infos['last_update'] = str(datetime.datetime.now())
 
-    requests.post(os.getenv('URL_WASB'),
+    res = requests.post(os.getenv('URL_WASB'),
       headers = {
         'Authorization': 'bearer ' + os.getenv('ID_WASB_SITE'),
       },
@@ -89,6 +89,11 @@ async def bot_wasb():
         'metrics': json.dumps(infos),
       }
     )
+
+    status_code = res.status_code
+    json_res = res.json()
+
+    if status_code != 201: raise Exception(json_res)
 
     print(datetime.datetime.now(), 'Metrics WASB post OK !')
   except Exception as e:
