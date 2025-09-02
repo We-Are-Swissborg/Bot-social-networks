@@ -42,6 +42,17 @@ async def borgy():
         infos_for_telegram['id_thread_telegram'] = data['id_thread']
         infos_for_telegram['message'] = data['message']
         await send_message_with_photo_to_telegram(infos_for_telegram)
+    
+    # Message to WASB telegram.
+    if date.hour == 13:
+      infos_for_telegram = {
+        'bot_token': os.getenv('WASB_TG_TOKEN'),
+        'chat_id': os.getenv('ID_CHAT_WASB_TG'),
+        'id_photo': 'AgACAgQAAx0CWDGDpQABAn86aLROyjUhEhrT3KjkUPLRsWGJOsUAAmPJMRvwMqBRBeGVP5MWxwcBAAMCAANzAAM2BA',
+        'message': fr_message,
+        'about': about,
+      }
+      await send_message_with_photo_to_telegram(infos_for_telegram)
 
     else:
       raise Exception("It's not time to send Borgy message.")
@@ -62,7 +73,6 @@ async def borgy_polling(page: Page, is_not_first_req: bool):
       await page.goto('https://solscan.io')
       time.sleep(1)
       await page.goto(solscan_url)
-      # await page.reload(wait_until='networkidle')
 
     time.sleep(5)
     transfers = await get_transfers(page)

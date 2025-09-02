@@ -35,7 +35,7 @@ async def get_market_cap_borg(borg_metrics: dict, page: Page, max_loop: int):
 async def get_premium_user_borg(borg_metrics: dict, page: Page, max_loop: int):
   try:
     while borg_metrics['premiumUser'] == '':
-      await page.locator('.premiumTiersTableSlice__STitleWrapper-sc-7biopp-3').scroll_into_view_if_needed()
+      await page.locator('.AHLJo').scroll_into_view_if_needed()
       time.sleep(2)
 
       premium_user = page.locator('.stat-0')
@@ -52,6 +52,7 @@ async def get_premium_user_borg(borg_metrics: dict, page: Page, max_loop: int):
 async def get_borg_lock_by_premium(borg_metrics: dict, page: Page, max_loop: int):
   try:
     while borg_metrics['borgLockByPremium'] == '':
+      time.sleep(1)
       borg_lock_by_premium = page.locator('.stat-2')
       borg_metrics['borgLockByPremium'] = await borg_lock_by_premium.text_content()
 
@@ -115,7 +116,7 @@ async def get_user_verify(borg_metrics: dict, page: Page, max_loop: int):
 async def get_borg_lock_for_governance(borg_metrics: dict, page: Page, max_loop: int):
   try:
     while borg_metrics['borgLockForGovernance'] == '':
-      await page.locator('.iCCdso').scroll_into_view_if_needed()
+      await page.locator('.iMYwiA').scroll_into_view_if_needed()
       time.sleep(2)
 
       borg_lock_for_governance = page.locator('.SZCGg')
