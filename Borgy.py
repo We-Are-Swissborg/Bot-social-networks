@@ -23,7 +23,7 @@ async def borgy():
   no_time = True
   fr_message = en_message = id_photo = about = None
 
-  if date.hour == 9 | date.hour == 15:
+  if date.hour == 9 or date.hour == 15:
     fr_message = FR['dont-forget']
     en_message = EN['dont-forget']
     about = "Don't forget"
