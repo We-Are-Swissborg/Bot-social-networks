@@ -5,7 +5,7 @@ import time
 import datetime
 from dotenv import load_dotenv
 from playwright.async_api import Page, Browser
-from utils.telegram import send_error_to_telegram, send_message_with_photo_to_telegram
+from utils.telegram import send_error_to_telegram, send_message_with_photo_to_telegram, send_simple_message_to_telegram
 from utils.numberFormatter import format_value
 from utils.transfers import get_transfers
 from translations.fr import FR
@@ -17,16 +17,25 @@ load_dotenv('./.env.production')
 date = datetime.datetime.now()
 
 async def borgy():
-  hour_sending = [12, 13]
-  fr_message = FR['ticket-message'] if date.hour == 13 else FR['vote-message']
-  en_message = EN['ticket-message'] if date.hour == 13 else EN['vote-message']
-  id_photo = os.getenv('TICKET_IMG') if date.hour == 13 else os.getenv('VOTE_IMG')
-  about = 'Ticket' if date.hour == 13 else 'Vote'
+  # general (Borgy army) and unleash corespond to telegram groups.
+  general_sending = [9, 12, 15]
+  unleash_hour = [9, 15]
   no_time = True
+  fr_message = en_message = id_photo = about = None
+
+  if date.hour == 9 | date.hour == 15:
+    fr_message = FR['dont-forget']
+    en_message = EN['dont-forget']
+    about = "Don't forget"
+  elif date.hour == 12:
+    fr_message = FR['vote-message']
+    en_message = EN['vote-message']
+    id_photo = os.getenv('VOTE_IMG')
+    about = 'Vote'
 
   try:
-    if date.hour in hour_sending:
-      vote_messages = [
+    if date.hour in general_sending:
+      messages_telegram = [
         {'id_thread': os.getenv('ID_FR_THREAD'), 'message': fr_message},
         {'id_thread': os.getenv('ID_EN_THREAD'), 'message': en_message}
       ]
@@ -40,22 +49,27 @@ async def borgy():
         'about': about,
       }
 
-      for data in vote_messages:
+      for data in messages_telegram:
         infos_for_telegram['id_thread_telegram'] = data['id_thread']
         infos_for_telegram['message'] = data['message']
-        await send_message_with_photo_to_telegram(infos_for_telegram)
+        if date.hour == 9 | date.hour == 15:
+          await send_simple_message_to_telegram(infos_for_telegram)
+        elif date.hour == 12:
+          await send_message_with_photo_to_telegram(infos_for_telegram)
       no_time = False
 
-    # Message to WASB telegram.
-    if date.hour == 13:
+    # Message to Unleash telegram.
+    if date.hour in unleash_hour:
+      en_message = EN['unleash-dont-forget']
       infos_for_telegram = {
-        'bot_token': os.getenv('WASB_TG_TOKEN'),
-        'chat_id': os.getenv('ID_CHAT_WASB_TG'),
-        'id_photo': 'AgACAgQAAx0CWDGDpQABAn86aLROyjUhEhrT3KjkUPLRsWGJOsUAAmPJMRvwMqBRBeGVP5MWxwcBAAMCAANzAAM2BA',
-        'message': fr_message,
+        'bot_token': os.getenv('BORGY_TG_TOKEN'),
+        'chat_id': os.getenv('ID_CHAT_UNLEASH_TG'),
+        # 'id_photo': 'AgACAgQAAx0CWDGDpQABAn86aLROyjUhEhrT3KjkUPLRsWGJOsUAAmPJMRvwMqBRBeGVP5MWxwcBAAMCAANzAAM2BA',
+        'message': en_message,
         'about': about,
       }
-      await send_message_with_photo_to_telegram(infos_for_telegram)
+      # await send_message_with_photo_to_telegram(infos_for_telegram)
+      await send_simple_message_to_telegram(infos_for_telegram)
       no_time = False
 
     if no_time:

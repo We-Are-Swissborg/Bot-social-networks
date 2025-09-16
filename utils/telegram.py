@@ -57,7 +57,32 @@ async def send_message_with_photo_to_telegram(infos: dict):
     requests.get(f'https://api.telegram.org/bot{infos["bot_token"]}/pinChatMessage?chat_id={infos["chat_id"]}&message_id={id_message}')
 
     # Print the response
-    print(f'{infos["about"]} message to Telegram successfully.')
+    print(f'{infos["about"]} message with photo to Telegram successfully.')
   except Exception as error:
-    print(f'Error {infos["about"].lower()} message to telegram: {error}')
-    raise Exception(f'Error {infos["about"].lower()} message to telegram: {error}') from error
+    print(f"Error {infos['about'].lower()} message to telegram: {error}")
+    raise Exception(f"Error {infos['about'].lower()} message with photo to telegram: {error}") from error
+
+async def send_simple_message_to_telegram(infos: dict):
+  try:
+    message_thread_id = f'&message_thread_id={infos["id_thread_telegram"]}' if 'id_thread_telegram' in infos else ''
+
+    res = requests.post(f'https://api.telegram.org/bot{infos["bot_token"]}/sendMessage?chat_id={infos["chat_id"]}&text={infos["message"]}&parse_mode=MarkdownV2{message_thread_id}',
+      headers = {
+        'accept': 'application/x-www-form-urlencoded',
+      }
+    )
+    json_res = res.json()
+
+    if json_res['ok'] is False: raise Exception(f'code {json_res["error_code"]} - {json_res["description"]}')
+    if 'id_thread_telegram' in infos:
+      if infos['id_thread_telegram'] == os.getenv('ID_BUY_THREAD'):
+        return
+    id_message = json_res['result']['message_id']
+
+    requests.get(f'https://api.telegram.org/bot{infos["bot_token"]}/pinChatMessage?chat_id={infos["chat_id"]}&message_id={id_message}')
+
+    # Print the response
+    print(f"{infos['about']} message to Telegram successfully.")
+  except Exception as error:
+    print(f"Error {infos['about'].lower()} message to telegram: {error}")
+    raise Exception(f"Error {infos['about'].lower()} message to telegram: {error}") from error
