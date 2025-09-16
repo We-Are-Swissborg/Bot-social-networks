@@ -17,7 +17,7 @@ FR = {
                  "Pour ceux qui veulent RAID \\(et bien plus à venir\\), rejoignez :%0A" +
                  "⚡️ Degen Telegram → t\\.me/borgy_unleashed%0A%0A" +
                  "💰 Pour le raid : 30M $BORGY à partager chaque mois \\!%0A" +
-                 "👉 Il suffit de détenir 3M $BORGY et de suivre les étapes ci-dessous :%0A%0A" +
+                 "👉 Il suffit de détenir 3M $BORGY et de suivre les étapes ci\\-dessous :%0A%0A" +
                  "⸻%0A%0A" +
                  "🔗 Comment connecter ton compte X à Raidar :%0A%0A" +
                  "1️⃣ Écris en DM à @BorgyRaidbot%0A" +
