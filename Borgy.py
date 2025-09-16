@@ -52,7 +52,7 @@ async def borgy():
       for data in messages_telegram:
         infos_for_telegram['id_thread_telegram'] = data['id_thread']
         infos_for_telegram['message'] = data['message']
-        if date.hour == 9 | date.hour == 15:
+        if date.hour == 9 or date.hour == 15:
           await send_simple_message_to_telegram(infos_for_telegram)
         elif date.hour == 12:
           await send_message_with_photo_to_telegram(infos_for_telegram)
