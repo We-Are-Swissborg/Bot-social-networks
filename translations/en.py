@@ -15,7 +15,7 @@ EN = {
   "dont-forget": "⚠️ Don’t forget:%0A" +
                  "To keep normal conversations we use this channel\\.%0A%0A" +
                  "For those who want to RAID \\(and much more to come\\), join:%0A" +
-                 "⚡️ Degen Telegram → t\\.me/borgy_unleashed%0A%0A" +
+                 "⚡️ Degen Telegram → t\\.me/borgy\\_unleashed%0A%0A" +
                  "💰 For the raid: 30M $BORGY to share each month\\!%0A" +
                  "👉 Just hold 3M $BORGY and follow the steps below:%0A%0A" +
                  "\\-\\-\\-\\-\\-\\-\\-\\-%0A%0A" +
@@ -29,7 +29,7 @@ EN = {
                  "📌 Important Rules for XP:%0A" +
                  "• Always interact using the bot’s buttons \\(💬 🔄 ❤️ 📌 ✊\\) so your actions are counted\\.%0A" +
                  "• When sending a comment, you must reply directly to the bot’s message in DM \\(not just type under it\\)\\.%0A%0A" +
-                 "⚡ This ensures your actions are tracked correctly and you earn XP!%0A%0A" +
+                 "⚡ This ensures your actions are tracked correctly and you earn XP\\!%0A%0A" +
                  "👉 Once connected, join the official Raid Group here to start raiding together:%0A" +
                  "⚡️ T\\.me/borgy\\_unleashed ⚡️%0A%0A" +
                  "\\-\\-\\-\\-\\-\\-\\-\\-%0A%0A" +
