@@ -18,21 +18,21 @@ EN = {
                  "⚡️ Degen Telegram → t\\.me/borgy_unleashed%0A%0A" +
                  "💰 For the raid: 30M $BORGY to share each month\\!%0A" +
                  "👉 Just hold 3M $BORGY and follow the steps below:%0A%0A" +
-                 "⸻%0A%0A" +
+                 "\\-\\-\\-\\-\\-\\-\\-\\-%0A%0A" +
                  "🔗 How to connect your X account to Raidar:%0A%0A" +
                  "1️⃣ DM @BorgyRaidbot%0A" +
                  "2️⃣ Send /profile%0A" +
                  "3️⃣ Hit the 🔗 Login button%0A" +
                  "4️⃣ Set your wallet with /setwallet \\(must hold 3M\\+ $BORGY\\)%0A" +
                  "5️⃣ ✅ Authorize%0A%0A" +
-                 "⸻%0A%0A" +
+                 "\\-\\-\\-\\-\\-\\-\\-\\-%0A%0A" +
                  "📌 Important Rules for XP:%0A" +
                  "• Always interact using the bot’s buttons \\(💬 🔄 ❤️ 📌 ✊\\) so your actions are counted\\.%0A" +
                  "• When sending a comment, you must reply directly to the bot’s message in DM \\(not just type under it\\)\\.%0A%0A" +
                  "⚡ This ensures your actions are tracked correctly and you earn XP!%0A%0A" +
                  "👉 Once connected, join the official Raid Group here to start raiding together:%0A" +
                  "⚡️ T\\.me/borgy\\_unleashed ⚡️%0A%0A" +
-                 "⸻%0A%0A" +
+                 "\\-\\-\\-\\-\\-\\-\\-\\-%0A%0A" +
                  "🌐 www\\.borgysol\\.com%0A" +
                  "🐦 Official X: @borgysol%0A%0A" +
                  "Strength ✊🏻 Loyalty 🫶🏻 Trust",
@@ -45,7 +45,7 @@ EN = {
                          "• 🔗 And more\\.\\.\\.%0A%0A" +
                          "👉 Join our main Telegram here:%0A" +
                          "🔗 t\\.me/borgyarmy%0A%0A" +
-                         "⸻%0A%0A" +
+                         "\\-\\-\\-\\-\\-\\-\\-\\-%0A%0A" +
                          "🌐 www\\.borgysol\\.com%0A" +
                          "🐦 Official X: @borgysol%0A%0A" +
                          "Strength ✊🏻 Loyalty 🫶🏻 Trust",
