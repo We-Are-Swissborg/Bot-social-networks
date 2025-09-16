@@ -49,7 +49,9 @@ async def send_message_with_photo_to_telegram(infos: dict):
     json_res = res.json()
 
     if json_res['ok'] is False: raise Exception(f'code {json_res["error_code"]} - {json_res["description"]}')
-
+    if 'id_thread_telegram' in infos:
+      if infos['id_thread_telegram'] == os.getenv('ID_BUY_THREAD'):
+        return
     id_message = json_res['result']['message_id']
 
     requests.get(f'https://api.telegram.org/bot{infos["bot_token"]}/pinChatMessage?chat_id={infos["chat_id"]}&message_id={id_message}')

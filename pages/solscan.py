@@ -1,7 +1,11 @@
 import json
+import time
+import asyncio
+import datetime
 from decimal import Decimal
 from playwright.async_api import Page, Locator
 from utils.numberFormatter import convert_number_for_calcul
+from executor import rerun_in_background # production file not for local
 
 async def check_is_buyer_signature(rows_transactions: list[Locator], signature: str):
   try:
@@ -28,17 +32,42 @@ def check_length_signature_array(old_signatures: list[str], signature: str):
 
 async def get_trades(page: Page):
   data_file = open('./old-signatures-Borgy.txt', 'r+', encoding="utf-8")
+  max_bypass = 10
   try:
-    old_signatures = json.loads(data_file.read())
+    decoder = json.JSONDecoder()
+    old_signatures, end = decoder.raw_decode(data_file.read())
     rows_transactions = await page.locator('tbody').locator('tr').all()
+    print('ROWS_TRANSAC :', type(rows_transactions), len(rows_transactions))
 
-    while len(rows_transactions) == 0:
-      await page.wait_for_load_state(state="domcontentloaded")
-      await page.wait_for_load_state('networkidle')
-      await page.wait_for_timeout(5000)
-      await page.mouse.click(210, 290)
-      rows_transactions = await page.locator('tbody').locator('tr').all()
+    while rows_transactions == []:
+      try:
+        print(f'{datetime.datetime.now()} - BYPASS')
+        async with asyncio.timeout(300):
+          if max_bypass == 0:
+            print('MAX BYPASS')
+            await rerun_in_background()
+          await page.wait_for_load_state(state="domcontentloaded")
+          await page.wait_for_load_state('networkidle')
+          await page.wait_for_timeout(5000)
+          await page.mouse.click(210, 290)
+          time.sleep(2)
+          rows_transactions = await page.locator('tbody').locator('tr').all()
+        max_bypass = max_bypass - 1
+        print(f'{datetime.datetime.now()} - BYPASS OK !')
+      except asyncio.TimeoutError as e:
+        print('TimeoutError')
+        if str(e) == '':
+          print(f'{datetime.datetime.now()} -  RESTART PROCESS')
+          await rerun_in_background()
+          print(f'{datetime.datetime.now()} - PROCESS RESTARTED')
+      except Exception as e:
+        print('ERROR LOOP CLICK :', e)
+        if 'browser has been closed' in str(e) or 'list.remove(x)' in str(e):
+          print(f'{datetime.datetime.now()} -  RESTART PROCESS')
+          await rerun_in_background()
+          print(f'{datetime.datetime.now()} - PROCESS RESTARTED')
 
+    if len(rows_transactions) != 10: print('ERROR ROWS TRANSAC :', len(rows_transactions))
     array_transfer = []
     row_number = 1
 
@@ -55,6 +84,7 @@ async def get_trades(page: Page):
         is_alert = False
 
       crypto_received = await td[5].locator('div > div > div:nth-child(2) > div > div > span').all()
+      print('CRYPTO_RECEIVED :', crypto_received)
       crypto = await crypto_received[1].text_content()
 
       if is_alert is False:
@@ -88,7 +118,6 @@ async def get_trades(page: Page):
     return array_transfer
   except Exception as e:
     print(e)
-
   finally:
     data_file.close()
 

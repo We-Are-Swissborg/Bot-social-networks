@@ -7,10 +7,10 @@ EN = {
                   "⬇️⬇️⬇️%0A%0A"+
                   "https://Coingecko\\.com/coins/borgy%0A%0A"+
                   "*_Message generate by Borgy\\_Bot_*\\.",
-  "buy-message": lambda data: "🟢🟢🟢 $BORGY BUY 🟢🟢🟢%0A%0A" +
-                      f"🔄Sent ${data['value']}%0A"+
-                      f"🔄Receipt {data['amount']} BORGY%0A"+
-                      f"💲Price ${data['price_without_fee']}%0A"+
+  "buy-message": lambda data: "🟢🟢🟢 *$BORGY BUY* 🟢🟢🟢%0A%0A" +
+                      f"🔄Sent *${data['value']}*%0A"+
+                      f"🔄Receipt *{data['amount']} BORGY*%0A"+
+                      f"💲Price *${data['price_without_fee']}*%0A"+
                       f"📝[TX]({data['tx_link']})",
   "ticket-message": "🔊 $BORGY MILLIONS 🎊%0A%0A" +
                     "🎟️ Grab your tickets and get a chance to become one of the 3 lucky winners 🍀🍀🍀%0A%0A" +
@@ -22,5 +22,5 @@ EN = {
                     "🏦 20%25 warchest%0A" +
                     "\\*redistributed to our community 💚%0A%0A" +
                     "➡️ [borgy\\.memesforge\\.fun/millions](https://borgy.memesforge.fun/millions) ⬅️%0A%0A" +
-                    "🗓 Draw: Monday, Sept 8 @ 8PM UTC",
+                    "🗓 Draw: Monday, Sept 15 @ 8PM UTC",
 }

@@ -5,13 +5,13 @@ import datetime
 from dotenv import load_dotenv
 from camoufox.async_api import AsyncCamoufox
 from Borgy import borgy_polling
-from utils.telegram import send_error_to_telegram
+from executor import rerun_in_background # production file not for local
 
 load_dotenv('./.env.production')
 
 async def polling():
   try:
-    print('Polling run')
+    print(f'{datetime.datetime.now()} - Polling run')
     is_not_first_req = False
     os_camoufox = os.getenv("OS_CAMOUFOX")
     headless_camoufox = os.getenv("HEADLESS_CAMOUFOX") if os_camoufox == 'linux' else bool(os.getenv("HEADLESS_CAMOUFOX"))
@@ -33,11 +33,14 @@ async def polling():
 
       while True:
         if is_not_first_req: time.sleep(60)
-        await borgy_polling(page, is_not_first_req)
+        await borgy_polling(page, is_not_first_req, browser)
         is_not_first_req = True
 
   except Exception as e:
-    print(f'{datetime.datetime.now()} An error occured : {e}')
-    await send_error_to_telegram(e, 'An error occured :')
+    print(f'{datetime.datetime.now()} - An error occured : {e}')
+    if 'browser has been closed' in str(e) or 'Browser.close: list.remove(x)' in str(e):
+      print(f'{datetime.datetime.now()} - RESTART PROCESS')
+      await rerun_in_background()
+      print(f'{datetime.datetime.now()} - PROCESS RESTARTED')
 
 asyncio.run(polling())
