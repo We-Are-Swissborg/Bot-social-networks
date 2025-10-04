@@ -12,43 +12,69 @@ EN = {
                       f"🔄Receipt *{data['amount']} BORGY*%0A"+
                       f"💲Price *${data['price_without_fee']}*%0A"+
                       f"📝[TX]({data['tx_link']})",
-  "dont-forget": "⚠️ Don’t forget:%0A" +
-                 "To keep normal conversations we use this channel\\.%0A%0A" +
-                 "For those who want to RAID \\(and much more to come\\), join:%0A" +
-                 "⚡️ Degen Telegram → t\\.me/borgy\\_unleashed%0A%0A" +
-                 "💰 For the raid: 30M $BORGY to share each month\\!%0A" +
-                 "👉 Just hold 3M $BORGY and follow the steps below:%0A%0A" +
-                 "\\-\\-\\-\\-\\-\\-\\-\\-%0A%0A" +
-                 "🔗 How to connect your X account to Raidar:%0A%0A" +
-                 "1️⃣ DM @BorgyRaidbot%0A" +
-                 "2️⃣ Send /profile%0A" +
-                 "3️⃣ Hit the 🔗 Login button%0A" +
-                 "4️⃣ Set your wallet with /setwallet \\(must hold 3M\\+ $BORGY\\)%0A" +
-                 "5️⃣ ✅ Authorize%0A%0A" +
-                 "\\-\\-\\-\\-\\-\\-\\-\\-%0A%0A" +
-                 "📌 Important Rules for XP:%0A" +
-                 "• Always interact using the bot’s buttons \\(💬 🔄 ❤️ 📌 ✊\\) so your actions are counted\\.%0A" +
-                 "• When sending a comment, you must reply directly to the bot’s message in DM \\(not just type under it\\)\\.%0A%0A" +
-                 "⚡ This ensures your actions are tracked correctly and you earn XP\\!%0A%0A" +
-                 "👉 Once connected, join the official Raid Group here to start raiding together:%0A" +
-                 "⚡️ T\\.me/borgy\\_unleashed ⚡️%0A%0A" +
-                 "\\-\\-\\-\\-\\-\\-\\-\\-%0A%0A" +
-                 "🌐 www\\.borgysol\\.com%0A" +
-                 "🐦 Official X: @borgysol%0A%0A" +
-                 "Strength ✊🏻 Loyalty 🫶🏻 Trust",
-  "unleash-dont-forget": "⚠️ Don’t forget:%0A" +
-                         "To raid \\(and much more to come\\) we use this channel\\.%0A%0A" +
-                         "For those who want to have an English chat and access all info related to Borgy, such as:%0A" +
-                         "• 💬 English discussions%0A" +
-                         "• 📰 News%0A" +
-                         "• 🎥 Videos%0A" +
-                         "• 🔗 And more\\.\\.\\.%0A%0A" +
-                         "👉 Join our main Telegram here:%0A" +
-                         "🔗 t\\.me/borgyarmy%0A%0A" +
-                         "\\-\\-\\-\\-\\-\\-\\-\\-%0A%0A" +
-                         "🌐 www\\.borgysol\\.com%0A" +
-                         "🐦 Official X: @borgysol%0A%0A" +
-                         "Strength ✊🏻 Loyalty 🫶🏻 Trust",
+  "welcome-pack": "💚 *WELCOME TO THE PACK* 💚%0A%0A" +
+                  "⚠️ *Reminder*%0A" +
+                  "💬 Normal chats → here%0A" +
+                  "⚡ RAIDs %26 rewards → t\\.me/borgy\\_unleashed%0A%0A" +
+                  "💰 *30M $BORGY monthly \\!*%0A" +
+                  "✊🏻 *Raid rewards* 🤑%0A" +
+                  "Hold 3M $BORGY to join%0A" +
+                  "🔗 Connect your X%0A" +
+                  "1️⃣DM @BorgyRaidbot%0A" +
+                  "2️⃣/profile → Login%0A" +
+                  "3️⃣/setwallet \\(must hold 3M $BORGY\\)%0A" +
+                  "4️⃣Authorize ✅%0A" +
+                  "📌 XP Tips%0A" +
+                  "Use bot buttons: 💬 🔄 ❤️ 📌 ✊%0A" +
+                  "Comments 💬 → reply directly to the bot’s DM%0A%0A" +
+                  "🤑 *MORE* ⤵️%0A" +
+                  "*Ambassador reward program* :%0A" +
+                  "https://borgysol\\.com/\\%23rewards%0A" +
+                  "1️⃣Register%0A" +
+                  "2️⃣Interact with @Borgysol / $BORGY%0A" +
+                  "3️⃣Earn 🤝🏻💵%0A" +
+                  "💎 HODL ➡️ double your earnings%0A%0A" +
+                  "🌐 borgysol\\.com%0A" +
+                  "🐦 @borgysol",
+  "unleash-welcome-pack": "💚 *WELCOME TO THE PACK* 💚%0A%0A" +
+                          "⚠️ *Reminder*%0A" +
+                          "💬 Community → t\\.me/borgyarmy%0A" +
+                          "⚡ RAIDs %26 rewards → here%0A%0A" +
+                          "💰 *30M $BORGY monthly \\!*%0A" +
+                          "✊🏻 *Raid rewards* 🤑%0A" +
+                          "Hold 3M $BORGY to join%0A" +
+                          "🔗 Connect your X%0A" +
+                          "1️⃣DM @BorgyRaidbot%0A" +
+                          "2️⃣/profile → Login%0A" +
+                          "3️⃣/setwallet \\(must hold 3M $BORGY\\)%0A" +
+                          "4️⃣Authorize ✅%0A" +
+                          "📌 XP Tips%0A" +
+                          "Use bot buttons: 💬 🔄 ❤️ 📌 ✊%0A" +
+                          "Comments 💬 → reply directly to the bot’s DM%0A%0A" +
+                          "🤑 *MORE* ⤵️%0A" +
+                          "*Ambassador reward program* :%0A" +
+                          "https://borgysol\\.com/\\%23rewards%0A" +
+                          "1️⃣Register%0A" +
+                          "2️⃣Interact with @Borgysol / $BORGY%0A" +
+                          "3️⃣Earn 🤝🏻💵%0A" +
+                          "💎 HODL ➡️ double your earnings%0A%0A" +
+                          "🌐 borgysol\\.com%0A" +
+                          "🐦 @borgysol",
+  "swap-week": lambda swap, old_swap, variation: "💚💚*RESULTS OF THE WEEK*💚💚%0A%0A" +
+                            f"💰 *Market capitalization*: {old_swap['market_cap']} \\-\\-\\> {swap['market_cap']} \\({variation['market_cap']}%25\\)%0A" +
+                            f"👥 *Number of holders*: {old_swap['holders']} \\-\\-\\> {swap['holders']} \\({variation['holders']}\\)%0A" +
+                            f"📈 *Amount*: {old_swap['amount']} \\-\\-\\> {swap['amount']} \\({variation['amount']}%25\\)%0A" +
+                            f"💵 *Value*: {old_swap['value']} \\-\\-\\> {swap['value']} \\({variation['value']}%25\\)%0A" +
+                            f"🛒 *Price*: {old_swap['price_without_fee']} \\-\\-\\> {swap['price_without_fee']} \\({variation['price_without_fee']}%25\\)",
+  "scam-alert": "🚨*SCAM ALERT*🚨%0A%0A" +
+                "Dear members,%0A" + 
+                "*A CRUCIAL* reminder for your safety:%0A%0A" + 
+                "🔒The official team will *NEVER* contact you in private \\(PM\\)\\.%0A" + 
+                "👀If someone messages you claiming to be from the team → *IT’S A SCAM*\\.%0A" + 
+                "⛔*NEVER* share your private keys, seed phrase, or sensitive information\\.%0A%0A" + 
+                "✅All official exchanges take place *ONLY* in the group or through our official channels\\.%0A%0A" + 
+                "⚠️Stay vigilant, and if you see a suspicious account → report it immediately to an admin\\.%0A%0A" + 
+                "Your safety comes first 💚🐶",
   # "ticket-message": "🔊 $BORGY MILLIONS 🎊%0A%0A" +
   #                   "🎟️ Grab your tickets and get a chance to become one of the 3 lucky winners 🍀🍀🍀%0A%0A" +
   #                   "• Details ⤵️%0A" +

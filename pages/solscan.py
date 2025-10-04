@@ -7,6 +7,11 @@ from playwright.async_api import Page, Locator
 from utils.numberFormatter import convert_number_for_calcul
 from executor import rerun_in_background # production file not for local
 
+def decimal_serializer(obj):
+  if isinstance(obj, Decimal):
+    return str(obj)
+  raise TypeError("Type not serializable")
+
 async def check_is_buyer_signature(rows_transactions: list[Locator], signature: str):
   try:
     i = 0
@@ -31,12 +36,17 @@ def check_length_signature_array(old_signatures: list[str], signature: str):
     old_signatures.append(signature)
 
 async def get_trades(page: Page):
-  data_file = open('./old-signatures-Borgy.txt', 'r+', encoding="utf-8")
+  data_file = open('./files/old-signatures-Borgy.txt', 'r+', encoding="utf-8")
   max_bypass = 10
   try:
     decoder = json.JSONDecoder()
-    old_signatures, end = decoder.raw_decode(data_file.read())
+    old_signatures, old_signatures_end = decoder.raw_decode(data_file.read())
     rows_transactions = await page.locator('tbody').locator('tr').all()
+    swap_week = {
+      'amount': 0,
+      'value': 0,
+      'price_without_fee': 0
+    }
     print('ROWS_TRANSAC :', type(rows_transactions), len(rows_transactions))
 
     while rows_transactions == []:
@@ -46,13 +56,13 @@ async def get_trades(page: Page):
           if max_bypass == 0:
             print('MAX BYPASS')
             await rerun_in_background()
+          max_bypass = max_bypass - 1
           await page.wait_for_load_state(state="domcontentloaded")
           await page.wait_for_load_state('networkidle')
           await page.wait_for_timeout(5000)
           await page.mouse.click(210, 290)
           time.sleep(2)
           rows_transactions = await page.locator('tbody').locator('tr').all()
-        max_bypass = max_bypass - 1
         print(f'{datetime.datetime.now()} - BYPASS OK !')
       except asyncio.TimeoutError as e:
         print('TimeoutError')
@@ -110,10 +120,38 @@ async def get_trades(page: Page):
 
             array_transfer.append(transfer)
             check_length_signature_array(old_signatures, signature)
+
+            # Calcul data transfer for week swap file.
+            for prop in swap_week:
+              value = transfer[prop]
+              if prop != 'price_without_fee':
+                value = convert_number_for_calcul(value)
+              if prop == 'amount':
+                value = Decimal(str(value))
+              swap_week[prop] = swap_week[prop] + value
+
     if len(array_transfer) != 0:
       data_file.seek(0)
       print('Write the new signatures in the file.')
       data_file.write(json.dumps(old_signatures))
+    # Write data transfer to week swap file.
+
+    if swap_week['amount'] != 0:
+      print('Add new data in swap-week.txt.')
+      week_swap_file = open("./files/swap-week.txt", 'r', encoding="utf-8")
+      read_swap_week, read_swap_week_end = decoder.raw_decode(week_swap_file.read())
+      swap_week_decode = read_swap_week["data"]
+
+      for prop in swap_week:
+        if prop in ('price_without_fee', 'amount'):
+          swap_week[prop] = swap_week[prop] + Decimal(swap_week_decode[prop])
+          continue
+        swap_week[prop] = swap_week[prop] + swap_week_decode[prop]
+      swap_week = {"data": swap_week, "already_req": read_swap_week["already_req"]}
+      swap_week_file = open("./files/swap-week.txt", 'w', encoding="utf-8")
+      swap_week_file.write(json.dumps(swap_week, default=decimal_serializer))
+      swap_week_file.close()
+      print('Successfully writing to swap-week.txt.')
 
     return array_transfer
   except Exception as e:
@@ -121,38 +159,19 @@ async def get_trades(page: Page):
   finally:
     data_file.close()
 
-# getMarketCap = async (page):
-#   try:
-#     aDiv = await pageindElements(By.css('#__next > div'))
-#     bDiv = await aDiv[0].findElements(By.css('div'))
-#     # cDiv = await bDiv[2].findElements(By.css('div'))
-#     # dDiv = await cDiv[0].findElements(By.css('div'))
-#     # eDiv = await dDiv[1].findElements(By.css('div'))
-#     # fDiv = await eDiv[1].findElements(By.css('div'))
-#     # gDiv = await fDiv[1].findElements(By.css('div'))
-#     # hDiv = await gDiv[0].findElements(By.css('div'))
-#     # iDiv = await hDiv[0].findElements(By.css('div'))
-#     # jDiv = await iDiv[0].findElements(By.css('div'))
-#     # kDiv = await jDiv[1].findElements(By.css('div'))
+async def get_market_cap(page):
+  try:
+    print("Get MarketCap")
+    container_market_cap = await page.locator(".my-0").all()
+    market_cap = await container_market_cap[9].text_content()
+    return market_cap
+  except Exception as e:
+    print(e)
 
-#     # marketCapDiv = await page.findElements(By.css('div:nth-child(1) > div:nth-child(1) > div:nth-child(2)'))
-#     # marketCapDiv = await page.findElements(By.css('#__next > div:nth-child(1) > div:nth-child(3) > div:nth-child(1) > div:nth-child(2) > div:nth-child(2) > div:nth-child(2) > div:nth-child(1) > div:nth-child(1) > div:nth-child(1) > div:nth-child(2)'))
-#     # marketCapDiv = await page.findElements(By.css(`
-#     #   #__next >
-#     #   div:nth-child(1) >
-#     #   div:nth-child(3) >
-#     #   div:nth-child(1) >
-#     #   div:nth-child(2) >
-#     #   div:nth-child(2) >
-#     #   div:nth-child(2) >
-#     #   div:nth-child(1) >
-#     #   div:nth-child(1) >
-#     #   div:nth-child(1) >
-#     #   div:nth-child(2)`
-#     # ))
-
-#     console.log(await bDiv[4].getText())
-#   } catch(e):
-#     console.error(e)
-#   }
-# }
+async def get_holders(page):
+  try:
+    print("Get Holders")
+    holders = await page.locator(".flex.gap-2.flex-row.items-stretch.justify-start.flex-wrap").first.text_content()
+    return holders
+  except Exception as e:
+    print(e)

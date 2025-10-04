@@ -81,10 +81,11 @@ def abbreviate_number(value: str):
     if 1000000 <= num and num <= 999999999: v = add_unit_number(MILLION, value, 6, num)
     if 1000000000 <= num and num <= 999999999999: v = add_unit_number(BILLION, value, 9, num)
     if 1000000000000 <= num and num <= 999999999999999: v = add_unit_number(TRILLION, value, 12, num)
+    if 1000 > num: v = round(num, 2)
   return v
 
 def format_value(value: int | float):
-  str_value = str(Decimal(str(value)))
+  str_value = str(value)
   value_first_digit = str_value[0]
 
   if value_first_digit == '0':
@@ -99,3 +100,19 @@ def format_value(value: int | float):
   locale.setlocale(locale.LC_ALL, 'en_US.UTF-8')
   number_format = locale.currency(value, symbol=False, grouping=True)
   return number_format
+
+def tranform_value_for_markdown(value, old_value, variation_value):
+  for prop in value:
+    value[prop] = str(value[prop])
+    old_value[prop] = str(old_value[prop])
+    variation_value[prop] = str(variation_value[prop])
+
+    if value[prop]:
+      if '.' in value[prop]: value[prop] = value[prop].replace('.', ',')
+    if old_value[prop]:
+      if '.' in old_value[prop]: old_value[prop] = old_value[prop].replace('.', ',')
+
+    if variation_value[prop]:
+      if '.' in variation_value[prop]: variation_value[prop] = variation_value[prop].replace('.', ',')
+      if '-' in variation_value[prop]: variation_value[prop] = variation_value[prop].replace('-', '\\-')
+      else: variation_value[prop] = '\\%2B' + variation_value[prop]

@@ -203,7 +203,7 @@ __marimo__/
 # Streamlit
 .streamlit/secrets.toml
 
-old-*
+files/
 .env.*
 
 executor.py
