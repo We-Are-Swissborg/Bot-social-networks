@@ -37,7 +37,8 @@ async def borgy():
     "holders": 0,
     "amount": 0,
     "value": 0,
-    "price_without_fee": 0
+    "price_without_fee": 0,
+    "swaps": 0
   }
 
   if date.hour == 9:
@@ -71,11 +72,12 @@ async def borgy():
 
     print('Calcul variation swap week.')
     for prop in swap_week:
-      no_percentage_prop = ["holders"]
+      no_percentage_prop = ["holders", "swaps"]
       decimal_percentage_prop = ["amount", "price_without_fee"]
-      no_abreviate = ["holders", "price_without_fee"]
-
-      if prop in no_percentage_prop:
+      no_abreviate = ["holders", "price_without_fee", "swaps"]
+      if old_swap_week[prop] == 0 and prop not in no_percentage_prop:
+        variation_swap[prop] = 'N/A'
+      elif prop in no_percentage_prop:
         variation_swap[prop] = swap_week[prop] - old_swap_week[prop]
       elif prop in decimal_percentage_prop:
         variation_swap[prop] = round((Decimal(swap_week[prop]) - Decimal(old_swap_week[prop])) / Decimal(old_swap_week[prop]) * 100, 2)
@@ -123,7 +125,7 @@ async def borgy():
           await Telegram.send_message_with_photo_to_telegram(infos_for_telegram)
 
       if date.hour == 13:
-        init_swap_week = {"data": { "amount": 0, "value": 0, "price_without_fee": 0 }, "already_req": True}
+        init_swap_week = {"data": { "amount": 0, "value": 0, "price_without_fee": 0, "buyers": 0}, "already_req": True}
         swap_week_file = open("./files/swap-week.txt", "w", encoding="utf-8")
         swap_week_file.write(json.dumps(init_swap_week))
         swap_week_file.close()
@@ -157,7 +159,7 @@ async def borgy():
 async def borgy_polling(page: Page, is_not_first_req: bool, browser: Browser):
   print(f'{datetime.datetime.now()} - Start polling !')
   is_not_first_swap = False
-  swnap_number = 1
+  swap_number = 1
   transfers = []
 
   try:
@@ -173,8 +175,8 @@ async def borgy_polling(page: Page, is_not_first_req: bool, browser: Browser):
 
     async with asyncio.timeout(300):
       for swap in transfers:
-        print('Swap :', swnap_number)
-        swnap_number = swnap_number + 1
+        print('Swap :', swap_number)
+        swap_number = swap_number + 1
         infos_for_telegram = {
           'bot_token': os.getenv('BORGY_TG_TOKEN'),
           'chat_id': os.getenv('ID_CHAT_BORGY_TG'),

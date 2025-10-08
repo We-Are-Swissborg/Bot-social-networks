@@ -38,10 +38,11 @@ FR = {
                   "🐦 @borgysol",
   "swap-week": lambda swap, old_swap, variation: "💚💚*BILAN DE LA SEMAINE*💚💚%0A%0A" +
                             f"💰 *Capitalisation boursière* : {old_swap['market_cap']} \\-\\-\\> {swap['market_cap']} \\({variation['market_cap']}%25\\)%0A" +
-                            f"👥 *Nombre de détenteurs* : {old_swap['holders']} \\-\\-\\> {swap['holders']} \\({variation['holders']}\\)%0A" +
+                            f"👥 *Détenteurs* : {old_swap['holders']} \\-\\-\\> {swap['holders']} \\({variation['holders']}\\)%0A" +
                             f"📈 *Montant* : {old_swap['amount']} \\-\\-\\> {swap['amount']} \\({variation['amount']}%25\\)%0A" +
-                            f"💵 *Valeur* : {old_swap['value']} \\-\\-\\> {swap['value']} \\({variation['value']}%25\\)%0A" +
-                            f"🛒 *Prix* : {old_swap['price_without_fee']} \\-\\-\\> {swap['price_without_fee']} \\({variation['price_without_fee']}%25\\)",
+                            f"💎 *Valeur* : {old_swap['value']} \\-\\-\\> {swap['value']} \\({variation['value']}%25\\)%0A" +
+                            f"💲 *Prix total* : {old_swap['price_without_fee']} \\-\\-\\> {swap['price_without_fee']} \\({variation['price_without_fee']}%25\\)" +
+                            f"🤝 *Transactions* : {old_swap['swaps']} \\-\\-\\> {swap['swaps']} \\({variation['swaps']}\\)",
   "scam-alert": "🚨*ALERTE SCAMMERS*🚨%0A%0A" +
                 "Chers membres,%0A" + 
                 "Un rappel *CRUCIAL* pour votre sécurité :%0A%0A" + 

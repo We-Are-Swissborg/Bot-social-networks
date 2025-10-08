@@ -14,38 +14,91 @@ def decimal_serializer(obj):
 
 async def check_is_buyer_signature(rows_transactions: list[Locator], signature: str):
   try:
-    i = 0
-    is_unique = False
+    full_borgy = [] # Used to verify if these duplicate signatures participated in crypto exchanges to acquire only BORGY.
+    is_full_borgy = True
 
     for row in rows_transactions:
       td = await row.locator('td').all()
       sign = await td[1].text_content()
-      if sign == signature: i = i + 1
+      crypto_received = await td[5].locator('div > div > div:nth-child(2) > div > div > span').all()
+      crypto = await crypto_received[1].text_content()
+      if sign == signature: full_borgy.append(crypto)
 
-    if i == 1: is_unique = True
-    return is_unique
+    if len(full_borgy) == 1: return 1
+    for c in full_borgy:
+      if c != full_borgy[0]: is_full_borgy = False
+    if is_full_borgy: return len(full_borgy)
+    return 0
   except Exception as e:
     print(e)
 
 # Length must be equal to the number of transactions per page (10)
-def check_length_signature_array(old_signatures: list[str], signature: str):
-  if len(old_signatures) == 10:
-    old_signatures.pop(0)
-    old_signatures.append(signature)
-  else:
-    old_signatures.append(signature)
+def check_length_signature_array(old_signatures: list[str], transfers: list[dict]):
+  for transfer in transfers:
+    if len(old_signatures) == 10:
+      old_signatures.pop(0)
+      old_signatures.append(transfer["signature"])
+    else:
+      old_signatures.append(transfer["signature"])
+
+async def add_new_transfer(td: list[Locator], signature: str, array_transfer: list[dict], swap_week: dict):
+  value = await td[6].text_content()
+  amount_div = await td[5].locator('div > div > div:nth-child(2) > div > div > div').all()
+  amount = await amount_div[1].text_content()
+  buy_price = Decimal(convert_number_for_calcul(value) / convert_number_for_calcul(amount))
+  transfer = {}
+
+  transfer['signature'] = signature
+  transfer['amount'] = amount
+  transfer['value'] = value
+  transfer['price_without_fee'] = round(buy_price, 8)
+  transfer['tx_link'] = 'https://solscan.io/tx/'+signature
+
+  array_transfer.append(transfer)
+
+  # Calcul data transfer for week swap file.
+  for prop in swap_week:
+    if prop != 'swaps':
+      v = transfer[prop]
+      if prop != 'price_without_fee':
+        v = convert_number_for_calcul(v)
+      if prop == 'amount':
+        v = Decimal(v)
+      swap_week[prop] = swap_week[prop] + v
+
+  print('Add new transfer in the list.')
+
+async def set_transfer(td: list[Locator], transfer: dict, swap_week: dict):
+  value = await td[6].text_content()
+  amount_div = await td[5].locator('div > div > div:nth-child(2) > div > div > div').all()
+  amount = await amount_div[1].text_content()
+  total_value = convert_number_for_calcul(transfer["value"]) + convert_number_for_calcul(value)
+  total_amount = Decimal(convert_number_for_calcul(transfer["amount"])) + Decimal(convert_number_for_calcul(amount))
+  buy_price = Decimal(total_value / convert_number_for_calcul(str(total_amount)))
+
+  transfer['value'] = str(total_value)
+  transfer['amount'] = str(total_amount)
+  transfer['price_without_fee'] = round(buy_price, 8)
+
+  # Calcul data transfer for week swap file.
+  swap_week['value'] = swap_week['value'] + convert_number_for_calcul(value)
+  swap_week['amount'] = swap_week['amount'] + Decimal(convert_number_for_calcul(amount))
+  swap_week['price_without_fee'] = swap_week['price_without_fee'] + round(buy_price, 8)
+
+  print('Set one transfer in the list.')
 
 async def get_trades(page: Page):
-  data_file = open('./files/old-signatures-Borgy.txt', 'r+', encoding="utf-8")
+  old_signatures_file = open('./files/old-signatures-Borgy.txt', 'r+', encoding="utf-8")
   max_bypass = 10
   try:
     decoder = json.JSONDecoder()
-    old_signatures, old_signatures_end = decoder.raw_decode(data_file.read())
+    old_signatures, old_signatures_end = decoder.raw_decode(old_signatures_file.read())
     rows_transactions = await page.locator('tbody').locator('tr').all()
     swap_week = {
       'amount': 0,
       'value': 0,
-      'price_without_fee': 0
+      'price_without_fee': 0,
+      'swaps': 0
     }
     print('ROWS_TRANSAC :', type(rows_transactions), len(rows_transactions))
 
@@ -103,44 +156,33 @@ async def get_trades(page: Page):
 
         if is_already_send is False and crypto == 'BORGY':
           print('Check is buyer signature.')
-          is_buyer_signature = await check_is_buyer_signature(rows_transactions, signature)
+          signatures_number = await check_is_buyer_signature(rows_transactions, signature)
 
-          if is_buyer_signature:
-            value = await td[6].text_content()
-            amount_div = await td[5].locator('div > div > div:nth-child(2) > div > div > div').all()
-            amount = await amount_div[1].text_content()
-            buy_price = Decimal(convert_number_for_calcul(value) / convert_number_for_calcul(amount))
-            transfer = {}
-
-            transfer['signature'] = signature
-            transfer['amount'] = amount
-            transfer['value'] = value
-            transfer['price_without_fee'] = round(buy_price, 8)
-            transfer['tx_link'] = 'https://solscan.io/tx/'+signature
-
-            array_transfer.append(transfer)
-            check_length_signature_array(old_signatures, signature)
-
-            # Calcul data transfer for week swap file.
-            for prop in swap_week:
-              value = transfer[prop]
-              if prop != 'price_without_fee':
-                value = convert_number_for_calcul(value)
-              if prop == 'amount':
-                value = Decimal(str(value))
-              swap_week[prop] = swap_week[prop] + value
+          if signatures_number == 1:
+            print('Buyer has a simple signature.')
+            await add_new_transfer(td, signature, array_transfer, swap_week)
+          if signatures_number >= 2:
+            print('Buyer has a duplicate signature.')
+            trans = {"id": 0, "is_unique": True}
+            for i, transfer in enumerate(array_transfer):
+              if signature == transfer["signature"]:
+                trans["id"] = i
+                trans["is_unique"] = False
+            if trans["is_unique"]: await add_new_transfer(td, signature, array_transfer, swap_week)
+            else: await set_transfer(td, array_transfer[trans["id"]], swap_week)
 
     if len(array_transfer) != 0:
-      data_file.seek(0)
+      check_length_signature_array(old_signatures, array_transfer)
+      old_signatures_file.seek(0)
       print('Write the new signatures in the file.')
-      data_file.write(json.dumps(old_signatures))
-    # Write data transfer to week swap file.
+      old_signatures_file.write(json.dumps(old_signatures))
 
-    if swap_week['amount'] != 0:
       print('Add new data in swap-week.txt.')
       week_swap_file = open("./files/swap-week.txt", 'r', encoding="utf-8")
       read_swap_week, read_swap_week_end = decoder.raw_decode(week_swap_file.read())
       swap_week_decode = read_swap_week["data"]
+
+      swap_week['swaps'] = len(array_transfer)
 
       for prop in swap_week:
         if prop in ('price_without_fee', 'amount'):
@@ -157,7 +199,7 @@ async def get_trades(page: Page):
   except Exception as e:
     print(e)
   finally:
-    data_file.close()
+    old_signatures_file.close()
 
 async def get_market_cap(page):
   try:
