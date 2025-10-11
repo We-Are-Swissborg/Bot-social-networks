@@ -52,6 +52,19 @@ FR = {
                 "✅Tous les échanges officiels ont lieu *UNIQUEMENT* dans le groupe ou via nos canaux officiels\\.%0A%0A" + 
                 "⚠️Restez vigilants, et si vous voyez un compte suspect → signalez\\-le immédiatement à un admin\\.%0A%0A" + 
                 "Votre sécurité passe avant tout 💚🐶",
+  "need-you": "🐾 BORGY ARMY, ON A BESOIN DE VOUS 💚%0A%0A" +
+              "C’est le moment de faire rugir la meute sur CoinMarketCap 🚀%0A%0A" +
+              "Chaque petit geste compte pour faire briller $BORGY encore plus fort 🌟%0A" +
+              "Voici ce que vous pouvez faire 👇%0A" +
+              "💬 Laissez un message positif dans les commentaires%0A" +
+              "⭐ Ajoutez $BORGY à votre Watchlist \\(cliquez sur ★\\)%0A" +
+              "❤️ Votez “Haussier” sur le sentiment du jour%0A" +
+              "🗣️ Commentez, likez, interagissez avec les autres membres%0A" +
+              "📈 Partagez le lien CMC sur X, Telegram et partout où bat le cœur de la communauté%0A%0A" +
+              "Plus on est actifs, plus $BORGY grimpe dans les tendances et attire de nouveaux yeux 👀%0A" +
+              "C’est ensemble, par notre énergie, notre présence et notre passion, que la meute avance 🚀%0A%0A" +
+              "💚 Let's gooo, laissez votre empreinte sur CMC et montrez au monde la force du Borgy Spirit 🌍%0A%0A" +
+              "➡️ https://coinmarketcap\\.com/currencies/borgy/ ⬅️",
   # "ticket-message": "🔊 $BORGY MILLIONS 🎊%0A%0A" +
   #                   "🎟️ Procurez\\-vous vos billets pour avoir la chance de devenir l'un des 3 heureux gagnants 🍀🍀🍀%0A%0A" +
   #                   "• Détails ⤵️%0A" +

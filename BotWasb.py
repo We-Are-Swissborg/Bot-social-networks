@@ -17,8 +17,6 @@ async def bot_wasb():
           'value': '',
           'marketCap': '',
           'userVerify': '',
-          'premiumUser': '',
-          'borgLockByPremium': '',
           'borgLockForGovernance': '',
           'supplyCirculation': '',
           'aum': '',

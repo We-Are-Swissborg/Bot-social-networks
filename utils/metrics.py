@@ -14,13 +14,6 @@ async def get_on_swissborg(infos: dict, page: Page, max_loop: int):
   try:
     borg_metrics_or_several_metrics = infos['borg'] if infos['borg'] else infos
 
-    # Page https://swissborg.com/premium-account
-    await page.goto('https://swissborg.com/premium-account')
-    time.sleep(2)
-    await Swissborg.accept_cookie_swissborg(page, max_loop)
-    await Swissborg.get_premium_user_borg(borg_metrics_or_several_metrics, page, max_loop)
-    await Swissborg.get_borg_lock_by_premium(borg_metrics_or_several_metrics, page, max_loop)
-
     # Page https://swissborg.com/marche-crypto/coins/swissborg-token
     # await page.goto('https://swissborg.com/crypto-market/coins/swissborg-token')
     # time.sleep(2)
@@ -30,6 +23,7 @@ async def get_on_swissborg(infos: dict, page: Page, max_loop: int):
     # Page https://swissborg.com/about
     await page.goto('https://swissborg.com/about')
     time.sleep(2)
+    await Swissborg.accept_cookie_swissborg(page, max_loop)
     await Swissborg.get_aum_borg(borg_metrics_or_several_metrics, page, max_loop)
     await Swissborg.get_user_verify(borg_metrics_or_several_metrics, page, max_loop)
 
@@ -116,6 +110,8 @@ async def get_on_dexscreener(infos: dict, page: Page, prop_metrics: list):
         if 'volumeDexScreener' in value_to_get_dexscreener[prop]['props']: infos[prop]['volumeDexScreener'] = str(res['pairs'][value_to_get_dexscreener[prop]['pairs_id']]['volume']['h24'])
         # if value_to_get_dexscreener[prop]['props'].includes('created')) infos[prop].created = String(res['pairs'][value_to_get_dexscreener[prop]['pairs_id']].pairCreatedAt)
         # if value_to_get_dexscreener[prop].includes('holder')) await DexScreener.getHolder(infos[prop], page, max_loop, prop)
+
+        print(f"{prop} metrics acquired on DexScreener.")
   except Exception as e:
     if 'Page.goto' in str(e): return print(f'Error to get datas on CoinGecko {e}')
     await handler_error(e, page, 'Error to get datas on DexScreener')
@@ -165,7 +161,7 @@ async def get_metrics(infos: dict):
 
           if is_market_cap and is_supply_circulation: infos[prop]['value'] = get_value_crypto(infos[prop]['marketCap'], infos[prop]['supplyCirculation'])
           if is_market_cap: infos[prop]['marketCap'] = abbreviate_number(infos[prop]['marketCap'])
-          if is_supply_circulation: infos[prop]['supplyCirculation'] = abbreviate_number(infos[prop]['supplyCirculation'])
+          if is_supply_circulation and prop != "borgy": infos[prop]['supplyCirculation'] = abbreviate_number(infos[prop]['supplyCirculation'])
           if is_volume_dexscreener: infos[prop]['volumeDexScreener'] = abbreviate_number(infos[prop]['volumeDexScreener'])
           if is_volume_coingecko: infos[prop]['volumeCoinGecko'] = abbreviate_number(infos[prop]['volumeCoinGecko'])
 

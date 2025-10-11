@@ -57,7 +57,7 @@ async def send_message_with_photo_to_telegram(infos: dict, not_pin: bool = False
     # Print the response
     print(f'{infos["about"]} message with photo to Telegram successfully.')
   except Exception as error:
-    print(f"Error {infos['about'].lower()} message to telegram: {error}")
+    print(f"Error {infos['about'].lower()} message with photo to telegram: {error}")
     raise Exception(f"Error {infos['about'].lower()} message with photo to telegram: {error}") from error
 
 async def send_simple_message_to_telegram(infos: dict, not_pin: bool = False):

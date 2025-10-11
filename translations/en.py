@@ -76,6 +76,19 @@ EN = {
                 "✅All official exchanges take place *ONLY* in the group or through our official channels\\.%0A%0A" + 
                 "⚠️Stay vigilant, and if you see a suspicious account → report it immediately to an admin\\.%0A%0A" + 
                 "Your safety comes first 💚🐶",
+  "need-you": "🐾 BORGY ARMY, WE NEED YOU 💚%0A%0A" +
+              "It’s time to make the pack roar on CoinMarketCap 🚀%0A%0A" +
+              "Every small action counts to make $BORGY shine even brighter 🌟%0A" +
+              "Here’s what you can do 👇%0A%0A" +
+              "💬 Leave a positive message in the comments%0A" +
+              "⭐ Add $BORGY to your Watchlist \\(click the ★\\)%0A" +
+              "❤️ Vote “Bullish” on today’s sentiment%0A" +
+              "🗣️ Comment, like, and interact with other members%0A" +
+              "📈 Share the CMC link on X, Telegram, and everywhere the community vibes strong%0A%0A" +
+              "The more active we are, the higher $BORGY climbs in the trends and catches new eyes 👀%0A" +
+              "Together, through our energy, presence, and passion, the pack moves forward 🚀%0A%0A" +
+              "💚 Let’s gooo\\! Leave your mark on CMC and show the world the power of the Borgy Spirit 🌍%0A%0A" +
+              "➡️ https://coinmarketcap\\.com/currencies/borgy/ ⬅️",
   # "ticket-message": "🔊 $BORGY MILLIONS 🎊%0A%0A" +
   #                   "🎟️ Grab your tickets and get a chance to become one of the 3 lucky winners 🍀🍀🍀%0A%0A" +
   #                   "• Details ⤵️%0A" +

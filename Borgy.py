@@ -27,8 +27,8 @@ def decimal_serializer(obj):
 
 async def borgy():
   # general (Borgy army) and unleash corespond to telegram groups.
-  general_sending = [9, 11, 12, 13]
-  unleash_hour = [11]
+  general_sending = [9, 11, 12, 13, 14]
+  unleash_hour = [11, 14]
   no_time = True
   fr_message = en_message = id_photo = about = None
   not_pin_message = False
@@ -93,6 +93,11 @@ async def borgy():
     en_message = EN['swap-week'](swap_week_for_markdown, old_swap_week, variation_swap)
     id_photo = {"fr": os.getenv('FR_WEEK_BUY_IMG'), "en": os.getenv('EN_WEEK_BUY_IMG')}
     about = 'Swap week'
+  elif date.hour == 14:
+    fr_message = FR['need-you']
+    en_message = EN['need-you']
+    id_photo = os.getenv('NEED_YOU_IMG')
+    about = "We need you"
 
   try:
     if date.hour in general_sending:
@@ -121,7 +126,7 @@ async def borgy():
           elif i == 1: infos_for_telegram["id_photo"] = photos['en']
         if date.hour == 9 or date.hour == 11:
           await Telegram.send_simple_message_to_telegram(infos_for_telegram)
-        elif date.hour == 12  or date.hour == 13:
+        elif date.hour in (12, 13, 14):
           await Telegram.send_message_with_photo_to_telegram(infos_for_telegram)
 
       if date.hour == 13:
@@ -138,16 +143,22 @@ async def borgy():
     # Message to Unleash telegram.
     if date.hour in unleash_hour:
       not_pin_message = True
-      en_message = EN['unleash-welcome-pack']
+
+      if date.hour == 11: en_message = EN['unleash-welcome-pack']
+
       infos_for_telegram = {
         'bot_token': os.getenv('BORGY_TG_TOKEN'),
         'chat_id': os.getenv('ID_CHAT_UNLEASH_TG'),
-        # 'id_photo': 'AgACAgQAAx0CWDGDpQABAn86aLROyjUhEhrT3KjkUPLRsWGJOsUAAmPJMRvwMqBRBeGVP5MWxwcBAAMCAANzAAM2BA',
+        'id_photo': None,
         'message': en_message,
         'about': about,
       }
-      # await send_message_with_photo_to_telegram(infos_for_telegram)
-      await Telegram.send_simple_message_to_telegram(infos_for_telegram, not_pin_message)
+
+      if date.hour == 11:
+        await Telegram.send_simple_message_to_telegram(infos_for_telegram, not_pin_message)
+      elif date.hour == 14:
+        infos_for_telegram["id_photo"] = os.getenv("UNLEASH_NEED_YOU_IMG")
+        await Telegram.send_message_with_photo_to_telegram(infos_for_telegram, not_pin_message)
       no_time = False
 
     if no_time:
