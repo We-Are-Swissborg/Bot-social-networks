@@ -57,7 +57,7 @@ async def bot_wasb():
           # created: ''
         },
       },
-      'last_update': None,
+      'lastUpdate': None,
     }
 
     infos['crypto'] = await get_metrics(infos['crypto'])
@@ -77,7 +77,7 @@ async def bot_wasb():
         if infos['crypto'][crypto_name][prop] and '$' not in infos['crypto'][crypto_name][prop]:
           infos['crypto'][crypto_name][prop] = '$'+infos['crypto'][crypto_name][prop]
 
-    infos['last_update'] = str(datetime.datetime.now())
+    infos['lastUpdate'] = str(datetime.datetime.now())
 
     res = requests.post(os.getenv('URL_WASB'),
       headers = {

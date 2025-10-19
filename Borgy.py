@@ -98,6 +98,7 @@ async def borgy():
     en_message = EN['need-you']
     id_photo = os.getenv('NEED_YOU_IMG')
     about = "We need you"
+    not_pin_message = True
 
   try:
     if date.hour in general_sending:
@@ -127,10 +128,13 @@ async def borgy():
         if date.hour == 9 or date.hour == 11:
           await Telegram.send_simple_message_to_telegram(infos_for_telegram)
         elif date.hour in (12, 13, 14):
-          await Telegram.send_message_with_photo_to_telegram(infos_for_telegram)
+          if not_pin_message:
+            await Telegram.send_message_with_photo_to_telegram(infos_for_telegram, not_pin_message)
+          else:
+            await Telegram.send_message_with_photo_to_telegram(infos_for_telegram)
 
       if date.hour == 13:
-        init_swap_week = {"data": { "amount": 0, "value": 0, "price_without_fee": 0, "buyers": 0}, "already_req": True}
+        init_swap_week = {"data": { "amount": 0, "value": 0, "price_without_fee": 0, "buyers": 0, "swaps": 0}, "already_req": True}
         swap_week_file = open("./files/swap-week.txt", "w", encoding="utf-8")
         swap_week_file.write(json.dumps(init_swap_week))
         swap_week_file.close()
