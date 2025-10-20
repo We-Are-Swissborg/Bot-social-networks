@@ -65,6 +65,25 @@ FR = {
               "C’est ensemble, par notre énergie, notre présence et notre passion, que la meute avance 🚀%0A%0A" +
               "💚 Let's gooo, laissez votre empreinte sur CMC et montrez au monde la force du Borgy Spirit 🌍%0A%0A" +
               "➡️ https://coinmarketcap\\.com/currencies/borgy/ ⬅️",
+  "action-time": "🐾 BORGY ARMY, L’HEURE EST VENUE DE PASSER À L’ACTION 🚀%0A%0A" +
+                 "Envie de renforcer la meute et d’acheter du $BORGY en toute sécurité ?%0A" +
+                 "Une seule adresse ➡️ www\\.borgysol\\.com ⬅️%0A%0A" +
+                 "Suis ces 5 étapes simples :%0A" +
+                 "1️⃣ Ouvre ton wallet Phantom ou Solflare 💰%0A" +
+                 "2️⃣ Va sur borgysol\\.com 🐾%0A" +
+                 "3️⃣ Descends un peu pour trouver notre DEX intégré ⚡%0A" +
+                 "4️⃣ Connecte ton wallet 🧩%0A" +
+                 "5️⃣ Et… LFG 💥%0A%0A" +
+                 "🔁 Chaque achat rend Borgy plus fort 💚%0A%0A" +
+                 "• Répartition des frais ⤵️%0A" +
+                 "→ Marketing \\(DAO\\) : 30%25%0A" +
+                 "→ Rachats : 30%25%0A" +
+                 "→ Staking : 30%25%0A" +
+                 "→ Charité : 10%25%0A%0A" +
+                 "Notre site est le QG officiel de Borgy : simple, sécurisé et 100%25 Borgy vibes 💎%0A" +
+                 "Alors, prêt à rejoindre la meute sur le terrain ? 🔥%0A%0A" +
+                 "➡️ www\\.borgysol\\.com ⬅️%0A%0A" +
+                 "💚 Le cœur de BORGY bat ici 💚",
   # "ticket-message": "🔊 $BORGY MILLIONS 🎊%0A%0A" +
   #                   "🎟️ Procurez\\-vous vos billets pour avoir la chance de devenir l'un des 3 heureux gagnants 🍀🍀🍀%0A%0A" +
   #                   "• Détails ⤵️%0A" +

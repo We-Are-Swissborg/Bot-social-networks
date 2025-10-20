@@ -27,8 +27,8 @@ def decimal_serializer(obj):
 
 async def borgy():
   # general (Borgy army) and unleash corespond to telegram groups.
-  general_sending = [9, 11, 12, 13, 14]
-  unleash_hour = [11, 14]
+  general_sending = [9, 11, 12, 13, 14, 15]
+  unleash_hour = [11, 14, 15]
   no_time = True
   fr_message = en_message = id_photo = about = None
   not_pin_message = False
@@ -99,6 +99,12 @@ async def borgy():
     id_photo = os.getenv('NEED_YOU_IMG')
     about = "We need you"
     not_pin_message = True
+  elif date.hour == 15:
+    fr_message = FR['action-time']
+    en_message = EN['action-time']
+    id_photo = os.getenv('ACTION_TIME_IMG')
+    about = "Action time"
+    not_pin_message = True
 
   try:
     if date.hour in general_sending:
@@ -127,7 +133,7 @@ async def borgy():
           elif i == 1: infos_for_telegram["id_photo"] = photos['en']
         if date.hour == 9 or date.hour == 11:
           await Telegram.send_simple_message_to_telegram(infos_for_telegram)
-        elif date.hour in (12, 13, 14):
+        elif date.hour in (12, 13, 14, 15):
           if not_pin_message:
             await Telegram.send_message_with_photo_to_telegram(infos_for_telegram, not_pin_message)
           else:
@@ -149,19 +155,19 @@ async def borgy():
       not_pin_message = True
 
       if date.hour == 11: en_message = EN['unleash-welcome-pack']
+      if date.hour == 14: id_photo = os.getenv("UNLEASH_NEED_YOU_IMG")
 
       infos_for_telegram = {
         'bot_token': os.getenv('BORGY_TG_TOKEN'),
         'chat_id': os.getenv('ID_CHAT_UNLEASH_TG'),
-        'id_photo': None,
+        'id_photo': id_photo,
         'message': en_message,
         'about': about,
       }
 
       if date.hour == 11:
         await Telegram.send_simple_message_to_telegram(infos_for_telegram, not_pin_message)
-      elif date.hour == 14:
-        infos_for_telegram["id_photo"] = os.getenv("UNLEASH_NEED_YOU_IMG")
+      elif date.hour in (14, 15):
         await Telegram.send_message_with_photo_to_telegram(infos_for_telegram, not_pin_message)
       no_time = False
 
