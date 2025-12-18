@@ -37,7 +37,7 @@ async def handler_error(e: Exception, page: Page, add_error_msg: str, is_borgy_b
   await page.goto(page.url)
   await send_error_to_telegram(e, add_error_msg, bot_token)
 
-async def send_message_with_photo_to_telegram(infos: dict, not_pin: bool = False):
+async def send_message_with_photo_to_telegram(infos: dict, pin: bool = False):
   try:
     message_thread_id = f'&message_thread_id={infos["id_thread_telegram"]}' if 'id_thread_telegram' in infos else ''
 
@@ -49,7 +49,7 @@ async def send_message_with_photo_to_telegram(infos: dict, not_pin: bool = False
     json_res = res.json()
 
     if json_res['ok'] is False: raise Exception(f'code {json_res["error_code"]} - {json_res["description"]}')
-    if not_pin: return
+    if pin is False: return
     id_message = json_res['result']['message_id']
 
     requests.get(f'https://api.telegram.org/bot{infos["bot_token"]}/pinChatMessage?chat_id={infos["chat_id"]}&message_id={id_message}')
@@ -60,7 +60,7 @@ async def send_message_with_photo_to_telegram(infos: dict, not_pin: bool = False
     print(f"Error {infos['about'].lower()} message with photo to telegram: {error}")
     raise Exception(f"Error {infos['about'].lower()} message with photo to telegram: {error}") from error
 
-async def send_simple_message_to_telegram(infos: dict, not_pin: bool = False):
+async def send_simple_message_to_telegram(infos: dict, pin: bool = False):
   try:
     message_thread_id = f'&message_thread_id={infos["id_thread_telegram"]}' if 'id_thread_telegram' in infos else ''
 
@@ -72,7 +72,7 @@ async def send_simple_message_to_telegram(infos: dict, not_pin: bool = False):
     json_res = res.json()
 
     if json_res['ok'] is False: raise Exception(f'code {json_res["error_code"]} - {json_res["description"]}')
-    if not_pin: return
+    if pin is False: return
     id_message = json_res['result']['message_id']
 
     requests.get(f'https://api.telegram.org/bot{infos["bot_token"]}/pinChatMessage?chat_id={infos["chat_id"]}&message_id={id_message}')

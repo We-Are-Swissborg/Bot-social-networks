@@ -31,7 +31,7 @@ async def borgy():
   unleash_hour = [11, 14, 15]
   no_time = True
   fr_message = en_message = id_photo = about = None
-  not_pin_message = False
+  pin_message = False
   variation_swap = {
     "market_cap": 0,
     "holders": 0,
@@ -98,13 +98,11 @@ async def borgy():
     en_message = EN['need-you']
     id_photo = os.getenv('NEED_YOU_IMG')
     about = "We need you"
-    not_pin_message = True
   elif date.hour == 15:
     fr_message = FR['action-time']
     en_message = EN['action-time']
     id_photo = os.getenv('ACTION_TIME_IMG')
     about = "Action time"
-    not_pin_message = True
 
   try:
     if date.hour in general_sending:
@@ -134,8 +132,8 @@ async def borgy():
         if date.hour == 9 or date.hour == 11:
           await Telegram.send_simple_message_to_telegram(infos_for_telegram)
         elif date.hour in (12, 13, 14, 15):
-          if not_pin_message:
-            await Telegram.send_message_with_photo_to_telegram(infos_for_telegram, not_pin_message)
+          if pin_message:
+            await Telegram.send_message_with_photo_to_telegram(infos_for_telegram, pin_message)
           else:
             await Telegram.send_message_with_photo_to_telegram(infos_for_telegram)
 
@@ -152,10 +150,9 @@ async def borgy():
 
     # Message to Unleash telegram.
     if date.hour in unleash_hour:
-      not_pin_message = True
+      pin_message = False
 
       if date.hour == 11: en_message = EN['unleash-welcome-pack']
-      if date.hour == 14: id_photo = os.getenv("UNLEASH_NEED_YOU_IMG")
 
       infos_for_telegram = {
         'bot_token': os.getenv('BORGY_TG_TOKEN'),
@@ -166,9 +163,9 @@ async def borgy():
       }
 
       if date.hour == 11:
-        await Telegram.send_simple_message_to_telegram(infos_for_telegram, not_pin_message)
+        await Telegram.send_simple_message_to_telegram(infos_for_telegram)
       elif date.hour in (14, 15):
-        await Telegram.send_message_with_photo_to_telegram(infos_for_telegram, not_pin_message)
+        await Telegram.send_message_with_photo_to_telegram(infos_for_telegram)
       no_time = False
 
     if no_time:

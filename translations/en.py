@@ -8,10 +8,11 @@ EN = {
                   "https://Coingecko\\.com/coins/borgy%0A%0A"+
                   "*_Message generate by Borgy\\_Bot_*\\.",
   "buy-message": lambda data: "🟢🟢🟢 *$BORGY BUY* 🟢🟢🟢%0A%0A" +
-                      f"🔄Sent *${data['value']}*%0A"+
+                      f"🔄Sent (fees included) *${data['value']}*%0A"+
                       f"🔄Receipt *{data['amount']} BORGY*%0A"+
-                      f"💲Price *${data['price_without_fee']}*%0A"+
-                      f"📝[TX]({data['tx_link']})",
+                      f"💲Price (fees included) *${data['price_with_fee']}*%0A"+
+                      f"💸Fee *${data['fee']}*%0A"+
+                      f"📝[TX]({data['tx']})",
   "welcome-pack": "💚 *WELCOME TO THE PACK* 💚%0A%0A" +
                   "⚠️ *Reminder*%0A" +
                   "💬 Normal chats → here%0A" +
@@ -27,13 +28,6 @@ EN = {
                   "📌 XP Tips%0A" +
                   "Use bot buttons: 💬 🔄 ❤️ 📌 ✊%0A" +
                   "Comments 💬 → reply directly to the bot’s DM%0A%0A" +
-                  "🤑 *MORE* ⤵️%0A" +
-                  "*Ambassador reward program* :%0A" +
-                  "https://borgysol\\.com/\\%23rewards%0A" +
-                  "1️⃣Register%0A" +
-                  "2️⃣Interact with @Borgysol / $BORGY%0A" +
-                  "3️⃣Earn 🤝🏻💵%0A" +
-                  "💎 HODL ➡️ double your earnings%0A%0A" +
                   "🌐 borgysol\\.com%0A" +
                   "🐦 @borgysol",
   "unleash-welcome-pack": "💚 *WELCOME TO THE PACK* 💚%0A%0A" +
@@ -51,13 +45,6 @@ EN = {
                           "📌 XP Tips%0A" +
                           "Use bot buttons: 💬 🔄 ❤️ 📌 ✊%0A" +
                           "Comments 💬 → reply directly to the bot’s DM%0A%0A" +
-                          "🤑 *MORE* ⤵️%0A" +
-                          "*Ambassador reward program* :%0A" +
-                          "https://borgysol\\.com/\\%23rewards%0A" +
-                          "1️⃣Register%0A" +
-                          "2️⃣Interact with @Borgysol / $BORGY%0A" +
-                          "3️⃣Earn 🤝🏻💵%0A" +
-                          "💎 HODL ➡️ double your earnings%0A%0A" +
                           "🌐 borgysol\\.com%0A" +
                           "🐦 @borgysol",
   "swap-week": lambda swap, old_swap, variation: "💚💚*RESULTS OF THE WEEK*💚💚%0A%0A" +

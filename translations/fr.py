@@ -27,13 +27,6 @@ FR = {
                   "📌 Conseils XP%0A" +
                   "Utilisez les boutons du bot : 💬 🔄 ❤️ 📌 ✊%0A" +
                   "Commentaires 💬 → répondez directement au MP du bot%0A%0A" +
-                  "🤑 *ENCORE PLUS* ⤵️%0A" +
-                  "*Programme de récompenses d'ambassadeur* :%0A" +
-                  "https://borgysol\\.com/\\%23rewards%0A" +
-                  "1️⃣Inscrivez\\-vous%0A" +
-                  "2️⃣Interagissez avec @Borgysol / $BORGY%0A" +
-                  "3️⃣Gagnez 🤝🏻💵%0A" +
-                  "💎 HODL ➡️ doublez vos gains%0A%0A" +
                   "🌐 borgysol\\.com%0A" +
                   "🐦 @borgysol",
   "swap-week": lambda swap, old_swap, variation: "💚💚*BILAN DE LA SEMAINE*💚💚%0A%0A" +
