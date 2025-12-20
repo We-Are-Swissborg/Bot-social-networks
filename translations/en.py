@@ -8,11 +8,12 @@ EN = {
                   "https://Coingecko\\.com/coins/borgy%0A%0A"+
                   "*_Message generate by Borgy\\_Bot_*\\.",
   "buy-message": lambda data: "🟢🟢🟢 *$BORGY BUY* 🟢🟢🟢%0A%0A" +
-                      f"🔄Sent (fees included) *${data['value']}*%0A"+
+                      f"🔄value paid\\* \\(USD\\) *${data['value']}*%0A"+
                       f"🔄Receipt *{data['amount']} BORGY*%0A"+
-                      f"💲Price (fees included) *${data['price_with_fee']}*%0A"+
+                      f"💲Price\\* *${data['price_with_fee']}*%0A"+
                       f"💸Fee *${data['fee']}*%0A"+
-                      f"📝[TX]({data['tx']})",
+                      f"📝[TX]({data['tx']})%0A%0A"+
+                      "\\**fee included_",
   "welcome-pack": "💚 *WELCOME TO THE PACK* 💚%0A%0A" +
                   "⚠️ *Reminder*%0A" +
                   "💬 Normal chats → here%0A" +

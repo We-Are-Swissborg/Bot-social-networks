@@ -1,7 +1,6 @@
 import os
-import json
 from datetime import datetime, timezone
-from typing import Any, Dict
+from decimal import Decimal, ROUND_HALF_UP
 from dotenv import load_dotenv
 import requests
 from cachetools import TTLCache
@@ -21,6 +20,7 @@ COINGECKO_IDS = {
   "So11111111111111111111111111111111111111112": "solana",
   "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v": "usd-coin",
   "Es9vMFrzaCERmJfrF4H2FYD4KCoNkY11McCe8BenwNYB": "tether",
+  "3dQTr7ror2QPKQ3GbBCokJUmjErGg8kTJzdnYjNfvi3Z": "swissborg"
 }
 STABLECOIN_MINTS = {
   "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v", # USDC
@@ -28,24 +28,23 @@ STABLECOIN_MINTS = {
 }
 price_cache = TTLCache(maxsize=1000, ttl=45)
 
-def is_valid_swap(transac: Dict[str, Any]):
+def is_valid_swap(transac: dict):
   accept_type = ["UNKNOWN", "TOKEN_MINT"]
   valid = False
-  transac = json.load(transac)
 
   if transac['transactionError'] is not None:
-    print(f"TX {transac['signature']} has a transaction error: {transac['transactionError']}")
+    print(f"TX has a transaction error: {transac['transactionError']}")
     return valid
   if len(transac['tokenTransfers']) == 0:
-    print(f"TX {transac['signature']} is not a swap.")
+    print("TX is not a swap.")
     return valid
   if transac['type'] not in accept_type:
-    print(f"TX {transac['signature']} has not a valid TYPE.")
+    print(f"TX has not a valid TYPE: {transac['type']}.")
     return valid
   valid = True
   return valid
 
-def is_real_buy(transac: Dict[str, Any]):
+def is_real_buy(transac: dict):
   for transfer in transac.get("tokenTransfers", []):
     if transfer.get("mint") == TARGET_MINT and transfer.get("toUserAccount") and transfer.get("tokenAmount", 0) > 0:
       buyer = transfer["toUserAccount"]
@@ -90,35 +89,40 @@ def get_coingecko_price(mint: str, timestamp: int):
 
       if cg_id:
         print(f'Ask for {mint}: {cg_id}')
-        price = data.get(cg_id, {}).get("usd", 0.0)
+        price = data.get(cg_id, {}).get("usd", Decimal(0.0))
       else:
         print(f'{mint} UNKNWON ID NEED TO ADD IN "COINGECKO_IDS"')
-        price = data.get(mint, {}).get("usd", 0.0)
+        price = data.get(mint, {}).get("usd", Decimal(0.0))
 
+      price = Decimal(str(price))
       price_cache[cache_key] = price
-      return float(price)
+      return price
   except:
     pass
-  return 0.0
+  return Decimal(0.0)
 
-def calculate_cost_usd(transac: Dict[str, Any], buyer: str):
-  total_usd = 0.0
+def calculate_cost_usd(transac: dict, buyer: str):
+  total_usd = Decimal(0.0)
   timestamp = transac.get("timestamp", int(datetime.now(timezone.utc).timestamp()))
   mint = "So11111111111111111111111111111111111111112"
 
   # SOL spent by the buyer
-  sol_lamports = sum(
-    nt.get("amount", 0)
-    for nt in transac.get("nativeTransfers", [])
-    if nt.get("fromUserAccount") == buyer
+  sol_lamports = Decimal(
+    str(
+      sum(
+        nt.get("amount", 0)
+        for nt in transac.get("nativeTransfers", [])
+        if nt.get("fromUserAccount") == buyer
+      )
+    )
   )
-  total_usd += (sol_lamports / 1e9) * get_coingecko_price(mint, timestamp)
+  total_usd += ((sol_lamports) / 1e9) * get_coingecko_price(mint, timestamp)
 
   # Other token inputs
   for t in transac.get("tokenTransfers", []):
     if (t.get("fromUserAccount") == buyer and t.get("mint") != TARGET_MINT and t.get("tokenAmount", 0) > 0):
       mint = t["mint"]
-      amount_in = t["tokenAmount"]
+      amount_in = Decimal(str(t["tokenAmount"]))
 
       if mint in STABLECOIN_MINTS:
         total_usd += amount_in
@@ -127,15 +131,19 @@ def calculate_cost_usd(transac: Dict[str, Any], buyer: str):
         total_usd += amount_in * price
 
   # Transaction fees (base fee + Jito/Jupiter tips)
-  base_fee = transac.get("fee", 0)
-  tips = sum(
-    nt.get("amount", 0)
-    for nt in transac.get("nativeTransfers", [])
-    if nt.get("fromUserAccount") == buyer
-    and nt.get("toUserAccount") in {
-      "96gYZGLnJYVFmbjzopPSU6QiEV5fGqZNyN9nmq9vxk", # Jito
-      "JUP6LkbZbjS1jKKwapdHNy74zcZ3tLUZoi5QNyVTaV4" # Jupiter
-    }
+  base_fee = Decimal(str(transac.get("fee", 0)))
+  tips = Decimal(
+    str(
+      sum(
+        nt.get("amount", 0)
+        for nt in transac.get("nativeTransfers", [])
+        if nt.get("fromUserAccount") == buyer
+        and nt.get("toUserAccount") in {
+          "96gYZGLnJYVFmbjzopPSU6QiEV5fGqZNyN9nmq9vxk", # Jito
+          "JUP6LkbZbjS1jKKwapdHNy74zcZ3tLUZoi5QNyVTaV4" # Jupiter
+        }
+      )
+    )
   )
   mint = "So11111111111111111111111111111111111111112"
   fees_usd = ((base_fee + tips) / 1e9) * get_coingecko_price(mint, timestamp)
@@ -143,6 +151,8 @@ def calculate_cost_usd(transac: Dict[str, Any], buyer: str):
   return total_usd + fees_usd
 
 def borgy_webhook(transac: dict):
+  print(f"TX {transac['signature']} will be analyzed.")
+
   if not is_valid_swap(transac):
     return None
 
@@ -165,11 +175,15 @@ def borgy_webhook(transac: dict):
 
   transac_to_send = {
     "amount": buy["amount"],
-    "value": round(total_cost_usd, 4),
-    "price_with_fee": round(price_per_token_usd, 10),
-    "fee": round(total_cost_usd - (total_cost_usd / buy["amount"] * buy["amount"]), 6),
+    "value": Decimal(total_cost_usd).quantize(Decimal('1e-2'), rounding=ROUND_HALF_UP),
+    "price_with_fee": Decimal(price_per_token_usd).quantize(Decimal('1e-10'), rounding=ROUND_HALF_UP),
+    "fee": Decimal(total_cost_usd - (total_cost_usd / buy["amount"] * buy["amount"])).quantize(Decimal('1e-8'), rounding=ROUND_HALF_UP),
     "tx": f"https://solscan.io/tx/{transac['signature']}"
   }
+
+  for prop in transac_to_send:
+    if '.' in str(transac_to_send[prop]):
+      transac_to_send[prop] = str(transac_to_send[prop]).replace('.', '\\.')
 
   infos_for_telegram["message"] = EN["buy-message"](transac_to_send)
 

@@ -30,7 +30,7 @@ async def webhook_helius(req: Request):
     infos_for_telegram['message'] = 'There is more than 1 transaction :%0A%0A'
 
     for transac in data:
-      infos_for_telegram['message'] += f'https://solscan.io/tx/{transac['signature']}%0A'
+      infos_for_telegram['message'] += f'https://solscan.io/tx/{transac["signature"]}%0A'
 
     send_simple_message_to_telegram(infos_for_telegram)
     return
