@@ -20,7 +20,7 @@ async def webhook_helius(req: Request):
   if auth != os.getenv("WEBHOOK_AUTH"):
     infos_for_telegram['message'] = 'Error webhook authentification'
     print('Error webhook authentification')
-    send_simple_message_to_telegram(infos_for_telegram)
+    await send_simple_message_to_telegram(infos_for_telegram)
     return
 
   data = json.loads(await req.body())
@@ -32,7 +32,7 @@ async def webhook_helius(req: Request):
     for transac in data:
       infos_for_telegram['message'] += f'https://solscan.io/tx/{transac["signature"]}%0A'
 
-    send_simple_message_to_telegram(infos_for_telegram)
+    await send_simple_message_to_telegram(infos_for_telegram)
     return
 
-  borgy_webhook(data[0])
+  await borgy_webhook(data[0])

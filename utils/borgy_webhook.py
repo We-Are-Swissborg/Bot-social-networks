@@ -10,12 +10,6 @@ from utils.telegram import send_message_with_photo_to_telegram
 load_dotenv('./.env.production')
 
 TARGET_MINT = "BorGY4ub2Fz4RLboGxnuxWdZts7EKhUTB624AFmfCgX"
-KNOWN_POOLS = [
-  "CPMMoo8L3F4NbTegBCKVNunggL7H1ZpdTHKxQB5qKP1C",
-  "Eo7WjKq67rjJQSZxS6z3YkapzY3eMj6Xy8X5EQVn5UaB",
-  "CAMMCzo5YL8w4VFF8KVHrK22GGUsp5VTaW7grrKgrWqK",
-  "LBUZKhRxPF3XUpBCjp4YzTKgLccjZhTSDM9YuVaPwxo",
-]
 COINGECKO_IDS = {
   "So11111111111111111111111111111111111111112": "solana",
   "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v": "usd-coin",
@@ -44,34 +38,26 @@ def is_valid_swap(transac: dict):
   valid = True
   return valid
 
-def is_real_buy(transac: dict):
+def nb_transfer_include_the_crypto(transac: dict):
+  nb_transfer = 0
   for transfer in transac.get("tokenTransfers", []):
-    if transfer.get("mint") == TARGET_MINT and transfer.get("toUserAccount") and transfer.get("tokenAmount", 0) > 0:
-      buyer = transfer["toUserAccount"]
-      amount = transfer["tokenAmount"]
+    if transfer.get("mint") == TARGET_MINT:
+      nb_transfer += 1
 
-      # Buyer paid with SOL
-      paid_sol = any(
-        nt["fromUserAccount"] == buyer and nt.get("amount", 0) > 0
-        for nt in transac.get("nativeTransfers", [])
-      )
+  if nb_transfer == 0:
+    print(f"Any transfer found with {TARGET_MINT}")
+  return nb_transfer
 
-      # Buyer paid with another token
-      paid_token = any(
-        t["fromUserAccount"] == buyer and
-        t.get("mint") != TARGET_MINT and
-        t.get("tokenStandard") in ["Fungible", "FungibleAsset"]
-        for t in transac.get("tokenTransfers", [])
-      )
+def is_a_buyer(transfer: dict, buyer: str, is_a_buy: bool):
+  if transfer.get("mint") == TARGET_MINT and transfer.get("toUserAccount") == buyer:
+    is_a_buy = True
 
-      # Tokens came from a known pool
-      from_pool = transfer.get("fromUserAccount") in KNOWN_POOLS
+  if transfer.get("mint") == TARGET_MINT and transfer.get("fromUserAccount") == buyer:
+    is_a_buy = False
 
-      if paid_sol or paid_token or from_pool:
-        return {"buyer": buyer, "amount": amount}
-  return None
+  return is_a_buy
 
-def get_coingecko_price(mint: str, timestamp: int):
+def get_coingecko_price(mint: str, timestamp: timezone):
   cg_id = COINGECKO_IDS.get(mint)
   cache_key = f"{cg_id}_{timestamp // 60}" if cg_id else mint
   if cache_key in price_cache:
@@ -101,68 +87,86 @@ def get_coingecko_price(mint: str, timestamp: int):
     pass
   return Decimal(0.0)
 
-def calculate_cost_usd(transac: dict, buyer: str):
+def calculate_cost_usd(mint: str, timestamp: timezone, amount: Decimal):
   total_usd = Decimal(0.0)
-  timestamp = transac.get("timestamp", int(datetime.now(timezone.utc).timestamp()))
-  mint = "So11111111111111111111111111111111111111112"
 
-  # SOL spent by the buyer
-  sol_lamports = Decimal(
-    str(
-      sum(
-        nt.get("amount", 0)
-        for nt in transac.get("nativeTransfers", [])
-        if nt.get("fromUserAccount") == buyer
-      )
-    )
-  )
-  total_usd += ((sol_lamports) / 1e9) * get_coingecko_price(mint, timestamp)
+  if mint in STABLECOIN_MINTS:
+    total_usd += amount
+  else:
+    price = get_coingecko_price(mint, timestamp)
+    total_usd += amount * price
 
-  # Other token inputs
-  for t in transac.get("tokenTransfers", []):
-    if (t.get("fromUserAccount") == buyer and t.get("mint") != TARGET_MINT and t.get("tokenAmount", 0) > 0):
-      mint = t["mint"]
-      amount_in = Decimal(str(t["tokenAmount"]))
+  return total_usd
 
-      if mint in STABLECOIN_MINTS:
-        total_usd += amount_in
-      else:
-        price = get_coingecko_price(mint, timestamp)
-        total_usd += amount_in * price
+def get_crypto_for_swap(i: int, buyer: str, transac: dict):
+  if i == 0:
+    print("Any transfer before for the swap")
+  token_transfers = transac.get("tokenTransfers")
+  seller = token_transfers[i].get("fromUserAccount")
+  id_swap = i - 1
+  from_user_account = token_transfers[id_swap].get("fromUserAccount")
+  to_user_account = token_transfers[id_swap].get("toUserAccount")
 
-  # Transaction fees (base fee + Jito/Jupiter tips)
-  base_fee = Decimal(str(transac.get("fee", 0)))
-  tips = Decimal(
-    str(
-      sum(
-        nt.get("amount", 0)
-        for nt in transac.get("nativeTransfers", [])
-        if nt.get("fromUserAccount") == buyer
-        and nt.get("toUserAccount") in {
-          "96gYZGLnJYVFmbjzopPSU6QiEV5fGqZNyN9nmq9vxk", # Jito
-          "JUP6LkbZbjS1jKKwapdHNy74zcZ3tLUZoi5QNyVTaV4" # Jupiter
-        }
-      )
-    )
-  )
-  mint = "So11111111111111111111111111111111111111112"
-  fees_usd = ((base_fee + tips) / 1e9) * get_coingecko_price(mint, timestamp)
+  while buyer != from_user_account and seller != to_user_account:
+    id_swap -= 1
+    if id_swap == -1:
+      print("Any transfer found for the swap")
+      break
+    from_user_account = token_transfers[id_swap].get("fromUserAccount")
+    to_user_account = token_transfers[id_swap].get("toUserAccount")
+  if id_swap < 0:
+    return {}
+  mint = token_transfers[id_swap].get("mint")
+  amount = Decimal(str(token_transfers[id_swap]["tokenAmount"]))
 
-  return total_usd + fees_usd
+  return {"mint": mint, "amount": amount}
 
-def borgy_webhook(transac: dict):
+async def borgy_webhook(transac: dict):
   print(f"TX {transac['signature']} will be analyzed.")
 
   if not is_valid_swap(transac):
     return None
 
-  buy = is_real_buy(transac)
-  if not buy:
+  nb_transfer = nb_transfer_include_the_crypto(transac)
+  buyer = None
+  amount = Decimal(0.0)
+  total_cost_usd = Decimal(0.0)
+  price_per_token_usd = Decimal(0.0)
+  is_a_buy = False
+  if nb_transfer:
+    buyer = transac.get("tokenTransfers")[0].get("fromUserAccount")
+
+  if nb_transfer == 1:
+    for i, transfer in enumerate(transac.get("tokenTransfers", [])):
+      is_a_buy = is_a_buyer(transfer, buyer, is_a_buy)
+      if is_a_buy:
+        data_crypto_swap = get_crypto_for_swap(i, buyer, transac)
+        if data_crypto_swap.get("mint"):
+          mint = data_crypto_swap["mint"]
+          amount = data_crypto_swap["amount"]
+          timestamp = transac.get("timestamp", int(datetime.now(timezone.utc).timestamp()))
+          total_cost_usd = calculate_cost_usd(mint, timestamp, amount)
+          price_per_token_usd = total_cost_usd / amount
+          break
+
+  elif nb_transfer > 1:
+    for i, transfer in enumerate(transac.get("tokenTransfers", [])):
+      is_a_buy = is_a_buyer(transfer, buyer, is_a_buy)
+      if is_a_buy:
+        data_crypto_swap = get_crypto_for_swap(i, buyer, transac)
+        if data_crypto_swap.get("mint"):
+          mint = data_crypto_swap["mint"]
+          amount += data_crypto_swap["amount"]
+          timestamp = transac.get("timestamp", int(datetime.now(timezone.utc).timestamp()))
+          total_cost_usd += calculate_cost_usd(mint, timestamp, amount)
+          price_per_token_usd = total_cost_usd / amount
+
+  else:
     return None
 
-  total_cost_usd = calculate_cost_usd(transac, buy["buyer"])
-
-  price_per_token_usd = total_cost_usd / buy["amount"]
+  if is_a_buy is False:
+    print("This is not a purchase")
+    return None
 
   infos_for_telegram = {
     'bot_token': os.getenv('BORGY_TG_TOKEN'),
@@ -174,18 +178,19 @@ def borgy_webhook(transac: dict):
   }
 
   transac_to_send = {
-    "amount": buy["amount"],
+    "amount": amount,
     "value": Decimal(total_cost_usd).quantize(Decimal('1e-2'), rounding=ROUND_HALF_UP),
-    "price_with_fee": Decimal(price_per_token_usd).quantize(Decimal('1e-10'), rounding=ROUND_HALF_UP),
-    "fee": Decimal(total_cost_usd - (total_cost_usd / buy["amount"] * buy["amount"])).quantize(Decimal('1e-8'), rounding=ROUND_HALF_UP),
+    "price": Decimal(price_per_token_usd).quantize(Decimal('1e-10'), rounding=ROUND_HALF_UP),
     "tx": f"https://solscan.io/tx/{transac['signature']}"
   }
 
-  for prop in transac_to_send:
-    if '.' in str(transac_to_send[prop]):
-      transac_to_send[prop] = str(transac_to_send[prop]).replace('.', '\\.')
+  for prop, value in transac_to_send.items():
+    if '.' in str(value):
+      transac_to_send[prop] = str(value).replace('.', '\\.')
+    if '-' in str(value):
+      transac_to_send[prop] = str(value).replace('-', '\\-')
 
   infos_for_telegram["message"] = EN["buy-message"](transac_to_send)
 
-  send_message_with_photo_to_telegram(infos_for_telegram)
+  await send_message_with_photo_to_telegram(infos_for_telegram)
   print('New buy sending to Telegram.')
