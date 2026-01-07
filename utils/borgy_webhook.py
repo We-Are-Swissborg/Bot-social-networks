@@ -106,17 +106,19 @@ def get_crypto_for_swap(i: int, buyer: str, transac: dict):
   id_swap = i - 1
   from_user_account = token_transfers[id_swap].get("fromUserAccount")
   to_user_account = token_transfers[id_swap].get("toUserAccount")
+  mint = token_transfers[id_swap].get("mint")
 
-  while buyer != from_user_account and seller != to_user_account:
+  while buyer != from_user_account and seller != to_user_account and mint == TARGET_MINT:
     id_swap -= 1
     if id_swap == -1:
       print("Any transfer found for the swap")
       break
     from_user_account = token_transfers[id_swap].get("fromUserAccount")
     to_user_account = token_transfers[id_swap].get("toUserAccount")
+    mint = token_transfers[id_swap].get("mint")
+
   if id_swap < 0:
     return {}
-  mint = token_transfers[id_swap].get("mint")
   amount = Decimal(str(token_transfers[id_swap]["tokenAmount"]))
 
   return {"mint": mint, "amount": amount}
@@ -130,6 +132,7 @@ async def borgy_webhook(transac: dict):
   nb_transfer = nb_transfer_include_the_crypto(transac)
   buyer = None
   amount = Decimal(0.0)
+  swap_amount = Decimal(0.0)
   total_cost_usd = Decimal(0.0)
   price_per_token_usd = Decimal(0.0)
   is_a_buy = False
@@ -139,27 +142,33 @@ async def borgy_webhook(transac: dict):
   if nb_transfer == 1:
     for i, transfer in enumerate(transac.get("tokenTransfers", [])):
       is_a_buy = is_a_buyer(transfer, buyer, is_a_buy)
-      if is_a_buy:
+      if is_a_buy and transfer.get("mint") == TARGET_MINT:
         data_crypto_swap = get_crypto_for_swap(i, buyer, transac)
-        if data_crypto_swap.get("mint"):
-          mint = data_crypto_swap["mint"]
-          amount = data_crypto_swap["amount"]
-          timestamp = transac.get("timestamp", int(datetime.now(timezone.utc).timestamp()))
-          total_cost_usd = calculate_cost_usd(mint, timestamp, amount)
-          price_per_token_usd = total_cost_usd / amount
-          break
+        if data_crypto_swap.get("mint") is False or data_crypto_swap.get("mint") == TARGET_MINT:
+          is_a_buy = False
+          continue
+        amount = Decimal(str(transfer.get("tokenAmount")))
+        mint = data_crypto_swap["mint"]
+        swap_amount = data_crypto_swap["amount"]
+        timestamp = transac.get("timestamp", int(datetime.now(timezone.utc).timestamp()))
+        total_cost_usd = calculate_cost_usd(mint, timestamp, swap_amount)
+        price_per_token_usd = total_cost_usd / amount
+        break
 
   elif nb_transfer > 1:
     for i, transfer in enumerate(transac.get("tokenTransfers", [])):
       is_a_buy = is_a_buyer(transfer, buyer, is_a_buy)
-      if is_a_buy:
+      if is_a_buy and transfer.get("mint") == TARGET_MINT:
         data_crypto_swap = get_crypto_for_swap(i, buyer, transac)
-        if data_crypto_swap.get("mint"):
-          mint = data_crypto_swap["mint"]
-          amount += data_crypto_swap["amount"]
-          timestamp = transac.get("timestamp", int(datetime.now(timezone.utc).timestamp()))
-          total_cost_usd += calculate_cost_usd(mint, timestamp, amount)
-          price_per_token_usd = total_cost_usd / amount
+        if data_crypto_swap.get("mint") is False or data_crypto_swap.get("mint") == TARGET_MINT:
+          is_a_buy = False
+          continue
+        amount += Decimal(str(transfer.get("tokenAmount")))
+        mint = data_crypto_swap["mint"]
+        swap_amount = data_crypto_swap["amount"]
+        timestamp = transac.get("timestamp", int(datetime.now(timezone.utc).timestamp()))
+        total_cost_usd += calculate_cost_usd(mint, timestamp, swap_amount)
+        price_per_token_usd = total_cost_usd / amount
 
   else:
     return None
@@ -178,8 +187,8 @@ async def borgy_webhook(transac: dict):
   }
 
   transac_to_send = {
-    "amount": amount,
-    "value": Decimal(total_cost_usd).quantize(Decimal('1e-2'), rounding=ROUND_HALF_UP),
+    "amount": f"{amount:,}",
+    "value": f"{Decimal(total_cost_usd).quantize(Decimal('1e-2'), rounding=ROUND_HALF_UP):,}",
     "price": Decimal(price_per_token_usd).quantize(Decimal('1e-10'), rounding=ROUND_HALF_UP),
     "tx": f"https://solscan.io/tx/{transac['signature']}"
   }
@@ -191,6 +200,6 @@ async def borgy_webhook(transac: dict):
       transac_to_send[prop] = str(value).replace('-', '\\-')
 
   infos_for_telegram["message"] = EN["buy-message"](transac_to_send)
-
+  print(infos_for_telegram["message"])
   await send_message_with_photo_to_telegram(infos_for_telegram)
   print('New buy sending to Telegram.')

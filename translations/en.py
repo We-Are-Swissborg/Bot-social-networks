@@ -11,7 +11,6 @@ EN = {
                       f"🔄Value paid\\* \\(USD\\) *${data['value']}*%0A"+
                       f"🔄Receipt *{data['amount']} BORGY*%0A"+
                       f"💲Price\\* *${data['price']}*%0A"+
-                      f"💸Fee *${data['fee']}*%0A"+
                       f"📝[TX]({data['tx']})%0A%0A"+
                       "\\*_fee included_",
   "welcome-pack": "💚 *WELCOME TO THE PACK* 💚%0A%0A" +
