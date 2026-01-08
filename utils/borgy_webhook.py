@@ -38,15 +38,19 @@ def is_valid_swap(transac: dict):
   valid = True
   return valid
 
-def nb_transfer_include_the_crypto(transac: dict):
-  nb_transfer = 0
-  for transfer in transac.get("tokenTransfers", []):
-    if transfer.get("mint") == TARGET_MINT:
-      nb_transfer += 1
+def nb_transfer_include_the_crypto(transac: dict, buyer: str):
+  receive_transfer = 0
+  send_transfer = 0
 
-  if nb_transfer == 0:
-    print(f"Any transfer found with {TARGET_MINT}")
-  return nb_transfer
+  for transfer in transac.get("tokenTransfers", []):
+    if transfer.get("mint") == TARGET_MINT and transfer.get("toUserAccount") == buyer:
+      receive_transfer += 1
+    elif transfer.get("mint") == TARGET_MINT and transfer.get("fromUserAccount") == buyer:
+      send_transfer += 1
+
+  if receive_transfer == 0:
+    print(f"No crypto received : {TARGET_MINT}")
+  return {"receive": receive_transfer, "send": send_transfer}
 
 def is_a_buyer(transfer: dict, buyer: str, is_a_buy: bool):
   if transfer.get("mint") == TARGET_MINT and transfer.get("toUserAccount") == buyer:
@@ -129,17 +133,17 @@ async def borgy_webhook(transac: dict):
   if not is_valid_swap(transac):
     return None
 
-  nb_transfer = nb_transfer_include_the_crypto(transac)
-  buyer = None
+  buyer = transac.get("tokenTransfers")[0].get("fromUserAccount")
+  transfer_include = nb_transfer_include_the_crypto(transac, buyer)
+  receive_transfer = transfer_include["receive"]
+  send_transfer = transfer_include["send"]
   amount = Decimal(0.0)
   swap_amount = Decimal(0.0)
   total_cost_usd = Decimal(0.0)
   price_per_token_usd = Decimal(0.0)
   is_a_buy = False
-  if nb_transfer:
-    buyer = transac.get("tokenTransfers")[0].get("fromUserAccount")
 
-  if nb_transfer == 1:
+  if receive_transfer == 1 and receive_transfer != send_transfer:
     for i, transfer in enumerate(transac.get("tokenTransfers", [])):
       is_a_buy = is_a_buyer(transfer, buyer, is_a_buy)
       if is_a_buy and transfer.get("mint") == TARGET_MINT:
@@ -155,7 +159,7 @@ async def borgy_webhook(transac: dict):
         price_per_token_usd = total_cost_usd / amount
         break
 
-  elif nb_transfer > 1:
+  elif receive_transfer > 1 and receive_transfer != send_transfer:
     for i, transfer in enumerate(transac.get("tokenTransfers", [])):
       is_a_buy = is_a_buyer(transfer, buyer, is_a_buy)
       if is_a_buy and transfer.get("mint") == TARGET_MINT:
@@ -171,7 +175,7 @@ async def borgy_webhook(transac: dict):
         price_per_token_usd = total_cost_usd / amount
 
   else:
-    return None
+    is_a_buy = False
 
   if is_a_buy is False:
     print("This is not a purchase")
@@ -200,6 +204,6 @@ async def borgy_webhook(transac: dict):
       transac_to_send[prop] = str(value).replace('-', '\\-')
 
   infos_for_telegram["message"] = EN["buy-message"](transac_to_send)
-  print(infos_for_telegram["message"])
+
   await send_message_with_photo_to_telegram(infos_for_telegram)
   print('New buy sending to Telegram.')
