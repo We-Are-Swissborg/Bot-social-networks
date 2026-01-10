@@ -143,7 +143,7 @@ async def borgy_webhook(transac: dict):
   price_per_token_usd = Decimal(0.0)
   is_a_buy = False
 
-  if receive_transfer == 1 and receive_transfer != send_transfer:
+  if receive_transfer == 1 and receive_transfer > send_transfer:
     for i, transfer in enumerate(transac.get("tokenTransfers", [])):
       is_a_buy = is_a_buyer(transfer, buyer, is_a_buy)
       if is_a_buy and transfer.get("mint") == TARGET_MINT:
@@ -159,7 +159,7 @@ async def borgy_webhook(transac: dict):
         price_per_token_usd = total_cost_usd / amount
         break
 
-  elif receive_transfer > 1 and receive_transfer != send_transfer:
+  elif receive_transfer > 1 and receive_transfer > send_transfer:
     for i, transfer in enumerate(transac.get("tokenTransfers", [])):
       is_a_buy = is_a_buyer(transfer, buyer, is_a_buy)
       if is_a_buy and transfer.get("mint") == TARGET_MINT:
@@ -179,6 +179,10 @@ async def borgy_webhook(transac: dict):
 
   if is_a_buy is False:
     print("This is not a purchase")
+    return None
+
+  if total_cost_usd < 100:
+    print("The purchase costs less than 100$")
     return None
 
   infos_for_telegram = {
