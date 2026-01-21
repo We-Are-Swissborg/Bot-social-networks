@@ -1,6 +1,8 @@
 FR = {
   "vote-message": "📥 Allez les gars, votez pour $Borgy, vous pouvez voter une fois par jour 💚%0A%0A" +
-                  "⬇️⬇️⬇️%0A%0A"+
+                  "CoinMun ⤵️%0A"+
+                  "https://coinmun\\.com/coins/borgy%0A%0A"+
+                  "Lewk ⤵️%0A"+
                   "https://lewk\\.com/vote/BorGY4ub2Fz4RLboGxnuxWdZts7EKhUTB624AFmfCgX%0A%0A"+
                   "\\-\\-\\-\\-\\-\\-\\-\\-\\-\\-\\-\\-\\-\\-\\-\\-\\-\\-\\-\\-\\-\\-\\-\\-\\-\\-\\-\\-\\-%0A%0A"+
                   "Cliquez sur la 🚀 sur notre page CoinGecko 🦎%0A%0A"+
@@ -28,7 +30,7 @@ FR = {
                   "Utilisez les boutons du bot : 💬 🔄 ❤️ 📌 ✊%0A" +
                   "Commentaires 💬 → répondez directement au MP du bot%0A%0A" +
                   "🌐 borgysol\\.com%0A" +
-                  "🐦 @borgysol",
+                  "🐦 @BorgySwissMeme",
   "swap-week": lambda swap, old_swap, variation: "💚💚*BILAN DE LA SEMAINE*💚💚%0A%0A" +
                             f"💰 *Capitalisation boursière* : {old_swap['market_cap']} \\-\\-\\> {swap['market_cap']} \\({variation['market_cap']}%25\\)%0A" +
                             f"👥 *Détenteurs* : {old_swap['holders']} \\-\\-\\> {swap['holders']} \\({variation['holders']}\\)%0A" +

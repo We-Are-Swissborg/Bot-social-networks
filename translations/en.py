@@ -1,6 +1,8 @@
 EN = {
   "vote-message": "📥 Come on guys, vote for $Borgy, you can vote once a day 💚%0A%0A" +
-                  "⬇️⬇️⬇️%0A%0A"+
+                  "CoinMun ⤵️%0A"+
+                  "https://coinmun\\.com/coins/borgy%0A%0A"+
+                  "Lewk ⤵️%0A"+
                   "https://lewk\\.com/vote/BorGY4ub2Fz4RLboGxnuxWdZts7EKhUTB624AFmfCgX%0A%0A"+
                   "\\-\\-\\-\\-\\-\\-\\-\\-\\-\\-\\-\\-\\-\\-\\-\\-\\-\\-\\-\\-\\-\\-\\-\\-\\-\\-\\-\\-\\-%0A%0A"+
                   "Click the 🚀 on our CoinGecko page 🦎%0A%0A"+
@@ -29,7 +31,7 @@ EN = {
                   "Use bot buttons: 💬 🔄 ❤️ 📌 ✊%0A" +
                   "Comments 💬 → reply directly to the bot’s DM%0A%0A" +
                   "🌐 borgysol\\.com%0A" +
-                  "🐦 @borgysol",
+                  "🐦 @BorgySwissMeme",
   "unleash-welcome-pack": "💚 *WELCOME TO THE PACK* 💚%0A%0A" +
                           "⚠️ *Reminder*%0A" +
                           "💬 Community → t\\.me/borgyarmy%0A" +
@@ -46,7 +48,7 @@ EN = {
                           "Use bot buttons: 💬 🔄 ❤️ 📌 ✊%0A" +
                           "Comments 💬 → reply directly to the bot’s DM%0A%0A" +
                           "🌐 borgysol\\.com%0A" +
-                          "🐦 @borgysol",
+                          "🐦 @BorgySwissMeme",
   "swap-week": lambda swap, old_swap, variation: "💚💚*RESULTS OF THE WEEK*💚💚%0A%0A" +
                             f"💰 *Market capitalization*: {old_swap['market_cap']} \\-\\-\\> {swap['market_cap']} \\({variation['market_cap']}%25\\)%0A" +
                             f"👥 *Holders*: {old_swap['holders']} \\-\\-\\> {swap['holders']} \\({variation['holders']}\\)%0A" +
