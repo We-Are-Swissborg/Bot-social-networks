@@ -23,7 +23,7 @@ STABLECOIN_MINTS = {
 price_cache = TTLCache(maxsize=1000, ttl=45)
 
 def is_valid_swap(transac: dict):
-  accept_type = ["UNKNOWN", "TOKEN_MINT"]
+  # accept_type = ["UNKNOWN", "TOKEN_MINT"]
   valid = False
 
   if transac['transactionError'] is not None:
@@ -32,9 +32,9 @@ def is_valid_swap(transac: dict):
   if len(transac['tokenTransfers']) == 0:
     print("TX is not a swap.")
     return valid
-  if transac['type'] not in accept_type:
-    print(f"TX has not a valid TYPE: {transac['type']}.")
-    return valid
+  # if transac['type'] not in accept_type:
+  #   print(f"TX has not a valid TYPE: {transac['type']}.")
+  #   return valid
   valid = True
   return valid
 

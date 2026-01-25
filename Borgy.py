@@ -27,8 +27,8 @@ def decimal_serializer(obj):
 
 async def borgy():
   # general (Borgy army) and unleash corespond to telegram groups.
-  general_sending = [9, 11, 12, 13, 14, 15]
-  unleash_hour = [11, 14, 15]
+  general_sending = [9, 12, 15, 18]
+  unleash_hour = [15, 18]
   no_time = True
   fr_message = en_message = id_photo = about = None
   pin_message = False
@@ -45,60 +45,60 @@ async def borgy():
     fr_message = FR['scam-alert']
     en_message = EN['scam-alert']
     about = "Scam alert"
-  elif date.hour == 11:
-    fr_message = FR['welcome-pack']
-    en_message = EN['welcome-pack']
-    about = "Welcome pack"
+  # elif date.hour == 11:
+  #   fr_message = FR['welcome-pack']
+  #   en_message = EN['welcome-pack']
+  #   about = "Welcome pack"
   elif date.hour == 12:
     fr_message = FR['vote-message']
     en_message = EN['vote-message']
     id_photo = os.getenv('VOTE_IMG')
     about = 'Vote'
-  elif date.hour == 13:
-    swap_week_file = open("./files/swap-week.txt", "r", encoding="utf-8")
-    old_swap_week_file = open("./files/old-swap-week.txt", "r", encoding="utf-8")
-    read_swap_week, read_swap_week_end = decoder.raw_decode(swap_week_file.read())
-    swap_week = read_swap_week["data"]
-    old_swap_week, old_swap_week_end = decoder.raw_decode(old_swap_week_file.read())
+  # elif date.hour == 13:
+    # swap_week_file = open("./files/swap-week.txt", "r", encoding="utf-8")
+    # old_swap_week_file = open("./files/old-swap-week.txt", "r", encoding="utf-8")
+    # read_swap_week, read_swap_week_end = decoder.raw_decode(swap_week_file.read())
+    # swap_week = read_swap_week["data"]
+    # old_swap_week, old_swap_week_end = decoder.raw_decode(old_swap_week_file.read())
 
-    print('Check marketCap and holders exist in the file...')
-    while "market_cap" not in swap_week and "holders" not in swap_week:
-      swap_week_file = open("./files/swap-week.txt", "r", encoding="utf-8")
-      read_swap_week, read_swap_week_end = decoder.raw_decode(swap_week_file.read())
-      swap_week = read_swap_week["data"]
-      time.sleep(2)
+    # print('Check marketCap and holders exist in the file...')
+    # while "market_cap" not in swap_week and "holders" not in swap_week:
+    #   swap_week_file = open("./files/swap-week.txt", "r", encoding="utf-8")
+    #   read_swap_week, read_swap_week_end = decoder.raw_decode(swap_week_file.read())
+    #   swap_week = read_swap_week["data"]
+    #   time.sleep(2)
 
-    swap_week_for_markdown = swap_week.copy()
+    # swap_week_for_markdown = swap_week.copy()
 
-    print('Calcul variation swap week.')
-    for prop in swap_week:
-      no_percentage_prop = ["holders", "swaps"]
-      decimal_percentage_prop = ["amount", "price_without_fee"]
-      no_abreviate = ["holders", "price_without_fee", "swaps"]
-      if old_swap_week[prop] == 0 and prop not in no_percentage_prop:
-        variation_swap[prop] = 'N/A'
-      elif prop in no_percentage_prop:
-        variation_swap[prop] = swap_week[prop] - old_swap_week[prop]
-      elif prop in decimal_percentage_prop:
-        variation_swap[prop] = round((Decimal(swap_week[prop]) - Decimal(old_swap_week[prop])) / Decimal(old_swap_week[prop]) * 100, 2)
-      else:
-        variation_swap[prop] = round((swap_week[prop] - old_swap_week[prop]) / old_swap_week[prop] * 100, 2)
-      if prop not in no_abreviate:
-        swap_week_for_markdown[prop] = Number_Formatter.abbreviate_number(str(swap_week_for_markdown[prop]))
-        old_swap_week[prop] = Number_Formatter.abbreviate_number(str(old_swap_week[prop]))
+    # print('Calcul variation swap week.')
+    # for prop in swap_week:
+    #   no_percentage_prop = ["holders", "swaps"]
+    #   decimal_percentage_prop = ["amount", "price_without_fee"]
+    #   no_abreviate = ["holders", "price_without_fee", "swaps"]
+    #   if old_swap_week[prop] == 0 and prop not in no_percentage_prop:
+    #     variation_swap[prop] = 'N/A'
+    #   elif prop in no_percentage_prop:
+    #     variation_swap[prop] = swap_week[prop] - old_swap_week[prop]
+    #   elif prop in decimal_percentage_prop:
+    #     variation_swap[prop] = round((Decimal(swap_week[prop]) - Decimal(old_swap_week[prop])) / Decimal(old_swap_week[prop]) * 100, 2)
+    #   else:
+    #     variation_swap[prop] = round((swap_week[prop] - old_swap_week[prop]) / old_swap_week[prop] * 100, 2)
+    #   if prop not in no_abreviate:
+    #     swap_week_for_markdown[prop] = Number_Formatter.abbreviate_number(str(swap_week_for_markdown[prop]))
+    #     old_swap_week[prop] = Number_Formatter.abbreviate_number(str(old_swap_week[prop]))
 
-    print('Tranform swap week value for markdown.')
-    Number_Formatter.tranform_value_for_markdown(swap_week_for_markdown, old_swap_week, variation_swap)
-    fr_message = FR['swap-week'](swap_week_for_markdown, old_swap_week, variation_swap)
-    en_message = EN['swap-week'](swap_week_for_markdown, old_swap_week, variation_swap)
-    id_photo = {"fr": os.getenv('FR_WEEK_BUY_IMG'), "en": os.getenv('EN_WEEK_BUY_IMG')}
-    about = 'Swap week'
-  elif date.hour == 14:
+    # print('Tranform swap week value for markdown.')
+    # Number_Formatter.tranform_value_for_markdown(swap_week_for_markdown, old_swap_week, variation_swap)
+    # fr_message = FR['swap-week'](swap_week_for_markdown, old_swap_week, variation_swap)
+    # en_message = EN['swap-week'](swap_week_for_markdown, old_swap_week, variation_swap)
+    # id_photo = {"fr": os.getenv('FR_WEEK_BUY_IMG'), "en": os.getenv('EN_WEEK_BUY_IMG')}
+    # about = 'Swap week'
+  elif date.hour == 15:
     fr_message = FR['need-you']
     en_message = EN['need-you']
     id_photo = os.getenv('NEED_YOU_IMG')
     about = "We need you"
-  elif date.hour == 15:
+  elif date.hour == 18:
     fr_message = FR['action-time']
     en_message = EN['action-time']
     id_photo = os.getenv('ACTION_TIME_IMG')
@@ -129,30 +129,30 @@ async def borgy():
         if photos:
           if i == 0: infos_for_telegram["id_photo"] = photos['fr']
           elif i == 1: infos_for_telegram["id_photo"] = photos['en']
-        if date.hour == 9 or date.hour == 11:
+        if date.hour == 9:
           await Telegram.send_simple_message_to_telegram(infos_for_telegram)
-        elif date.hour in (12, 13, 14, 15):
+        elif date.hour in (12, 15, 18):
           if pin_message:
             await Telegram.send_message_with_photo_to_telegram(infos_for_telegram, pin_message)
           else:
             await Telegram.send_message_with_photo_to_telegram(infos_for_telegram)
 
-      if date.hour == 13:
-        init_swap_week = {"data": { "amount": 0, "value": 0, "price_without_fee": 0, "buyers": 0, "swaps": 0}, "already_req": True}
-        swap_week_file = open("./files/swap-week.txt", "w", encoding="utf-8")
-        swap_week_file.write(json.dumps(init_swap_week))
-        swap_week_file.close()
+      # if date.hour == 13:
+      #   init_swap_week = {"data": { "amount": 0, "value": 0, "price_without_fee": 0, "buyers": 0, "swaps": 0}, "already_req": True}
+      #   swap_week_file = open("./files/swap-week.txt", "w", encoding="utf-8")
+      #   swap_week_file.write(json.dumps(init_swap_week))
+      #   swap_week_file.close()
 
-        old_swap_week_file = open("./files/old-swap-week.txt", "w", encoding="utf-8")
-        old_swap_week_file.write(json.dumps(swap_week, default=decimal_serializer))
-        old_swap_week_file.close()
+      #   old_swap_week_file = open("./files/old-swap-week.txt", "w", encoding="utf-8")
+      #   old_swap_week_file.write(json.dumps(swap_week, default=decimal_serializer))
+      #   old_swap_week_file.close()
       no_time = False
 
     # Message to Unleash telegram.
     if date.hour in unleash_hour:
       pin_message = False
 
-      if date.hour == 11: en_message = EN['unleash-welcome-pack']
+      # if date.hour == 11: en_message = EN['unleash-welcome-pack']
 
       infos_for_telegram = {
         'bot_token': os.getenv('BORGY_TG_TOKEN'),
@@ -162,9 +162,9 @@ async def borgy():
         'about': about,
       }
 
-      if date.hour == 11:
-        await Telegram.send_simple_message_to_telegram(infos_for_telegram)
-      elif date.hour in (14, 15):
+      # if date.hour == 11:
+      #   await Telegram.send_simple_message_to_telegram(infos_for_telegram)
+      if date.hour in (15, 18):
         await Telegram.send_message_with_photo_to_telegram(infos_for_telegram)
       no_time = False
 
