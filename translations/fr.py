@@ -29,7 +29,7 @@ FR = {
                   "📌 Conseils XP%0A" +
                   "Utilisez les boutons du bot : 💬 🔄 ❤️ 📌 ✊%0A" +
                   "Commentaires 💬 → répondez directement au MP du bot%0A%0A" +
-                  "🌐 borgysol\\.com%0A" +
+                  "🌐 https://borgy\\.meme%0A" +
                   "🐦 @BorgySwissMeme",
   "swap-week": lambda swap, old_swap, variation: "💚💚*BILAN DE LA SEMAINE*💚💚%0A%0A" +
                             f"💰 *Capitalisation boursière* : {old_swap['market_cap']} \\-\\-\\> {swap['market_cap']} \\({variation['market_cap']}%25\\)%0A" +
@@ -62,10 +62,10 @@ FR = {
               "➡️ https://coinmarketcap\\.com/currencies/borgy/ ⬅️",
   "action-time": "🐾 BORGY ARMY, L’HEURE EST VENUE DE PASSER À L’ACTION 🚀%0A%0A" +
                  "Envie de renforcer la meute et d’acheter du $BORGY en toute sécurité ?%0A" +
-                 "Une seule adresse ➡️ www\\.borgysol\\.com ⬅️%0A%0A" +
+                 "Une seule adresse ➡️ https://borgy\\.meme ⬅️%0A%0A" +
                  "Suis ces 5 étapes simples :%0A" +
                  "1️⃣ Ouvre ton wallet Phantom ou Solflare 💰%0A" +
-                 "2️⃣ Va sur borgysol\\.com 🐾%0A" +
+                 "2️⃣ Va sur https://borgy\\.meme 🐾%0A" +
                  "3️⃣ Descends un peu pour trouver notre DEX intégré ⚡%0A" +
                  "4️⃣ Connecte ton wallet 🧩%0A" +
                  "5️⃣ Et… LFG 💥%0A%0A" +
@@ -77,7 +77,7 @@ FR = {
                  "→ Charité : 10%25%0A%0A" +
                  "Notre site est le QG officiel de Borgy : simple, sécurisé et 100%25 Borgy vibes 💎%0A" +
                  "Alors, prêt à rejoindre la meute sur le terrain ? 🔥%0A%0A" +
-                 "➡️ www\\.borgysol\\.com ⬅️%0A%0A" +
+                 "➡️ https://borgy\\.meme ⬅️%0A%0A" +
                  "💚 Le cœur de BORGY bat ici 💚",
   # "ticket-message": "🔊 $BORGY MILLIONS 🎊%0A%0A" +
   #                   "🎟️ Procurez\\-vous vos billets pour avoir la chance de devenir l'un des 3 heureux gagnants 🍀🍀🍀%0A%0A" +

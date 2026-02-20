@@ -30,7 +30,7 @@ EN = {
                   "📌 XP Tips%0A" +
                   "Use bot buttons: 💬 🔄 ❤️ 📌 ✊%0A" +
                   "Comments 💬 → reply directly to the bot’s DM%0A%0A" +
-                  "🌐 borgysol\\.com%0A" +
+                  "🌐 https://borgy\\.meme%0A" +
                   "🐦 @BorgySwissMeme",
   "unleash-welcome-pack": "💚 *WELCOME TO THE PACK* 💚%0A%0A" +
                           "⚠️ *Reminder*%0A" +
@@ -47,7 +47,7 @@ EN = {
                           "📌 XP Tips%0A" +
                           "Use bot buttons: 💬 🔄 ❤️ 📌 ✊%0A" +
                           "Comments 💬 → reply directly to the bot’s DM%0A%0A" +
-                          "🌐 borgysol\\.com%0A" +
+                          "🌐 https://borgy\\.meme%0A" +
                           "🐦 @BorgySwissMeme",
   "swap-week": lambda swap, old_swap, variation: "💚💚*RESULTS OF THE WEEK*💚💚%0A%0A" +
                             f"💰 *Market capitalization*: {old_swap['market_cap']} \\-\\-\\> {swap['market_cap']} \\({variation['market_cap']}%25\\)%0A" +
@@ -80,10 +80,10 @@ EN = {
               "➡️ https://coinmarketcap\\.com/currencies/borgy/ ⬅️",
   "action-time": "🐾 BORGY ARMY, THE TIME HAS COME TO TAKE ACTION 🚀%0A%0A" +
                  "Want to strengthen the pack and buy $BORGY safely?%0A" +
-                 "Only one place to do it ➡️ www\\.borgysol\\.com ⬅️%0A%0A" +
+                 "Only one place to do it ➡️ https://borgy\\.meme ⬅️%0A%0A" +
                  "Follow these 5 simple steps:%0A" +
                  "1️⃣ Open your Phantom or Solflare wallet 💰%0A" +
-                 "2️⃣ Go to borgysol\\.com 🐾%0A" +
+                 "2️⃣ Go to https://borgy\\.meme 🐾%0A" +
                  "3️⃣ Scroll a bit down to find our integrated Dex ⚡%0A" +
                  "4️⃣ Connect your wallet 🧩%0A" +
                  "5️⃣ And… LFG 💥%0A%0A" +
@@ -95,7 +95,7 @@ EN = {
                  "→ Charity : 10%25%0A%0A" +
                  "Our website is the official Borgy HQ, simple, safe, and 100%25 Borgy vibes 💎%0A" +
                  "So, are you ready to join the pack on the field ? 🔥%0A%0A" +
-                 "➡️ www\\.borgysol\\.com ⬅️%0A%0A" +
+                 "➡️ https://borgy\\.meme ⬅️%0A%0A" +
                  "💚 The heart of BORGY beats right here 💚",
   # "ticket-message": "🔊 $BORGY MILLIONS 🎊%0A%0A" +
   #                   "🎟️ Grab your tickets and get a chance to become one of the 3 lucky winners 🍀🍀🍀%0A%0A" +
